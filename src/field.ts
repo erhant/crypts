@@ -1,45 +1,36 @@
-type Number = string | number | bigint;
-
-export interface Felt {
-  readonly order: bigint;
-  readonly n: bigint;
-
-  add(n: Number): bigint;
-  sub(n: Number): bigint;
-  mul(n: Number): bigint;
-  neg(): bigint;
-  sign(): boolean;
-}
+import {randomBytes} from 'crypto';
+import {Number} from './common';
+import {Felt} from './element';
+import {Polynomial} from './polynomial';
 
 export function Field(order: Number) {
-  class Felt implements Felt {
-    readonly order = BigInt(order);
-    readonly n: bigint;
-
-    constructor(n: Number) {
-      this.n = BigInt(n) % this.order;
-    }
-
-    add(n: Number): Number {
-      return (this.n + BigInt(n)) % this.order;
-    }
-
-    sub(n: Felt): Felt {
-      return new Felt(this.n - n.n);
-    }
-
-    mul(n: Felt): Felt {
-      return new Felt(this.n * n.n);
-    }
-
-    neg(): Felt {
-      return new Felt(this.order - this.n);
-    }
-
-    sign(): boolean {
-      return this.n < this.order / BigInt(2);
-    }
+  if (BigInt(order) < BigInt(2)) {
+    throw new Error('Order must be larger than 1.');
   }
 
-  return (n: string | number | bigint) => new Felt(n);
+  return class extends Felt {
+    constructor(n: Number) {
+      super(n, order);
+    }
+
+    static one(): Felt {
+      return new this(1);
+    }
+
+    static zero(): Felt {
+      return new this(0);
+    }
+
+    static random(): Felt {
+      return new Felt(BigInt('0x' + randomBytes(order.toString(8).length).toString('hex')), order);
+    }
+
+    static poly(symbol: string) {
+      return class extends Polynomial {
+        constructor(coeffs: (Number | Felt)[]) {
+          super(coeffs, order, symbol);
+        }
+      };
+    }
+  };
 }
