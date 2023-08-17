@@ -25,6 +25,16 @@ export class Polynomial {
     this.zero = new Felt(0, this.order);
   }
 
+  /** Returns the leading coefficient along with its index. */
+  get lead(): [Felt, number] {
+    const i = this.coeffs.length - 1;
+    return [this.coeffs[i], i];
+  }
+
+  get coefficients(): bigint[] {
+    return this.coeffs.map(c => c.n);
+  }
+
   add(q: Polynomial): Polynomial {
     const ans = Array.from({length: 1 + Math.max(this.degree, q.degree)}, (_, i) => {
       const l = this.coeffs.at(i) || this.zero;
@@ -57,14 +67,27 @@ export class Polynomial {
   }
 
   div(q: Polynomial): Polynomial {
-    if (q.degree > this.degree) {
+    const P = this.coeffs.slice();
+    const Q = q.coeffs.slice();
+    const deg_q = q.degree;
+    let deg_p = this.degree;
+
+    if (deg_q > deg_p) {
       throw new Error('Cant divide with a polynomial of higher degree.');
     }
-    const ans = Array.from({length: this.degree - q.degree + 1}, () => this.zero);
 
-    // TODO
+    let diff = deg_p - deg_q;
+    const R = Array.from({length: diff + 1}, () => this.zero);
 
-    return new Polynomial(ans, this.order, this.symbol);
+    for (let p = R.length - 1; diff >= 0; diff--, deg_p--, p--) {
+      const quot = P[deg_p].div(Q[deg_q]);
+      R[p] = quot;
+      for (let i = deg_q; i >= 0; i--) {
+        P[diff + i] = P[diff + i].sub(Q[i].mul(quot));
+      }
+    }
+
+    return new Polynomial(R, this.order, this.symbol);
   }
 
   scale(s: Number | Felt): Polynomial {

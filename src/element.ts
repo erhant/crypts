@@ -11,6 +11,11 @@ export class Felt {
   constructor(n: Number, p: Number) {
     this.order = BigInt(p);
     this.n = BigInt(n) % this.order;
+
+    // modulo may leave numbers negative, make them positive
+    if (this.n < 0n) {
+      this.n += this.order;
+    }
   }
 
   toString(radix?: number): string {
@@ -18,11 +23,7 @@ export class Felt {
   }
 
   eq(n: Number | Felt): boolean {
-    if (n instanceof Felt) {
-      return this.n === n.n;
-    } else {
-      return this.n === BigInt(n);
-    }
+    return this.n === this.into(n).n;
   }
 
   add(n: Number | Felt): Felt {
@@ -46,7 +47,7 @@ export class Felt {
   }
 
   sign(): boolean {
-    return this.n < this.order / BigInt(2);
+    return this.n < this.order / 2n;
   }
 
   // additive inverse
@@ -59,15 +60,15 @@ export class Felt {
     let low = this.n;
 
     // 0 has no inverse, just return 0
-    if (low === BigInt(0)) {
+    if (low === 0n) {
       return new Felt(0, this.order);
     }
 
-    let lm = BigInt(1);
-    let hm = BigInt(0);
+    let lm = 1n;
+    let hm = 0n;
     let high = this.order;
 
-    while (low > BigInt(1)) {
+    while (low > 1n) {
       const r = high / low;
       const nm = hm - lm * r;
       const nw = high - low * r;

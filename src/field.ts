@@ -4,7 +4,7 @@ import {Felt} from './element';
 import {Polynomial} from './polynomial';
 
 export function Field(order: Number) {
-  if (BigInt(order) < BigInt(2)) {
+  if (BigInt(order) < 2n) {
     throw new Error('Order must be larger than 1.');
   }
 
