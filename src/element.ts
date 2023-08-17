@@ -1,5 +1,4 @@
 import {Number} from './common';
-import {randomBytes} from 'crypto';
 
 export class Felt {
   readonly order: bigint;
@@ -39,7 +38,7 @@ export class Felt {
   }
 
   div(n: Number | Felt): Felt {
-    return this.into(n).inv().mul(this);
+    return new Felt(this.n * this.into(n).inv().n, this.order);
   }
 
   exp(n: Number): Felt {

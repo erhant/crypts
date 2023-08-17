@@ -62,6 +62,8 @@ export class Polynomial {
     }
     const ans = Array.from({length: this.degree - q.degree + 1}, () => this.zero);
 
+    // TODO
+
     return new Polynomial(ans, this.order, this.symbol);
   }
 
