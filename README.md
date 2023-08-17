@@ -6,14 +6,14 @@ Basically cryptography & math stuff in TypeScript, totally for educational purpo
 
 We have several primitives available.
 
-### https://github.com/erhant/tscyrpto/labels/finite%20fields
+### https://github.com/erhant/tscrypto/labels/finite%20fields
 
 TODO
 
-### https://github.com/erhant/tscyrpto/labels/polynomials
+### https://github.com/erhant/tscrypto/labels/polynomials
 
 TODO
 
-### https://github.com/erhant/tscyrpto/labels/elliptic%20curves
+### https://github.com/erhant/tscrypto/labels/elliptic%20curves
 
 TODO
