@@ -4,62 +4,64 @@ export class Felt {
   readonly order: bigint;
   readonly n: bigint;
 
-  into(n: Number | Felt): Felt {
-    return n instanceof Felt ? n : new Felt(n, this.order);
-  }
-
   constructor(n: Number, p: Number) {
     this.order = BigInt(p);
     this.n = BigInt(n) % this.order;
-
-    // modulo may leave numbers negative, make them positive
     if (this.n < 0n) {
       this.n += this.order;
     }
   }
 
-  toString(radix?: number): string {
-    return this.n.toString(radix);
+  /** Convert to an element in the field. */
+  into(n: Number | Felt): Felt {
+    return new Felt(n instanceof Felt ? n.n : n, this.order);
   }
 
+  /** Equality check with a field elements or number. */
   eq(n: Number | Felt): boolean {
     return this.n === this.into(n).n;
   }
 
+  /** Addition in the field. */
   add(n: Number | Felt): Felt {
     return new Felt(this.n + this.into(n).n, this.order);
   }
 
+  /** Addition with additive inverse in the field. */
   sub(n: Number | Felt): Felt {
     return new Felt(this.n + this.into(n).neg().n, this.order);
   }
 
+  /** Multiplication in the field. */
   mul(n: Number | Felt): Felt {
     return new Felt(this.n * this.into(n).n, this.order);
   }
 
+  /** Multiplication with multiplicative inverse in the field. */
   div(n: Number | Felt): Felt {
     return new Felt(this.n * this.into(n).inv().n, this.order);
   }
 
   exp(n: Number): Felt {
+    // TODO ?
     return new Felt(this.n ** BigInt(n), this.order);
   }
 
+  /** Sign in the field, `true` for positive. */
   sign(): boolean {
     return this.n < this.order / 2n;
   }
 
-  // additive inverse
+  /** Additive inverse in the field. */
   neg(): Felt {
     return new Felt(this.order - this.n, this.order);
   }
 
-  // multiplicative inverse (uses xgcd?)
+  /** Multiplicative inverse in the field, using Extended Euclidean Algorithm. */
   inv(): Felt {
     let low = this.n;
 
-    // 0 has no inverse, just return 0
+    // 0 has no inverse, just return 0 (TODO: or error?)
     if (low === 0n) {
       return new Felt(0, this.order);
     }
@@ -79,5 +81,10 @@ export class Felt {
       low = nw;
     }
     return new Felt(lm, this.order);
+  }
+
+  /** String representation of the field element, with optional radix. */
+  toString(radix?: number): string {
+    return this.n.toString(radix);
   }
 }

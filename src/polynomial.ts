@@ -25,16 +25,13 @@ export class Polynomial {
     this.zero = new Felt(0, this.order);
   }
 
-  /** Returns the leading coefficient along with its index. */
+  /** Leading coefficient along with its index. */
   get lead(): [Felt, number] {
     const i = this.coeffs.length - 1;
     return [this.coeffs[i], i];
   }
 
-  get coefficients(): bigint[] {
-    return this.coeffs.map(c => c.n);
-  }
-
+  /** Polynomial addition in field. */
   add(q: Polynomial): Polynomial {
     const ans = Array.from({length: 1 + Math.max(this.degree, q.degree)}, (_, i) => {
       const l = this.coeffs.at(i) || this.zero;
@@ -45,6 +42,7 @@ export class Polynomial {
     return new Polynomial(ans, this.order, this.symbol);
   }
 
+  /** Polynomial subtraction in field. */
   sub(q: Polynomial): Polynomial {
     const ans = Array.from({length: 1 + Math.max(this.degree, q.degree)}, (_, i) => {
       const l = this.coeffs.at(i) || this.zero;
@@ -55,17 +53,19 @@ export class Polynomial {
     return new Polynomial(ans, this.order, this.symbol);
   }
 
+  /** Polynomial multiplication in field. */
   mul(q: Polynomial): Polynomial {
     const ans = Array.from({length: this.degree + q.degree + 1}, () => this.zero);
-    this.coeffs.forEach((a, i) => {
-      q.coeffs.forEach((b, j) => {
-        ans[i + j] = ans[i + j].add(a.mul(b));
+    this.coeffs.forEach((l, i) => {
+      q.coeffs.forEach((r, j) => {
+        ans[i + j] = ans[i + j].add(l.mul(r));
       });
     });
 
     return new Polynomial(ans, this.order, this.symbol);
   }
 
+  /** Polynomial long-division in field. */
   div(q: Polynomial): Polynomial {
     const P = this.coeffs.slice();
     const Q = q.coeffs.slice();
@@ -90,6 +90,7 @@ export class Polynomial {
     return new Polynomial(R, this.order, this.symbol);
   }
 
+  /** Multiply all coefficients with a scalar. */
   scale(s: Number | Felt): Polynomial {
     return new Polynomial(
       this.coeffs.map(c => c.mul(s)),
@@ -98,12 +99,34 @@ export class Polynomial {
     );
   }
 
-  // horners method
+  /** Equality check with a polynomial or an array of coefficients. */
+  eq(q: Polynomial | Number[]): boolean {
+    // TODO: allow checks with padded zeros and stuff
+    const coeffs = q instanceof Polynomial ? q.coeffs : q;
+
+    if (this.coeffs.length !== coeffs.length) {
+      return false;
+    }
+
+    for (let i = 0; i < this.coeffs.length; ++i) {
+      if (!this.coeffs[i].eq(coeffs[i])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /** Evaluate polynomial at `x` via [Horner's rule](https://zcash.github.io/halo2/background/polynomials.html#aside-horners-rule). */
   eval(x: Number | Felt): Felt {
     return this.coeffs
       .slice(1)
       .reduceRight((ans, cur) => ans.add(cur.mul(x)), this.zero)
       .add(this.coeffs[0]);
+  }
+
+  valueOf(): bigint[] {
+    return this.coeffs.map(c => c.n);
   }
 
   toString(): string {
