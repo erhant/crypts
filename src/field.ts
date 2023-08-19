@@ -20,6 +20,14 @@ export function Field(order: Number) {
       super(n, order);
     }
 
+    ['Symbol']() {}
+    /** Iterator for the elements in the group. */
+    static *[Symbol.iterator]() {
+      for (let n = 0n; n < BigInt(order); n++) {
+        yield new Felt(n, order);
+      }
+    }
+
     /** The multiplicative identity. */
     static get one(): Felt {
       return new this(1);
@@ -49,6 +57,31 @@ export function Field(order: Number) {
         constructor(coeffs: (Number | Felt)[]) {
           super(coeffs, order, symbol);
         }
+
+        /** Compute the Lagrange interpolated polynomial for the given pairs of points. */
+        static lagrange(points: [Number, Number][]): Polynomial {
+          const ps = points.map(p => [new Felt(p[0], order), new Felt(p[1], order)]);
+          const n = points.length;
+
+          // compute basis
+          const basis = Array.from({length: n}, () => new Polynomial([1], order, symbol));
+          for (let i = 0; i < n; ++i) {
+            for (let j = 0; j < n; ++j) {
+              if (i !== j) {
+                basis[i] = basis[i].mul(new Polynomial([ps[j][0].neg(), 1], order, symbol));
+                basis[i] = basis[i].div(new Polynomial([ps[i][0].sub(ps[j][0])], order, symbol));
+              }
+            }
+          }
+
+          // interpolate
+          let p = new Polynomial([0], order, symbol);
+          for (let i = 0; i < n; ++i) {
+            p = p.add(basis[i].scale(ps[i][1]));
+          }
+
+          return p;
+        }
       };
     }
 
@@ -64,6 +97,10 @@ export function Field(order: Number) {
       return class extends EllipticCurve {
         constructor(x: Number, y: Number) {
           super(x, y, [a, b], order);
+        }
+
+        static toString(): string {
+          return `${'y'.green}^2 = ${'x'.blue}^3 + ${a}*${'x'.blue} + ${b}`;
         }
       };
     }

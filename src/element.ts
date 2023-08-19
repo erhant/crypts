@@ -83,6 +83,26 @@ export class Felt {
     return new Felt(lm, this.order);
   }
 
+  /** Computes the Legendre Symbol, assuming odd prime order.
+   *
+   * - `0`: number is zero
+   * - `1`: number is quadratic residue
+   * - `-1`: number is quadratic non-residue
+   */
+  legendre(): 0n | 1n | -1n {
+    const l = this.exp((this.order - 1n) / 2n);
+    if (l.eq(this.order - 1n)) {
+      return -1n;
+    } else {
+      return l.n as 0n | 1n;
+    }
+  }
+
+  /** Is number a quadratic residue in field? */
+  isQuadraticResidue(): boolean {
+    return this.legendre() !== -1n;
+  }
+
   /** String representation of the field element, with optional radix. */
   toString(radix?: number): string {
     return this.n.toString(radix);

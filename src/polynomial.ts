@@ -5,33 +5,38 @@ import 'colors';
 // https://zcash.github.io/halo2/background/polynomials.html
 
 export class Polynomial {
-  // c_i = coeff[i] stands for c_i * x^i
+  /** Coefficients in reverse order, i.e. `coeff[i]` stands for the coefficient of `x^i`  */
   readonly coeffs: Felt[];
   readonly order: bigint;
   readonly symbol: string;
   readonly zero: Felt;
 
+  /**
+   * Create a polynomial with the provided coefficients within a finite field of given order.
+   * If no coefficients are given, it is treated like a zero polynomial.
+   *
+   * Right-padded zeros are ignored.
+   */
   constructor(coeffs: (Number | Felt)[], order: Number, symbol: string) {
-    if (coeffs.length === 0) {
-      throw new Error('No coefficients given.');
-    }
-
     this.order = BigInt(order);
-
     this.symbol = symbol;
     this.coeffs = coeffs.map(n => (n instanceof Felt ? n : new Felt(n, this.order)));
     this.zero = new Felt(0, this.order);
+
+    // remove padded zeros
+    while (this.coeffs.at(-1)?.eq(0)) {
+      this.coeffs.pop();
+    }
   }
 
-  /** Leading coefficient along with its index. */
-  get lead(): [Felt, number] {
-    const d = this.degree;
-    return [this.coeffs[d], d];
+  /** Leading coefficient. */
+  get lead(): Felt {
+    return this.coeffs.length > 0 ? this.coeffs[this.degree] : this.zero;
   }
 
   /** Degree of the polynomial, corresponding to the largest power of a term. */
   get degree(): number {
-    return this.coeffs.length - 1;
+    return Math.max(this.coeffs.length - 1, 0);
   }
 
   /** Polynomial addition in field. */
@@ -68,33 +73,44 @@ export class Polynomial {
     return new Polynomial(ans, this.order, this.symbol);
   }
 
-  /** Polynomial long-division in field. */
+  /** Quotient after polynomial long-division in field. */
   div(q: Polynomial): Polynomial {
-    const P = this.coeffs.slice();
-    const Q = q.coeffs.slice();
+    return this.quotrem(q)[0];
+  }
+
+  /** Remainder after polynomial long-division in field. */
+  rem(q: Polynomial): Polynomial {
+    return this.quotrem(q)[1];
+  }
+
+  /** Polynomial long-division in field, returns the quotient and remainder. */
+  quotrem(q: Polynomial): [Polynomial, Polynomial] {
     const deg_q = q.degree;
     let deg_p = this.degree;
 
-    if (deg_q > deg_p) {
+    let diff = deg_p - deg_q;
+    if (diff < 0) {
       throw new Error('Cant divide with a polynomial of higher degree.');
     }
 
-    let diff = deg_p - deg_q;
-    const R = Array.from({length: diff + 1}, () => this.zero);
+    const quot = Array.from({length: diff + 1}, () => this.zero);
+    const rem = this.coeffs.slice();
 
-    for (let p = R.length - 1; diff >= 0; diff--, deg_p--, p--) {
-      const quot = P[deg_p].div(Q[deg_q]);
-      R[p] = quot;
-      for (let i = deg_q; i >= 0; i--) {
-        P[diff + i] = P[diff + i].sub(Q[i].mul(quot));
-      }
+    for (let p = quot.length - 1; diff >= 0; diff--, deg_p--, p--) {
+      quot[p] = rem[deg_p].div(q.lead);
+
+      // subtract the newly obtained (quotient * q) from our polynomial
+      // effectively getting rid of current degree
+      q.coeffs.forEach((q_i, i) => {
+        rem[diff + i] = rem[diff + i].sub(q_i.mul(quot[p]));
+      });
     }
 
-    return new Polynomial(R, this.order, this.symbol);
+    return [new Polynomial(quot, this.order, this.symbol), new Polynomial(rem, this.order, this.symbol)];
   }
 
   /** Multiply all coefficients with a scalar. */
-  scale(s: Number): Polynomial {
+  scale(s: Number | Felt): Polynomial {
     return new Polynomial(
       this.coeffs.map(c => c.mul(s)),
       this.order,
@@ -122,10 +138,12 @@ export class Polynomial {
 
   /** Evaluate polynomial at `x` via [Horner's rule](https://zcash.github.io/halo2/background/polynomials.html#aside-horners-rule). */
   eval(x: Number | Felt): Felt {
-    return this.coeffs
-      .slice(1)
-      .reduceRight((ans, cur) => ans.add(cur.mul(x)), this.zero)
-      .add(this.coeffs[0]);
+    return this.coeffs.length > 0
+      ? this.coeffs
+          .slice(1)
+          .reduceRight((ans, cur) => ans.add(cur.mul(x)), this.zero)
+          .add(this.coeffs[0])
+      : this.zero;
   }
 
   toString(): string {
