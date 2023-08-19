@@ -9,7 +9,6 @@ export class Polynomial {
   readonly coeffs: Felt[];
   readonly order: bigint;
   readonly symbol: string;
-  readonly degree: number;
   readonly zero: Felt;
 
   constructor(coeffs: (Number | Felt)[], order: Number, symbol: string) {
@@ -21,14 +20,18 @@ export class Polynomial {
 
     this.symbol = symbol;
     this.coeffs = coeffs.map(n => (n instanceof Felt ? n : new Felt(n, this.order)));
-    this.degree = this.coeffs.length - 1;
     this.zero = new Felt(0, this.order);
   }
 
   /** Leading coefficient along with its index. */
   get lead(): [Felt, number] {
-    const i = this.coeffs.length - 1;
-    return [this.coeffs[i], i];
+    const d = this.degree;
+    return [this.coeffs[d], d];
+  }
+
+  /** Degree of the polynomial, corresponding to the largest power of a term. */
+  get degree(): number {
+    return this.coeffs.length - 1;
   }
 
   /** Polynomial addition in field. */
@@ -91,7 +94,7 @@ export class Polynomial {
   }
 
   /** Multiply all coefficients with a scalar. */
-  scale(s: Number | Felt): Polynomial {
+  scale(s: Number): Polynomial {
     return new Polynomial(
       this.coeffs.map(c => c.mul(s)),
       this.order,
@@ -123,10 +126,6 @@ export class Polynomial {
       .slice(1)
       .reduceRight((ans, cur) => ans.add(cur.mul(x)), this.zero)
       .add(this.coeffs[0]);
-  }
-
-  valueOf(): bigint[] {
-    return this.coeffs.map(c => c.n);
   }
 
   toString(): string {
