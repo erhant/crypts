@@ -1,17 +1,12 @@
 // import {TinyJubJub} from './curves/examples';
 import {Field} from '../field';
 
-const F13 = Field(13);
-const F13x = F13.Polynomial();
+const F3 = new Field(3);
+const F3_2 = F3.Extension([1, 0, 1]);
 
-const p = F13x.lagrange([
-  [0, 4],
-  [-2, 1],
-  [2, 3],
-]);
-
-console.log(p);
-console.log(`${p}`);
+for (const p of F3_2) {
+  console.log('' + p);
+}
 
 // const p = new F13x([4, 2]);
 // const q = new F13x([2]);

@@ -1,20 +1,22 @@
 import {Number} from './common';
+import {Field} from './field';
 
+/** An element in the finite field. */
 export class Felt {
-  readonly order: bigint;
+  readonly field: Field;
   readonly n: bigint;
 
-  constructor(n: Number, p: Number) {
-    this.order = BigInt(p);
-    this.n = BigInt(n) % this.order;
+  constructor(field: Field, number: Number) {
+    this.field = field;
+    this.n = BigInt(number) % BigInt(field.order);
     if (this.n < 0n) {
-      this.n += this.order;
+      this.n += BigInt(field.order);
     }
   }
 
   /** Convert to an element in the field. */
   into(n: Number | Felt): Felt {
-    return new Felt(n instanceof Felt ? n.n : n, this.order);
+    return new Felt(this.field, n instanceof Felt ? n.n : n);
   }
 
   /** Equality check with a field elements or number. */
@@ -24,37 +26,37 @@ export class Felt {
 
   /** Addition in the field. */
   add(n: Number | Felt): Felt {
-    return new Felt(this.n + this.into(n).n, this.order);
+    return new Felt(this.field, this.n + this.into(n).n);
   }
 
   /** Addition with additive inverse in the field. */
   sub(n: Number | Felt): Felt {
-    return new Felt(this.n + this.into(n).neg().n, this.order);
+    return new Felt(this.field, this.n + this.into(n).neg().n);
   }
 
   /** Multiplication in the field. */
   mul(n: Number | Felt): Felt {
-    return new Felt(this.n * this.into(n).n, this.order);
+    return new Felt(this.field, this.n * this.into(n).n);
   }
 
   /** Multiplication with multiplicative inverse in the field. */
   div(n: Number | Felt): Felt {
-    return new Felt(this.n * this.into(n).inv().n, this.order);
+    return new Felt(this.field, this.n * this.into(n).inv().n);
   }
 
+  // TODO ?
   exp(n: Number): Felt {
-    // TODO ?
-    return new Felt(this.n ** BigInt(n), this.order);
-  }
-
-  /** Sign in the field, `true` for positive. */
-  sign(): boolean {
-    return this.n < this.order / 2n;
+    return new Felt(this.field, this.n ** BigInt(n));
   }
 
   /** Additive inverse in the field. */
   neg(): Felt {
-    return new Felt(this.order - this.n, this.order);
+    return new Felt(this.field, BigInt(this.field.order) - this.n);
+  }
+
+  /** Sign in the field, `true` for positive. */
+  sign(): boolean {
+    return this.n < BigInt(this.field.order) / 2n;
   }
 
   /** Multiplicative inverse in the field, using Extended Euclidean Algorithm. */
@@ -63,12 +65,12 @@ export class Felt {
 
     // 0 has no inverse, just return 0 (TODO: or error?)
     if (low === 0n) {
-      return new Felt(0, this.order);
+      return this.field.zero;
     }
 
     let lm = 1n;
     let hm = 0n;
-    let high = this.order;
+    let high = BigInt(this.field.order);
 
     while (low > 1n) {
       const r = high / low;
@@ -80,7 +82,7 @@ export class Felt {
       lm = nm;
       low = nw;
     }
-    return new Felt(lm, this.order);
+    return new Felt(this.field, lm);
   }
 
   /** Computes the Legendre Symbol, assuming odd prime order.
@@ -90,8 +92,11 @@ export class Felt {
    * - `-1`: number is quadratic non-residue
    */
   legendre(): 0n | 1n | -1n {
-    const l = this.exp((this.order - 1n) / 2n);
-    if (l.eq(this.order - 1n)) {
+    const last = BigInt(this.field.order - 1);
+
+    // l := n ^ (p-1)/2
+    const l = this.exp(last / 2n);
+    if (l.eq(last)) {
       return -1n;
     } else {
       return l.n as 0n | 1n;
