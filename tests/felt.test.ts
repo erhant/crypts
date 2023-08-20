@@ -1,8 +1,10 @@
-import {F} from './common';
+import {F13} from './common';
+
+const F = F13;
 
 describe('field element', () => {
-  const n = new F(2);
-  const m = new F(7);
+  const n = F.Felt(2);
+  const m = F.Felt(7);
 
   it('addition', () => {
     expect(n.add(m).eq(9)).toBeTruthy();
