@@ -1,12 +1,8 @@
 // import {TinyJubJub} from './curves/examples';
-import {Field} from './field';
+import {Field} from '../field';
 
 const F13 = Field(13);
 const F13x = F13.Polynomial();
-
-for (const n of F13) {
-  console.log(`${n.legendre()}`);
-}
 
 const p = F13x.lagrange([
   [0, 4],
@@ -14,6 +10,7 @@ const p = F13x.lagrange([
   [2, 3],
 ]);
 
+console.log(p);
 console.log(`${p}`);
 
 // const p = new F13x([4, 2]);

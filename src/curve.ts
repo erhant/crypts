@@ -21,7 +21,7 @@ export class EllipticCurve {
    * y^2 = x^3 + ax + b
    * ```
    */
-  constructor(x: Number, y: Number, params: [Number, Number], order: Number) {
+  constructor(point: [Number, Number], params: [Number, Number], order: Number) {
     /** Curve parameter `a`. */
     this.a = BigInt(params[0]);
     /** Curve parameter `b`. */
@@ -29,11 +29,13 @@ export class EllipticCurve {
     /** Order of the base field. */
     this.p = BigInt(order);
 
-    this.x = BigInt(x);
-    this.y = BigInt(y);
+    /** X coordinate of the point. */
+    this.x = BigInt(point[0]);
+    /** Y coordinate of the point. */
+    this.y = BigInt(point[1]);
 
-    if (!this.isOnCurve(x, y)) {
-      throw new Error(`(${x}, ${y}) not on this curve.`);
+    if (!this.isOnCurve(this.x, this.y)) {
+      throw new Error(`(${this.x}, ${this.y}) not on this curve.`);
     }
   }
 
@@ -47,6 +49,6 @@ export class EllipticCurve {
   }
 
   toString(): string {
-    return `(${this.x}, ${this.y}) ${'on'.gray} ${'y'.green}^2 = ${'x'.blue}^3 + ${this.a}*${'x'.blue} + ${this.b}`;
+    return `(${this.x}, ${this.y}) on y^2 = x^3 + ${this.a}*x + ${this.b}`;
   }
 }

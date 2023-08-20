@@ -9,7 +9,7 @@
   "keywords": [],
   "scripts": {
     "test": "jest",
-    "start": "ts-node ./src/index.ts",
+    "start": "ts-node ./src/bin/index.ts",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "tsc",
@@ -27,8 +27,5 @@
   },
   "engines": {
     "node": ">=10.4.0"
-  },
-  "dependencies": {
-    "colors": "^1.4.0"
   }
 }

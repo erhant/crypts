@@ -20,7 +20,6 @@ export function Field(order: Number) {
       super(n, order);
     }
 
-    ['Symbol']() {}
     /** Iterator for the elements in the group. */
     static *[Symbol.iterator]() {
       for (let n = 0n; n < BigInt(order); n++) {
@@ -95,12 +94,12 @@ export function Field(order: Number) {
      */
     static EllipticCurve(a: Number, b: Number) {
       return class extends EllipticCurve {
-        constructor(x: Number, y: Number) {
-          super(x, y, [a, b], order);
+        constructor(points: [Number, Number]) {
+          super(points, [a, b], order);
         }
 
         static toString(): string {
-          return `${'y'.green}^2 = ${'x'.blue}^3 + ${a}*${'x'.blue} + ${b}`;
+          return `y^2 = x^3 + ${a}*x + ${b}`;
         }
       };
     }

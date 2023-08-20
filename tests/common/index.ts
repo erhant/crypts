@@ -1,3 +1,4 @@
 import {Field} from '../../src/field';
 
-export const F13 = Field(13);
+const primeOrder = 13;
+export const F = Field(primeOrder);

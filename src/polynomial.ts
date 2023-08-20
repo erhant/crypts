@@ -1,6 +1,5 @@
 import {Number} from './common';
 import {Felt} from './element';
-import 'colors';
 
 // https://zcash.github.io/halo2/background/polynomials.html
 
@@ -120,7 +119,6 @@ export class Polynomial {
 
   /** Equality check with a polynomial or an array of coefficients. */
   eq(q: Polynomial | Number[]): boolean {
-    // TODO: allow checks with padded zeros and stuff
     const coeffs = q instanceof Polynomial ? q.coeffs : q;
 
     if (this.coeffs.length !== coeffs.length) {
@@ -138,12 +136,13 @@ export class Polynomial {
 
   /** Evaluate polynomial at `x` via [Horner's rule](https://zcash.github.io/halo2/background/polynomials.html#aside-horners-rule). */
   eval(x: Number | Felt): Felt {
-    return this.coeffs.length > 0
-      ? this.coeffs
-          .slice(1)
-          .reduceRight((ans, cur) => ans.add(cur.mul(x)), this.zero)
-          .add(this.coeffs[0])
-      : this.zero;
+    if (this.coeffs.length === 0) {
+      return this.zero;
+    } else if (this.coeffs.length === 1) {
+      return this.coeffs[0];
+    } else {
+      return this.coeffs.reduceRight((ans, cur) => cur.add(ans.mul(x)), this.zero);
+    }
   }
 
   toString(): string {
@@ -156,9 +155,9 @@ export class Polynomial {
         if (i === 0) {
           return `${a_i}`;
         } else if (i === 1) {
-          return `${a_i}*${this.symbol.blue}`;
+          return `${a_i}*${this.symbol}`;
         } else {
-          return `${a_i}*${this.symbol.blue}^${i}`;
+          return `${a_i}*${this.symbol}^${i}`;
         }
       })
       .filter(s => s !== '')

@@ -1,4 +1,4 @@
-import {F13 as F} from './common';
+import {F} from './common';
 
 describe('field element', () => {
   const n = new F(2);
@@ -27,7 +27,10 @@ describe('field element', () => {
   it('legendre symbol', () => {
     expect(n.legendre()).toEqual(-1n);
     expect(m.legendre()).toEqual(-1n);
+
     expect(F.zero.legendre()).toEqual(0n);
+
     expect(F.one.legendre()).toEqual(1n);
+    expect(F.one.isQuadraticResidue()).toBeTruthy();
   });
 });
