@@ -1,11 +1,11 @@
 // import {TinyJubJub} from './curves/examples';
 import {Field} from '../field';
 
-const F13 = new Field(13);
-// const F13x = F13.Polynomial;
+const F3 = new Field(3);
+const F3_2 = F3.Extension([1, 0, 1]);
 
-for (const n of F13) {
-  console.log('' + n);
+for (const p of F3_2) {
+  console.log('' + p);
 }
 
 // const p = new F13x([4, 2]);

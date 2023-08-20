@@ -8,9 +8,9 @@ export class Felt {
 
   constructor(field: Field, number: Number) {
     this.field = field;
-    this.n = BigInt(number) % field.order;
+    this.n = BigInt(number) % BigInt(field.order);
     if (this.n < 0n) {
-      this.n += field.order;
+      this.n += BigInt(field.order);
     }
   }
 
@@ -51,12 +51,12 @@ export class Felt {
 
   /** Additive inverse in the field. */
   neg(): Felt {
-    return new Felt(this.field, this.field.order - this.n);
+    return new Felt(this.field, BigInt(this.field.order) - this.n);
   }
 
   /** Sign in the field, `true` for positive. */
   sign(): boolean {
-    return this.n < this.field.order / 2n;
+    return this.n < BigInt(this.field.order) / 2n;
   }
 
   /** Multiplicative inverse in the field, using Extended Euclidean Algorithm. */
@@ -70,7 +70,7 @@ export class Felt {
 
     let lm = 1n;
     let hm = 0n;
-    let high = this.field.order;
+    let high = BigInt(this.field.order);
 
     while (low > 1n) {
       const r = high / low;
@@ -92,9 +92,11 @@ export class Felt {
    * - `-1`: number is quadratic non-residue
    */
   legendre(): 0n | 1n | -1n {
+    const last = BigInt(this.field.order - 1);
+
     // l := n ^ (p-1)/2
-    const l = this.exp((this.field.order - 1n) / 2n);
-    if (l.eq(this.field.order - 1n)) {
+    const l = this.exp(last / 2n);
+    if (l.eq(last)) {
       return -1n;
     } else {
       return l.n as 0n | 1n;

@@ -3,12 +3,13 @@ import {Number} from './common';
 import {Felt} from './felt';
 import {Polynomial} from './polynomial';
 import {AffineShortWeierstrassCurve} from './curves';
+import {Extension} from './extension';
 
 // https://github.com/microsoft/TypeScript/issues/30355
 
 /** A finite field. */
 export class Field {
-  readonly order: bigint;
+  readonly order: number;
 
   /** A finite field with the given order.
    *
@@ -21,8 +22,8 @@ export class Field {
    * }
    * ```
    */
-  constructor(order: Number) {
-    this.order = BigInt(order);
+  constructor(order: number) {
+    this.order = order;
     if (this.order < 2n) {
       throw new Error('Order must be larger than 1.');
     }
@@ -31,6 +32,11 @@ export class Field {
   /** A field element in modulo `order`. */
   Felt(n: Number | Felt): Felt {
     return new Felt(this, n instanceof Felt ? n.n : n);
+  }
+
+  /** A field extension with an irreducible polynomial with the given coefficients. */
+  Extension(coefficients: (Number | Felt)[]) {
+    return new Extension(this.Polynomial(coefficients));
   }
 
   /** A polynomial with coefficients defined over this field, and an optional symbol (defaults to `x`).
@@ -46,6 +52,7 @@ export class Field {
     return new Polynomial(this, coefficients);
   }
 
+  /** An elliptic curve with this base finite field. */
   AffineShortWeierstrassCurve(params: [a: Number, b: Number]) {
     return new AffineShortWeierstrassCurve(this, params);
   }
@@ -68,7 +75,7 @@ export class Field {
   }
 
   /** Characteristic of this field. */
-  get characteristic(): bigint {
+  get characteristic(): number {
     return this.order;
   }
 

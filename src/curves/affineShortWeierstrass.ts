@@ -35,12 +35,12 @@ export class AffineShortWeierstrassCurve {
   }
 
   /** Neutral element (point at infinity). */
-  get neutral(): AffineShortWeierstrassCurvePoint {
+  get inf(): AffineShortWeierstrassCurvePoint {
     return new AffineShortWeierstrassCurvePoint(this);
   }
 
   /** Is the curve non-singular? */
-  get isNonSingular(): boolean {
+  isNonSingular(): boolean {
     const [a, b] = [this.field.Felt(this.a), this.field.Felt(this.b)];
     const l = a.exp(3).mul(4); // 4a^3
     const r = b.exp(2).mul(27); // 27b^2
@@ -75,20 +75,25 @@ export class AffineShortWeierstrassCurvePoint {
       if (!curve.isOnCurve(point)) {
         throw new Error(`(${point[0]}, ${point[1]}) is not on this curve.`);
       }
-      this.x = this.curve.field.Felt(point[0]);
-      this.y = this.curve.field.Felt(point[1]);
+      this.x = this.field.Felt(point[0]);
+      this.y = this.field.Felt(point[1]);
       this.inf = false;
     } else {
-      this.x = this.curve.field.zero; // arbitrary
-      this.y = this.curve.field.zero; // arbitrary
+      this.x = this.field.zero; // arbitrary
+      this.y = this.field.zero; // arbitrary
       this.inf = true;
     }
+  }
+
+  /** Base field of the curve that this point belongs to. */
+  get field(): Field {
+    return this.curve.field;
   }
 
   /** Inverse of a point. */
   inv(): AffineShortWeierstrassCurvePoint {
     if (this.inf) {
-      return this.curve.neutral;
+      return this.curve.inf;
     } else {
       return this.curve.Point([this.x, this.y.neg()]);
     }
@@ -97,7 +102,7 @@ export class AffineShortWeierstrassCurvePoint {
   /** Adds the point to itself, also known as the Tangent rule. */
   double(): AffineShortWeierstrassCurvePoint {
     if (this.inf) {
-      return this.curve.neutral;
+      return this.curve.inf;
     } else {
       if (this.y.eq(0)) {
         throw new Error('y-coordinate cant be zero.');
@@ -116,7 +121,7 @@ export class AffineShortWeierstrassCurvePoint {
   add(q: AffineShortWeierstrassCurvePoint): AffineShortWeierstrassCurvePoint {
     if (q.inf) {
       // q is neutral element, return the point itself
-      return this.inf ? this.curve.neutral : this.curve.Point([this.x, this.y]);
+      return this.inf ? this.curve.inf : this.curve.Point([this.x, this.y]);
     } else {
       if (this.x.eq(q.x)) {
         throw new Error('x-coordinates cant be equal.');
@@ -128,7 +133,21 @@ export class AffineShortWeierstrassCurvePoint {
       const xx = t.exp(2).sub(this.x).sub(q.x); //     x' := t^2 - x_1 - x_2
       const yy = t.mul(this.x.sub(xx)).sub(this.y); // y' := t(x_1 - x_3) - y_1
 
-      return this;
+      return this.curve.Point([xx, yy]);
+    }
+  }
+
+  /** Equality check with a point. */
+  eq(q: AffineShortWeierstrassCurvePoint): boolean {
+    if (this.inf && q.inf) {
+      // both are inf
+      return true;
+    } else if (this.inf || q.inf) {
+      // one of them is inf
+      return false;
+    } else {
+      // coordinates must match
+      return this.x.eq(q.x) && this.y.eq(q.y);
     }
   }
 }

@@ -138,23 +138,42 @@ export class Polynomial {
 
   /** Returns a string representation of the polynomial with optional symbol in place of `x`. */
   toString(symbol = 'x'): string {
-    return this.coeffs
-      .map((a_i, i) => {
-        if (a_i.eq(0)) {
-          return '';
-        }
+    return this.coeffs.length === 0
+      ? '0'
+      : this.coeffs
+          .map((a_i, i) => {
+            if (a_i.eq(0)) {
+              return '';
+            }
 
-        if (i === 0) {
-          return `${a_i}`;
-        } else if (i === 1) {
-          return `${a_i}*${symbol}`;
-        } else {
-          return `${a_i}*${symbol}^${i}`;
-        }
-      })
-      .filter(s => s !== '')
-      .reverse()
-      .join(' + ');
+            if (i === 0) {
+              // constant term
+              return `${a_i}`;
+            } else if (i === 1) {
+              // coefficient of x
+              return `${a_i}*${symbol}`;
+            } else {
+              // coefficient of x^i for i > 1
+              return `${a_i}*${symbol}^${i}`;
+            }
+          })
+          .filter(s => s !== '')
+          .reverse()
+          .join(' + ');
+  }
+
+  /** Is this an irreducible polynomial?
+   *
+   * To see this, we evaluate the polynomial on all points to see if has a zero,
+   * so try not to use it with large fields.
+   */
+  isIrredicuble(): boolean {
+    for (const p of this.field) {
+      if (this.eval(p).eq(0)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /** Lagrange interpolation in a given field. */
