@@ -1,6 +1,5 @@
 import {Number} from '../common';
-import {Felt} from '../fields/field-element';
-import {Field} from '../fields';
+import {Field, FieldElement} from '../fields';
 
 // https://zcash.github.io/halo2/background/polynomials.html
 
@@ -8,7 +7,7 @@ import {Field} from '../fields';
 export class Polynomial {
   readonly field: Field;
   /** Coefficients in reverse order, i.e. `coeff[i]` stands for the coefficient of `x^i`  */
-  readonly coeffs: Felt[];
+  readonly coeffs: FieldElement[];
 
   /**
    * Create a polynomial with the provided coefficients within a finite field of given order.
@@ -16,9 +15,9 @@ export class Polynomial {
    *
    * Right-padded zeros are ignored.
    */
-  constructor(field: Field, coefficients: (Number | Felt)[]) {
+  constructor(field: Field, coefficients: (Number | FieldElement)[]) {
     this.field = field;
-    this.coeffs = coefficients.map(n => (n instanceof Felt ? n : new Felt(this.field, n)));
+    this.coeffs = coefficients.map(field.Element);
 
     // remove right-padded zeros
     while (this.coeffs.at(-1)?.eq(0)) {
@@ -27,7 +26,7 @@ export class Polynomial {
   }
 
   /** Leading coefficient. */
-  get lead(): Felt {
+  get lead(): FieldElement {
     return this.coeffs.at(this.degree) || this.field.zero;
   }
 
@@ -76,7 +75,7 @@ export class Polynomial {
   }
 
   /** Remainder after polynomial long-division in field. */
-  rem(q: Polynomial): Polynomial {
+  mod(q: Polynomial): Polynomial {
     return this.quorem(q)[1];
   }
 
@@ -107,7 +106,7 @@ export class Polynomial {
   }
 
   /** Multiply all coefficients with a scalar. */
-  scale(s: Number | Felt): Polynomial {
+  scale(s: Number | FieldElement): Polynomial {
     return new Polynomial(
       this.field,
       this.coeffs.map(c => c.mul(s))
@@ -132,7 +131,7 @@ export class Polynomial {
   }
 
   /** Evaluate polynomial at the given point via [Horner's rule](https://zcash.github.io/halo2/background/polynomials.html#aside-horners-rule). */
-  eval(p: Number | Felt): Felt {
+  eval(p: Number | FieldElement): FieldElement {
     return this.coeffs.reduceRight((ans, cur) => cur.add(ans.mul(p)), this.field.zero);
   }
 

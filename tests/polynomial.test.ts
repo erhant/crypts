@@ -36,10 +36,8 @@ describe('polynomials', () => {
   });
 
   it('remainder', () => {
-    expect(p.rem(q).eq([1, 9])).toBeTruthy();
+    expect(p.mod(q).eq([1, 9])).toBeTruthy();
   });
-
-  it('lagrange interpolation', () => {});
 });
 
 describe('lagrange interpolation', () => {

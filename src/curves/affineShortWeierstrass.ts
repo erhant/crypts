@@ -1,10 +1,5 @@
 import {Number} from '../common';
-import {Felt} from '../fields/field-element';
-import {Field} from '../fields';
-
-// https://zcash.github.io/halo2/background/curves.html
-
-// random point https://crypto.stackexchange.com/questions/68601/generating-a-random-point-on-an-elliptic-curve-over-a-finite-field
+import {Field, FieldElement} from '../fields';
 
 /** An elliptic curve with Short Weierstrass form over affine points. */
 export class AffineShortWeierstrassCurve {
@@ -30,7 +25,7 @@ export class AffineShortWeierstrassCurve {
   }
 
   /** A point on the elliptic curve. */
-  Point(point: [Number | Felt, Number | Felt]): AffineShortWeierstrassCurvePoint {
+  Point(point: [Number | FieldElement, Number | FieldElement]): AffineShortWeierstrassCurvePoint {
     return new AffineShortWeierstrassCurvePoint(this, point);
   }
 
@@ -41,15 +36,17 @@ export class AffineShortWeierstrassCurve {
 
   /** Is the curve non-singular? */
   isNonSingular(): boolean {
-    const [a, b] = [this.field.Felt(this.a), this.field.Felt(this.b)];
+    const a = this.field.Element(this.a);
+    const b = this.field.Element(this.b);
+
     const l = a.exp(3).mul(4); // 4a^3
     const r = b.exp(2).mul(27); // 27b^2
     return !l.add(r).eq(0); // 4a^3 + 27b^2 != 0
   }
 
   /** Returns `true` if given point `(x, y)` is on the curve, i.e. satisfies the curve equation. */
-  isOnCurve(point: [Number | Felt, Number | Felt]): boolean {
-    const [x, y] = [this.field.Felt(point[0]), this.field.Felt(point[1])];
+  isOnCurve(point: [Number | FieldElement, Number | FieldElement]): boolean {
+    const [x, y] = [this.field.Element(point[0]), this.field.Element(point[1])];
     const lhs = y.exp(2); // y^2
     const rhs = x.exp(3).add(x.mul(this.a)).add(this.b); // x^3 + ax + b
     return lhs.eq(rhs);
@@ -64,19 +61,19 @@ export class AffineShortWeierstrassCurve {
 export class AffineShortWeierstrassCurvePoint {
   readonly curve: AffineShortWeierstrassCurve;
   // coordinates
-  x: Felt;
-  y: Felt;
+  x: FieldElement;
+  y: FieldElement;
   // is point at infinity
   inf: boolean;
 
-  constructor(curve: AffineShortWeierstrassCurve, point?: [Number | Felt, Number | Felt]) {
+  constructor(curve: AffineShortWeierstrassCurve, point?: [Number | FieldElement, Number | FieldElement]) {
     this.curve = curve;
     if (point) {
       if (!curve.isOnCurve(point)) {
         throw new Error(`(${point[0]}, ${point[1]}) is not on this curve.`);
       }
-      this.x = this.field.Felt(point[0]);
-      this.y = this.field.Felt(point[1]);
+      this.x = this.field.Element(point[0]);
+      this.y = this.field.Element(point[1]);
       this.inf = false;
     } else {
       this.x = this.field.zero; // arbitrary
@@ -100,7 +97,7 @@ export class AffineShortWeierstrassCurvePoint {
   }
 
   /** Adds the point to itself, also known as the Tangent rule. */
-  double(): AffineShortWeierstrassCurvePoint {
+  private tangent(): AffineShortWeierstrassCurvePoint {
     if (this.inf) {
       return this.curve.inf;
     } else {
@@ -117,8 +114,8 @@ export class AffineShortWeierstrassCurvePoint {
     }
   }
 
-  /** Adds a point to itself, also known as the Chord rule. */
-  add(q: AffineShortWeierstrassCurvePoint): AffineShortWeierstrassCurvePoint {
+  /** Adds the point to another point, also known as the Chord rule. */
+  private chord(q: AffineShortWeierstrassCurvePoint): AffineShortWeierstrassCurvePoint {
     if (q.inf) {
       // q is neutral element, return the point itself
       return this.inf ? this.curve.inf : this.curve.Point([this.x, this.y]);
@@ -134,6 +131,15 @@ export class AffineShortWeierstrassCurvePoint {
       const yy = t.mul(this.x.sub(xx)).sub(this.y); // y' := t(x_1 - x_3) - y_1
 
       return this.curve.Point([xx, yy]);
+    }
+  }
+
+  /** Add two points on the curve. */
+  add(q: AffineShortWeierstrassCurvePoint): AffineShortWeierstrassCurvePoint {
+    if (this.eq(q)) {
+      return this.tangent();
+    } else {
+      return this.chord(q);
     }
   }
 

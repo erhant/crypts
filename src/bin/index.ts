@@ -1,11 +1,12 @@
 // import {TinyJubJub} from './curves/examples';
 import {Field} from '../fields';
 
-const F3 = new Field(3);
-const F3_2 = F3.Extension([1, 0, 1]);
+const ord = 13;
+const F = new Field(ord);
+console.log(F);
 
-for (const p of F3_2) {
-  console.log('' + p);
+for (const e of F) {
+  console.log('' + e.inv());
 }
 
 // const p = new F13x([4, 2]);

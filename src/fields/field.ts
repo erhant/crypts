@@ -1,15 +1,13 @@
 import {randomBytes} from 'crypto';
 import {Number} from '../common';
-import {Felt} from './field-element';
+import {extendedEuclideanAlgorithm} from '../utils';
 import {Polynomial} from '../polynomials';
-import {AffineShortWeierstrassCurve} from '../curves';
-import {FieldExtension} from './extension';
 
 // https://github.com/microsoft/TypeScript/issues/30355
 
 /** A finite field. */
 export class Field {
-  readonly order: number;
+  readonly order: bigint;
 
   /** A finite field with the given order.
    *
@@ -22,68 +20,110 @@ export class Field {
    * }
    * ```
    */
-  constructor(order: number) {
-    this.order = order;
+  constructor(order: Number) {
+    this.order = BigInt(order);
     if (this.order < 2n) {
       throw new Error('Order must be larger than 1.');
     }
   }
 
   /** A field element in modulo `order`. */
-  Felt(n: Number | Felt): Felt {
-    return new Felt(this, n instanceof Felt ? n.n : n);
+  Element(n: Number | FieldElement): FieldElement {
+    return new FieldElement(this, n instanceof FieldElement ? n.value : n);
   }
 
-  /** A field extension with an irreducible polynomial with the given coefficients. */
-  Extension(coefficients: (Number | Felt)[]) {
-    return new FieldExtension(this.Polynomial(coefficients));
-  }
-
-  /** A polynomial with coefficients defined over this field, and an optional symbol (defaults to `x`).
-   *
-   * ```ts
-   * const F13 = Field(13);
-   * const F13x = F13.Polynomial;
-   * const p = F13x([4, 0, 2]);
-   * console.log(`${p}`); // 2*x^2 + 4
-   * ```
-   */
-  Polynomial(coefficients: (Number | Felt)[]) {
+  /** A polynomial over the field. */
+  Polynomial(coefficients: (Number | FieldElement)[]) {
     return new Polynomial(this, coefficients);
-  }
-
-  /** An elliptic curve with this base finite field. */
-  AffineShortWeierstrassCurve(params: [a: Number, b: Number]) {
-    return new AffineShortWeierstrassCurve(this, params);
   }
 
   /** Get elements in the field. */
   *[Symbol.iterator]() {
     for (let n = 0n; n < this.order; n++) {
-      yield this.Felt(n);
+      yield this.Element(n);
     }
   }
 
   /** The multiplicative identity. */
-  get one(): Felt {
-    return this.Felt(1);
+  get one(): FieldElement {
+    return this.Element(1);
   }
 
   /** The additive identity. */
-  get zero(): Felt {
-    return this.Felt(0);
+  get zero(): FieldElement {
+    return this.Element(0);
   }
 
   /**
    * Characteristic of this field, that is the smallest number of times one must add the multiplicative
    * identity to itself to get the additive identity.
    */
-  get characteristic(): number {
+  get characteristic(): bigint {
     return this.order;
   }
 
   /** Returns a random field element. */
-  random(): Felt {
-    return this.Felt(BigInt('0x' + randomBytes(this.order.toString(8).length).toString('hex')));
+  random(): FieldElement {
+    return this.Element(BigInt('0x' + randomBytes(this.order.toString(8).length).toString('hex')));
+  }
+}
+
+/** An element in the finite field. */
+export class FieldElement {
+  readonly field: Field;
+  readonly value: bigint;
+
+  constructor(field: Field, number: Number) {
+    this.field = field;
+    this.value = BigInt(number) % BigInt(field.order);
+    if (this.value < 0n) {
+      this.value += BigInt(field.order);
+    }
+  }
+
+  /** Equality check with a field elements or number. */
+  eq(n: Number | FieldElement): boolean {
+    return this.value === this.field.Element(n).value;
+  }
+
+  /** Addition in the field. */
+  add(n: Number | FieldElement): FieldElement {
+    return this.field.Element(this.value + this.field.Element(n).value);
+  }
+
+  /** Addition with additive inverse in the field. */
+  sub(n: Number | FieldElement): FieldElement {
+    return this.field.Element(this.value + this.field.Element(n).neg().value);
+  }
+
+  /** Multiplication in the field. */
+  mul(n: Number | FieldElement): FieldElement {
+    return this.field.Element(this.value * this.field.Element(n).value);
+  }
+
+  /** Multiplication with multiplicative inverse in the field. */
+  div(n: Number | FieldElement): FieldElement {
+    return this.field.Element(this.value * this.field.Element(n).inv().value);
+  }
+
+  /** Exponentiation in the field. */
+  exp(n: Number): FieldElement {
+    return this.field.Element(this.value ** BigInt(n));
+  }
+
+  /** Additive inverse in the field. */
+  neg(): FieldElement {
+    return this.field.Element(BigInt(this.field.order) - this.value);
+  }
+
+  /** Multiplicative inverse in the field, using Extended Euclidean Algorithm. */
+  inv(): FieldElement {
+    const xgcd = extendedEuclideanAlgorithm(this.field.order, this.value);
+    return this.field.Element(xgcd[2]);
+  }
+
+  /** String representation of the field element, with optional radix. */
+  toString(radix?: number): string {
+    return this.value.toString(radix);
   }
 }

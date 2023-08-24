@@ -4,6 +4,10 @@ if __name__ == "__main__":
   order = 13
   F = GF(order)
 
+  for elem in F:
+    if elem != 0:
+      print("{} --> {}".format(elem, 1/elem))
+
   n, m = F(24), F(32)
   tests = {
     "n": n,

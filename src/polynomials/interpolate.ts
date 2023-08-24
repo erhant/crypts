@@ -4,7 +4,7 @@ import {Polynomial} from './polynomial';
 
 /** Lagrange interpolation in a given field. */
 export function interpolate(field: Field, points: [Number, Number][]): Polynomial {
-  const ps = points.map(p => [field.Felt(p[0]), field.Felt(p[1])]);
+  const ps = points.map(p => [field.Element(p[0]), field.Element(p[1])]);
   const n = points.length;
 
   // compute basis
