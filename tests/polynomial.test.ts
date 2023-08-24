@@ -1,4 +1,4 @@
-import {Polynomial} from '../src/polynomial';
+import {interpolate} from '../src/polynomials';
 import {F13} from './common';
 
 const F = F13;
@@ -48,7 +48,7 @@ describe('lagrange interpolation', () => {
     [-2, 1],
     [2, 3],
   ];
-  const l = F.lagrange(points);
+  const l = interpolate(F, points);
 
   it('should interpolate correctly', () => {
     expect(l.eq([4, 7, 6])).toBeTruthy();

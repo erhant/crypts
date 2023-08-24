@@ -1,6 +1,6 @@
 import {Number} from '../common';
-import {Felt} from '../felt';
-import {Field} from '../field';
+import {Felt} from '../fields/field-element';
+import {Field} from '../fields';
 
 // https://zcash.github.io/halo2/background/curves.html
 

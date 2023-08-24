@@ -1,5 +1,5 @@
 // import {TinyJubJub} from './curves/examples';
-import {Field} from '../field';
+import {Field} from '../fields';
 
 const F3 = new Field(3);
 const F3_2 = F3.Extension([1, 0, 1]);

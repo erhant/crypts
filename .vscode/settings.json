@@ -1,7 +1,10 @@
 {
   // https://raw.githubusercontent.com/PKief/vscode-material-icon-theme/main/images/folderIcons.png
   "material-icon-theme.folders.associations": {
-    "curves": "Animation"
+    "curves": "Animation",
+    "fields": "Import",
+    "polynomials": "Include",
+    "Sage": "Functions"
   },
   // https://raw.githubusercontent.com/PKief/vscode-material-icon-theme/main/images/fileIcons.png
   "material-icon-theme.files.associations": {

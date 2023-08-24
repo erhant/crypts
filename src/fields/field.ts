@@ -1,9 +1,9 @@
 import {randomBytes} from 'crypto';
-import {Number} from './common';
-import {Felt} from './felt';
-import {Polynomial} from './polynomial';
-import {AffineShortWeierstrassCurve} from './curves';
-import {Extension} from './extension';
+import {Number} from '../common';
+import {Felt} from './field-element';
+import {Polynomial} from '../polynomials';
+import {AffineShortWeierstrassCurve} from '../curves';
+import {FieldExtension} from './extension';
 
 // https://github.com/microsoft/TypeScript/issues/30355
 
@@ -36,7 +36,7 @@ export class Field {
 
   /** A field extension with an irreducible polynomial with the given coefficients. */
   Extension(coefficients: (Number | Felt)[]) {
-    return new Extension(this.Polynomial(coefficients));
+    return new FieldExtension(this.Polynomial(coefficients));
   }
 
   /** A polynomial with coefficients defined over this field, and an optional symbol (defaults to `x`).
@@ -74,7 +74,10 @@ export class Field {
     return this.Felt(0);
   }
 
-  /** Characteristic of this field. */
+  /**
+   * Characteristic of this field, that is the smallest number of times one must add the multiplicative
+   * identity to itself to get the additive identity.
+   */
   get characteristic(): number {
     return this.order;
   }
@@ -82,10 +85,5 @@ export class Field {
   /** Returns a random field element. */
   random(): Felt {
     return this.Felt(BigInt('0x' + randomBytes(this.order.toString(8).length).toString('hex')));
-  }
-
-  /** Lagrange interpolation in this field. */
-  lagrange(points: [Number, Number][]): Polynomial {
-    return Polynomial.lagrange(this, points);
   }
 }

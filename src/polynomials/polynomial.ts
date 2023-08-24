@@ -1,10 +1,10 @@
-import {Number} from './common';
-import {Felt} from './felt';
-import {Field} from './field';
+import {Number} from '../common';
+import {Felt} from '../fields/field-element';
+import {Field} from '../fields';
 
 // https://zcash.github.io/halo2/background/polynomials.html
 
-/** A polynomial. */
+/** A polynomial over a finite field, with coefficients as elements of that field. */
 export class Polynomial {
   readonly field: Field;
   /** Coefficients in reverse order, i.e. `coeff[i]` stands for the coefficient of `x^i`  */
@@ -72,16 +72,16 @@ export class Polynomial {
 
   /** Quotient after polynomial long-division in field. */
   div(q: Polynomial): Polynomial {
-    return this.quotrem(q)[0];
+    return this.quorem(q)[0];
   }
 
   /** Remainder after polynomial long-division in field. */
   rem(q: Polynomial): Polynomial {
-    return this.quotrem(q)[1];
+    return this.quorem(q)[1];
   }
 
   /** Polynomial long-division in field, returns the quotient and remainder. */
-  quotrem(q: Polynomial): [quotient: Polynomial, remainder: Polynomial] {
+  protected quorem(q: Polynomial): [quotient: Polynomial, remainder: Polynomial] {
     const deg_q = q.degree;
     let deg_p = this.degree;
 
@@ -174,30 +174,5 @@ export class Polynomial {
       }
     }
     return true;
-  }
-
-  /** Lagrange interpolation in a given field. */
-  static lagrange(field: Field, points: [Number, Number][]): Polynomial {
-    const ps = points.map(p => [field.Felt(p[0]), field.Felt(p[1])]);
-    const n = points.length;
-
-    // compute basis
-    const basis = Array.from({length: n}, () => field.Polynomial([1]));
-    for (let i = 0; i < n; ++i) {
-      for (let j = 0; j < n; ++j) {
-        if (i !== j) {
-          basis[i] = basis[i].mul(field.Polynomial([ps[j][0].neg(), 1]));
-          basis[i] = basis[i].div(field.Polynomial([ps[i][0].sub(ps[j][0])]));
-        }
-      }
-    }
-
-    // interpolate
-    let p = field.Polynomial([0]);
-    for (let i = 0; i < n; ++i) {
-      p = p.add(basis[i].scale(ps[i][1]));
-    }
-
-    return p;
   }
 }

@@ -1,5 +1,5 @@
-import {Number} from './common';
-import {Field} from './field';
+import {Number} from '../common';
+import {Field, legendreSymbol} from '.';
 
 /** An element in the finite field. */
 export class Felt {
@@ -44,7 +44,7 @@ export class Felt {
     return new Felt(this.field, this.n * this.into(n).inv().n);
   }
 
-  // TODO ?
+  /** Exponentiation in the field. */
   exp(n: Number): Felt {
     return new Felt(this.field, this.n ** BigInt(n));
   }
@@ -85,27 +85,9 @@ export class Felt {
     return new Felt(this.field, lm);
   }
 
-  /** Computes the Legendre Symbol, assuming odd prime order.
-   *
-   * - `0`: number is zero
-   * - `1`: number is quadratic residue
-   * - `-1`: number is quadratic non-residue
-   */
-  legendre(): 0n | 1n | -1n {
-    const last = BigInt(this.field.order - 1);
-
-    // l := n ^ (p-1)/2
-    const l = this.exp(last / 2n);
-    if (l.eq(last)) {
-      return -1n;
-    } else {
-      return l.n as 0n | 1n;
-    }
-  }
-
   /** Is number a quadratic residue in field? */
   isQuadraticResidue(): boolean {
-    return this.legendre() !== -1n;
+    return legendreSymbol(this) !== -1n;
   }
 
   /** String representation of the field element, with optional radix. */

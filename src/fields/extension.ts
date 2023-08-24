@@ -1,20 +1,19 @@
-import {Number} from './common';
-import {Field} from './field';
-import {Polynomial} from './polynomial';
+import {Field} from '.';
+import {Polynomial} from '../polynomials';
 
 /** An extension of the finite field, defined by an irreducible polynomial from the field.
  *
  * The elements of this extension field is the set of all polynomials modulo the irreducible polynomial,
  * similar to an integer ring modulo some prime number.
  */
-export class Extension {
-  readonly polynomial: Polynomial;
+export class FieldExtension {
+  readonly mod: Polynomial;
 
-  /** Constructs an extension of the field with an irreducible polynomial. The
-   * extended field is that of the polynomial.
+  /** Constructs an extension of the field with an irreducible polynomial.
+   * The extended field is that of the polynomial.
    */
   constructor(polynomial: Polynomial) {
-    this.polynomial = polynomial;
+    this.mod = polynomial;
   }
 
   /** Get elements in the field. */
@@ -27,11 +26,11 @@ export class Extension {
 
   /** Underlying field of this field extension. */
   get field(): Field {
-    return this.polynomial.field;
+    return this.mod.field;
   }
 
   /** Extension degree. */
   get degree(): number {
-    return this.polynomial.degree;
+    return this.mod.degree;
   }
 }
