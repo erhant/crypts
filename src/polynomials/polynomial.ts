@@ -57,6 +57,13 @@ export class Polynomial {
     return new Polynomial(this.field, ans);
   }
 
+  neg(): Polynomial {
+    return new Polynomial(
+      this.field,
+      this.coeffs.map(c => c.neg())
+    );
+  }
+
   /** Polynomial multiplication in field. */
   mul(q: Polynomial): Polynomial {
     const ans = Array.from({length: this.degree + q.degree + 1}, () => this.field.zero);

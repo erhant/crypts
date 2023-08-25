@@ -6,7 +6,7 @@
  * - `1`: number is quadratic residue
  * - `-1`: number is quadratic non-residue
  */
-export function legendreSymbol(n: bigint, p: bigint): 0n | 1n | -1n {
+export function legendreSymbol(n: bigint, p: bigint): -1n | 0n | 1n {
   const last = p - 1n;
 
   // l := n ^ (p-1)/2

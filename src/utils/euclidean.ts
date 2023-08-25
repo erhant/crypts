@@ -10,7 +10,8 @@ import {Polynomial} from '../polynomials';
  */
 export function extendedEuclideanAlgorithm(a: bigint, b: bigint): [bigint, bigint, bigint] {
   if (a < b) {
-    throw new Error('Need a >= b');
+    const res = extendedEuclideanAlgorithm(b, a);
+    return [res[0], res[2], res[1]];
   }
 
   let r_prev = a;
@@ -51,9 +52,10 @@ export function polynomialExtendedEuclideanAlgorithm(
   a: Polynomial,
   b: Polynomial
 ): [Polynomial, Polynomial, Polynomial] {
-  // if (a < b) {
-  //   throw new Error('Need a >= b');
-  // }
+  if (a.degree < b.degree) {
+    const res = polynomialExtendedEuclideanAlgorithm(b, a);
+    return [res[0], res[2], res[1]];
+  }
 
   let r_prev = a;
   let r_cur = b;

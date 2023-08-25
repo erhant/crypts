@@ -106,6 +106,11 @@ export class FieldElement {
     return this.mul(this.field.Element(n).inv());
   }
 
+  /** Exponentiation in the field. */
+  exp(n: FieldElementInput): FieldElement {
+    return this.field.Element(this.value ** this.field.Element(n).value);
+  }
+
   /** Additive inverse in the field. */
   neg(): FieldElement {
     return this.field.Element(BigInt(this.field.order) - this.value);
@@ -115,12 +120,6 @@ export class FieldElement {
   inv(): FieldElement {
     const xgcd = extendedEuclideanAlgorithm(this.field.order, this.value);
     return this.field.Element(xgcd[2]);
-  }
-
-  /** Exponentiation in the field. */
-  exp(n: Number): FieldElement {
-    // TODO: use cyclic group exponentiation
-    return this.field.Element(this.value ** BigInt(n));
   }
 
   /** String representation of the field element, with optional radix. */

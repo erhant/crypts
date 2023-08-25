@@ -1,24 +1,28 @@
-from sage.all import GF, legendre_symbol
+from sage.all import GF, legendre_symbol, xgcd
 
 if __name__ == "__main__":
   order = 13
-  F = GF(order)
+  F = GF(order) 
 
-  for elem in F:
-    if elem != 0:
-      print("{} --> {}".format(elem, 1/elem))
+  tests = []
+  for (n, m, o) in [(24, 32, 23), (9, 8, 13), (2, 1, 5), (6, 12, 17)]:
+    F = GF(o) 
+    n, m = F(n), F(m)
 
-  n, m = F(24), F(32)
-  tests = {
-    "n": n,
-    "m": m,
-    "add": n + m,
-    "sub": n - m,
-    "mul": n * m,
-    "exp": n ^ m,
-    "neg": -n,
-    "inv": 1/n,
-    "legendre": legendre_symbol(n, order)
-  }
+    tests.append({
+      "n": n,
+      "m": m,
+      "o": o,
+      "add": n + m,
+      "sub": n - m,
+      "mul": n * m,
+      "div": n / m,
+      "exp": n ^ m,
+      "neg": -n,
+      "inv": 1/n,
+      "legendre": legendre_symbol(n, order),
+      "xgcd": list(xgcd(n, m))
+    })
+
   print(tests)
 

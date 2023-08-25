@@ -1,6 +1,7 @@
 import {FieldExtension} from '../src/fields';
 import {F3 as F} from './common';
 
+// TODO BUGGY
 describe('field extension', () => {
   const Fxt = new FieldExtension(F.Polynomial([1, 0, 1]));
   const p = Fxt.Element([2, 2]);
