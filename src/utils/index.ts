@@ -1,2 +1,2 @@
-export {extendedEuclideanAlgorithm} from './euclidean';
+export {extendedEuclideanAlgorithm, polynomialExtendedEuclideanAlgorithm} from './euclidean';
 export {legendreSymbol} from './legendre';

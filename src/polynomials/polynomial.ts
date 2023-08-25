@@ -17,7 +17,7 @@ export class Polynomial {
    */
   constructor(field: Field, coefficients: (Number | FieldElement)[]) {
     this.field = field;
-    this.coeffs = coefficients.map(field.Element);
+    this.coeffs = coefficients.map(c => field.Element(c));
 
     // remove right-padded zeros
     while (this.coeffs.at(-1)?.eq(0)) {
@@ -80,7 +80,7 @@ export class Polynomial {
   }
 
   /** Polynomial long-division in field, returns the quotient and remainder. */
-  protected quorem(q: Polynomial): [quotient: Polynomial, remainder: Polynomial] {
+  quorem(q: Polynomial): [quotient: Polynomial, remainder: Polynomial] {
     const deg_q = q.degree;
     let deg_p = this.degree;
 
@@ -150,10 +150,18 @@ export class Polynomial {
               return `${a_i}`;
             } else if (i === 1) {
               // coefficient of x
-              return `${a_i}*${symbol}`;
+              if (a_i.eq(1)) {
+                return `${symbol}`;
+              } else {
+                return `${a_i}*${symbol}`;
+              }
             } else {
               // coefficient of x^i for i > 1
-              return `${a_i}*${symbol}^${i}`;
+              if (a_i.eq(1)) {
+                return `${symbol}^${i}`;
+              } else {
+                return `${a_i}*${symbol}^${i}`;
+              }
             }
           })
           .filter(s => s !== '')

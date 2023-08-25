@@ -1,17 +1,12 @@
 // import {TinyJubJub} from './curves/examples';
-import {Field} from '../fields';
+import {Field, FieldExtension} from '../fields';
 
-const ord = 13;
-const F = new Field(ord);
-console.log(F);
+const F3 = new Field(3);
+const F3x = F3.Polynomial([1, 0, 1]);
+const F3_2 = new FieldExtension(F3x);
 
-for (const e of F) {
-  console.log('' + e.inv());
-}
+const p = F3_2.Element([2, 0]);
+const q = F3_2.Element([0, 1]);
 
-// const p = new F13x([4, 2]);
-// const q = new F13x([2]);
-// console.log(`${p.div(q)}`);
-
-// const TJJ = F13.EllipticCurve(8, 8);
-// console.log(`${TJJ}`);
+console.log(p.mul(q).mul(q) + '');
+console.log(q.neg() + '');

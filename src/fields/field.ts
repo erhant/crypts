@@ -75,9 +75,9 @@ export class FieldElement {
 
   constructor(field: Field, number: Number) {
     this.field = field;
-    this.value = BigInt(number) % BigInt(field.order);
+    this.value = BigInt(number) % field.order;
     if (this.value < 0n) {
-      this.value += BigInt(field.order);
+      this.value += field.order;
     }
   }
 
