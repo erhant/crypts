@@ -1,4 +1,4 @@
-import {interpolate} from '../src/polynomials';
+import {interpolate} from '../src/utils';
 import {F13} from './common';
 
 const F = F13;

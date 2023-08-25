@@ -1,4 +1,4 @@
-import {Number} from '../common';
+import {FieldElementInput, Number} from '../types';
 import {Field, FieldElement} from '../fields';
 
 // https://zcash.github.io/halo2/background/polynomials.html
@@ -15,7 +15,7 @@ export class Polynomial {
    *
    * Right-padded zeros are ignored.
    */
-  constructor(field: Field, coefficients: (Number | FieldElement)[]) {
+  constructor(field: Field, coefficients: FieldElementInput[]) {
     this.field = field;
     this.coeffs = coefficients.map(c => field.Element(c));
 
@@ -106,7 +106,7 @@ export class Polynomial {
   }
 
   /** Multiply all coefficients with a scalar. */
-  scale(s: Number | FieldElement): Polynomial {
+  scale(s: FieldElementInput): Polynomial {
     return new Polynomial(
       this.field,
       this.coeffs.map(c => c.mul(s))
@@ -131,7 +131,7 @@ export class Polynomial {
   }
 
   /** Evaluate polynomial at the given point via [Horner's rule](https://zcash.github.io/halo2/background/polynomials.html#aside-horners-rule). */
-  eval(p: Number | FieldElement): FieldElement {
+  eval(p: FieldElementInput): FieldElement {
     return this.coeffs.reduceRight((ans, cur) => cur.add(ans.mul(p)), this.field.zero);
   }
 

@@ -1,8 +1,6 @@
-import {F13} from './common';
+import {F13 as F} from './common';
 
-const F = F13;
-
-describe('field element', () => {
+describe('field', () => {
   const n = F.Element(2);
   const m = F.Element(7);
 

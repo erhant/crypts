@@ -1,5 +1,5 @@
 import {randomBytes} from 'crypto';
-import {Number} from '../common';
+import {FieldElementInput, Number} from '../types';
 import {extendedEuclideanAlgorithm} from '../utils';
 import {Polynomial} from '../polynomials';
 
@@ -28,12 +28,12 @@ export class Field {
   }
 
   /** A field element in modulo `order`. */
-  Element(n: Number | FieldElement): FieldElement {
+  Element(n: FieldElementInput): FieldElement {
     return new FieldElement(this, n instanceof FieldElement ? n.value : n);
   }
 
-  /** A polynomial over the field. */
-  Polynomial(coefficients: (Number | FieldElement)[]) {
+  /** A polynomial with coefficients over the field. */
+  Polynomial(coefficients: FieldElementInput[]): Polynomial {
     return new Polynomial(this, coefficients);
   }
 
@@ -82,33 +82,28 @@ export class FieldElement {
   }
 
   /** Equality check with a field elements or number. */
-  eq(n: Number | FieldElement): boolean {
+  eq(n: FieldElementInput): boolean {
     return this.value === this.field.Element(n).value;
   }
 
   /** Addition in the field. */
-  add(n: Number | FieldElement): FieldElement {
+  add(n: FieldElementInput): FieldElement {
     return this.field.Element(this.value + this.field.Element(n).value);
   }
 
   /** Addition with additive inverse in the field. */
-  sub(n: Number | FieldElement): FieldElement {
-    return this.field.Element(this.value + this.field.Element(n).neg().value);
+  sub(n: FieldElementInput): FieldElement {
+    return this.add(this.field.Element(n).neg());
   }
 
   /** Multiplication in the field. */
-  mul(n: Number | FieldElement): FieldElement {
+  mul(n: FieldElementInput): FieldElement {
     return this.field.Element(this.value * this.field.Element(n).value);
   }
 
   /** Multiplication with multiplicative inverse in the field. */
-  div(n: Number | FieldElement): FieldElement {
-    return this.field.Element(this.value * this.field.Element(n).inv().value);
-  }
-
-  /** Exponentiation in the field. */
-  exp(n: Number): FieldElement {
-    return this.field.Element(this.value ** BigInt(n));
+  div(n: FieldElementInput): FieldElement {
+    return this.mul(this.field.Element(n).inv());
   }
 
   /** Additive inverse in the field. */
@@ -120,6 +115,12 @@ export class FieldElement {
   inv(): FieldElement {
     const xgcd = extendedEuclideanAlgorithm(this.field.order, this.value);
     return this.field.Element(xgcd[2]);
+  }
+
+  /** Exponentiation in the field. */
+  exp(n: Number): FieldElement {
+    // TODO: use cyclic group exponentiation
+    return this.field.Element(this.value ** BigInt(n));
   }
 
   /** String representation of the field element, with optional radix. */

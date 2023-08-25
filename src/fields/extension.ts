@@ -1,5 +1,5 @@
-import {Field, FieldElement} from '.';
-import {Number} from '../common';
+import {Field} from '.';
+import {FieldElementInput, FieldExtensionElementInput} from '../types';
 import {Polynomial} from '../polynomials';
 import {polynomialExtendedEuclideanAlgorithm} from '../utils';
 
@@ -21,7 +21,7 @@ export class FieldExtension {
   }
 
   /** A field element in modulo `order`. */
-  Element(n: (Number | FieldElement)[] | Polynomial | FieldExtensionElement): FieldExtensionElement {
+  Element(n: FieldExtensionElementInput): FieldExtensionElement {
     return new FieldExtensionElement(
       this,
       n instanceof FieldExtensionElement ? n.value.coeffs : n instanceof Polynomial ? n.coeffs : n
@@ -29,7 +29,7 @@ export class FieldExtension {
   }
 
   /** A polynomial over the field. */
-  Polynomial(coefficients: (Number | FieldElement)[]): Polynomial {
+  Polynomial(coefficients: FieldElementInput[]): Polynomial {
     if (coefficients.length >= this.degree + 1) {
       throw new Error('Degree too high'); // TODO: better error msg
     }
@@ -37,15 +37,23 @@ export class FieldExtension {
     return new Polynomial(this.field, coefficients);
   }
 
-  /** Get elements in the field, that are the polynomials with degree strictly less than
-   * that of the irreducible polynomial.
-   */
+  /** Get elements in the field. */
   *[Symbol.iterator]() {
     const orderNumber = parseInt(this.field.order.toString());
     for (let n = 0n; n < this.order; n++) {
       const coeffs = n.toString(orderNumber).padStart(this.degree).split('').reverse();
       yield new Polynomial(this.field, coeffs);
     }
+  }
+
+  /** The multiplicative identity. */
+  get one(): FieldExtensionElement {
+    return this.Element([1]);
+  }
+
+  /** The additive identity. */
+  get zero(): FieldExtensionElement {
+    return this.Element([0]);
   }
 
   /** Underlying field of this field extension. */
@@ -67,13 +75,11 @@ export class FieldExtension {
   }
 }
 
-type FieldExtensionElementInput = Polynomial | (Number | FieldElement)[] | FieldExtensionElement;
-
 export class FieldExtensionElement {
   readonly extension: FieldExtension;
   readonly value: Polynomial;
 
-  constructor(extension: FieldExtension, coefficients: (Number | FieldElement)[]) {
+  constructor(extension: FieldExtension, coefficients: FieldElementInput[]) {
     coefficients = coefficients.map(c => extension.field.Element(c));
     this.extension = extension;
 
@@ -106,7 +112,7 @@ export class FieldExtensionElement {
   }
 
   /** Multiplication with multiplicative inverse in the field. */
-  div(q: FieldExtensionElementInput): FieldExtensionElementInput {
+  div(q: FieldExtensionElementInput): FieldExtensionElement {
     return this.mul(this.extension.Element(q).inv());
   }
 

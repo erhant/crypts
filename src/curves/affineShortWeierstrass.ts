@@ -1,4 +1,4 @@
-import {Number} from '../common';
+import {Number} from '../types';
 import {Field, FieldElement} from '../fields';
 
 /** An elliptic curve with Short Weierstrass form over affine points. */
