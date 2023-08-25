@@ -1,18 +1,26 @@
 from sage.all import GF
 
-if __name__ == "__main__":
-  order = 13
-  F = GF(order)
-  Fx = F['x']
+if __name__ == "__main__": 
+  tests = []
 
-  p, q = Fx([10, 2, 3]), Fx([3, 2, 1])
-  tests = {
-    "p": p,
-    "q": q,
-    "add": p + q,
-    "sub": p - q,
-    "mul": p * q,
-    "neg": -p
-  }
+  for (p, q, o) in [([1, 2, 3], [3, 2, 1], 5), ([1, 6, 7], [2, 3], 17)]:
+    F = GF(o) 
+    Fx = F['x']
+    p, q = Fx(p), Fx(q)
+
+    tests.append({
+      "p": p.coefficients(),
+      "q": q.coefficients(),
+      "o": o,
+      "lead": p.leading_coefficient(),
+      "deg": p.degree(),
+      "add": str(p + q),
+      "sub": str(p - q),
+      "mul": str(p * q),
+      "div": str(p // q), # quotient
+      "mod": str(p % q), # remainder
+      "neg": str(-p),
+    })
+
   print(tests)
 

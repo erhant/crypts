@@ -1,7 +1,6 @@
 import {Field} from '.';
 import {FieldElementInput, FieldExtensionElementInput} from '../types';
 import {Polynomial} from '../polynomials';
-import {polynomialExtendedEuclideanAlgorithm} from '../utils';
 
 /** An extension of the finite field, defined by an irreducible polynomial from the field.
  *
@@ -10,13 +9,11 @@ import {polynomialExtendedEuclideanAlgorithm} from '../utils';
  */
 export class FieldExtension {
   readonly order: bigint;
-  readonly mod: Polynomial;
+  readonly poly: Polynomial;
 
-  /** Constructs an extension of the field with an irreducible polynomial.
-   * The extended field is that of the polynomial.
-   */
+  /** Constructs an extension of the field with an irreducible polynomial. */
   constructor(polynomial: Polynomial) {
-    this.mod = polynomial;
+    this.poly = polynomial;
     this.order = polynomial.field.order ** BigInt(polynomial.degree);
   }
 
@@ -30,6 +27,7 @@ export class FieldExtension {
 
   /** A polynomial over the field. */
   Polynomial(coefficients: FieldElementInput[]): Polynomial {
+    // TODO: if degree is too high take mod
     if (coefficients.length >= this.degree + 1) {
       throw new Error('Degree too high'); // TODO: better error msg
     }
@@ -58,12 +56,12 @@ export class FieldExtension {
 
   /** Underlying field of this field extension. */
   get field(): Field {
-    return this.mod.field;
+    return this.poly.field;
   }
 
   /** Extension degree. */
   get degree(): number {
-    return this.mod.degree;
+    return this.poly.degree;
   }
 
   /**
@@ -76,16 +74,16 @@ export class FieldExtension {
 }
 
 export class FieldExtensionElement {
-  readonly extension: FieldExtension;
+  readonly field: FieldExtension;
   readonly value: Polynomial;
 
-  constructor(extension: FieldExtension, coefficients: FieldElementInput[]) {
-    coefficients = coefficients.map(c => extension.field.Element(c));
-    this.extension = extension;
+  constructor(field: FieldExtension, coefficients: FieldElementInput[]) {
+    coefficients = coefficients.map(c => field.field.Element(c));
+    this.field = field;
 
-    const poly = extension.field.Polynomial(coefficients);
-    if (poly.degree >= this.extension.mod.degree) {
-      this.value = poly.mod(this.extension.mod);
+    const poly = field.field.Polynomial(coefficients);
+    if (poly.degree >= this.field.poly.degree) {
+      this.value = poly.mod(this.field.poly);
     } else {
       this.value = poly;
     }
@@ -93,40 +91,60 @@ export class FieldExtensionElement {
 
   /** Equality check with a field elements or number. */
   eq(q: FieldExtensionElementInput): boolean {
-    return this.value.eq(this.extension.Element(q).value);
+    return this.value.eq(this.field.Element(q).value);
   }
 
   /** Addition in the field. */
   add(q: FieldExtensionElementInput): FieldExtensionElement {
-    return this.extension.Element(this.value.add(this.extension.Element(q).value));
+    return this.field.Element(this.value.add(this.field.Element(q).value));
   }
 
   /** Addition with additive inverse in the field. */
   sub(q: FieldExtensionElementInput): FieldExtensionElement {
-    return this.add(this.extension.Element(q).neg());
+    return this.add(this.field.Element(q).neg());
   }
 
   /** Multiplication in the field. */
   mul(q: FieldExtensionElementInput): FieldExtensionElement {
-    return this.extension.Element(this.value.mul(this.extension.Element(q).value));
+    return this.field.Element(this.value.mul(this.field.Element(q).value));
   }
 
   /** Multiplication with multiplicative inverse in the field. */
   div(q: FieldExtensionElementInput): FieldExtensionElement {
-    return this.mul(this.extension.Element(q).inv());
+    return this.mul(this.field.Element(q).inv());
   }
 
   /** Additive inverse in the field. */
   neg(): FieldExtensionElement {
-    return this.extension.Element(this.value.coeffs.map(c => c.neg()));
+    return this.field.Element(this.value.coeffs.map(c => c.neg()));
   }
 
-  /** Multiplicative inverse in the field, using Extended Euclidean Algorithm. */
-  inv(): Polynomial {
-    const xgcd = polynomialExtendedEuclideanAlgorithm(this.extension.mod, this.value);
-    return xgcd[2];
+  /** Multiplicative inverse in the field, using [Extended Euclidean Algorithm](https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm#Simple_algebraic_field_extensions). */
+  inv(): FieldExtensionElement {
+    let [r, rr] = [this.field.poly, this.value];
+    let [t, tt] = [this.field.Polynomial([0]), this.field.Polynomial([1])];
+
+    let quot, tmp;
+    while (!rr.eq([])) {
+      quot = r.div(rr);
+
+      tmp = tt;
+      tt = t.sub(quot.mul(tt));
+      t = tmp;
+
+      tmp = rr;
+      rr = r.sub(quot.mul(rr));
+      r = tmp;
+    }
+
+    if (r.degree > 0) {
+      throw new Error('todo error');
+    }
+
+    return this.field.Element(t.scale(r.coeffs[0]));
   }
 
+  /** String representation of the field element, with optional symbol. */
   toString(symbol = 'x') {
     return this.value.toString(symbol);
   }

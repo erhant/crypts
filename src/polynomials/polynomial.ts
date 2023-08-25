@@ -26,8 +26,8 @@ export class Polynomial {
   }
 
   /** Leading coefficient. */
-  get lead(): FieldElement {
-    return this.coeffs.at(this.degree) || this.field.zero;
+  get lead(): bigint {
+    return (this.coeffs.at(this.degree) || this.field.zero).value;
   }
 
   /** Degree of the polynomial, corresponding to the largest power of a term. */

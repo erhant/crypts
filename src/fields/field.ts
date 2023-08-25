@@ -1,6 +1,5 @@
 import {randomBytes} from 'crypto';
 import {FieldElementInput, Number} from '../types';
-import {extendedEuclideanAlgorithm} from '../utils';
 import {Polynomial} from '../polynomials';
 
 // https://github.com/microsoft/TypeScript/issues/30355
@@ -9,20 +8,10 @@ import {Polynomial} from '../polynomials';
 export class Field {
   readonly order: bigint;
 
-  /** A finite field with the given order.
-   *
-   * To see the elements in the field, you can use the iterator:
-   *
-   * ```ts
-   * const F13 = new Field(13);
-   * for (const n of F13) {
-   *    console.log(""+n) // or `n.toString()`
-   * }
-   * ```
-   */
+  /** A finite field with the given (assumed to be prime) order. */
   constructor(order: Number) {
     this.order = BigInt(order);
-    if (this.order < 2n) {
+    if (this.order <= 1n) {
       throw new Error('Order must be larger than 1.');
     }
   }
@@ -116,10 +105,32 @@ export class FieldElement {
     return this.field.Element(BigInt(this.field.order) - this.value);
   }
 
-  /** Multiplicative inverse in the field, using Extended Euclidean Algorithm. */
+  /** Multiplicative inverse in the field, using [Extended Euclidean Algorithm](https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm#Modular_integers). */
   inv(): FieldElement {
-    const xgcd = extendedEuclideanAlgorithm(this.field.order, this.value);
-    return this.field.Element(xgcd[2]);
+    let [r, rr] = [this.field.order, this.value];
+    let [t, tt] = [0n, 1n];
+
+    let quot, tmp;
+    while (rr !== 0n) {
+      quot = r / rr;
+
+      tmp = tt;
+      tt = t - quot * tt;
+      t = tmp;
+
+      tmp = rr;
+      rr = r - quot * rr;
+      r = tmp;
+    }
+
+    if (r > 1n) {
+      throw new Error(`${this.value} does not have inverse mod ${this.field.order}.`);
+    }
+    if (t < 0n) {
+      t += this.field.order;
+    }
+
+    return this.field.Element(t);
   }
 
   /** String representation of the field element, with optional radix. */

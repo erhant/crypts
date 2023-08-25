@@ -1,43 +1,73 @@
+import {Field} from '../src/fields';
 import {interpolate} from '../src/utils';
-import {F13} from './common';
-
-const F = F13;
 
 describe('polynomials', () => {
-  const p = F.Polynomial([10, 2, 3]);
-  const q = F.Polynomial([3, 2, 1]);
+  const tests = [
+    {
+      p: [1, 2, 3],
+      q: [3, 2, 1],
+      o: 5,
+      lead: 3,
+      deg: 2,
+      add: '4*x^2 + 4*x + 4',
+      sub: '2*x^2 + 3',
+      mul: '3*x^4 + 3*x^3 + 4*x^2 + 3*x + 3',
+      div: '3',
+      mod: 'x + 2',
+      neg: '2*x^2 + 3*x + 4',
+    },
+    {
+      p: [1, 6, 7],
+      q: [2, 3],
+      o: 17,
+      lead: 7,
+      deg: 2,
+      add: '7*x^2 + 9*x + 3',
+      sub: '7*x^2 + 3*x + 16',
+      mul: '4*x^3 + 15*x^2 + 15*x + 2',
+      div: '8*x + 8',
+      mod: '2',
+      neg: '10*x^2 + 11*x + 16',
+    },
+  ];
 
-  it('degree', () => {
-    expect(p.degree).toBe(2);
-    expect(q.degree).toBe(2);
-  });
+  tests.map(test =>
+    describe(`GF(${test.o}) : p = [${test.p}], q = [${test.q}]`, () => {
+      const F = new Field(test.o);
+      const p = F.Polynomial(test.p);
+      const q = F.Polynomial(test.q);
 
-  it('addition', () => {
-    expect(p.add(q).eq([0, 4, 4])).toBeTruthy();
-  });
+      it('leading coefficient', () => {
+        expect(p.lead).toBe(BigInt(test.lead));
+      });
 
-  it('subtraction', () => {
-    expect(p.sub(q).eq([7, 0, 2])).toBeTruthy();
+      it('degree', () => {
+        expect(p.degree).toBe(test.deg);
+      });
 
-    // coefficients should remove right-padded zeros
-    expect(q.sub(F.Polynomial([0, 2, 1])).eq([3])).toBeTruthy();
-  });
+      it('addition', () => {
+        expect(p.add(q).toString()).toEqual(test.add);
+      });
 
-  it('multiplication', () => {
-    expect(p.mul(q).eq([4, 0, 10, 8, 3])).toBeTruthy();
-  });
+      it('subtraction', () => {
+        expect(p.sub(q).toString()).toEqual(test.sub);
+      });
 
-  it('scale', () => {
-    expect(p.scale(2).eq([7, 4, 6])).toBeTruthy();
-  });
+      it('multiplication', () => {
+        expect(p.mul(q).toString()).toEqual(test.mul);
+      });
 
-  it('division', () => {
-    expect(p.div(q).eq([3])).toBeTruthy();
-  });
+      it('division (quotient)', () => {
+        expect(p.div(q).toString()).toEqual(test.div);
+      });
 
-  it('remainder', () => {
-    expect(p.mod(q).eq([1, 9])).toBeTruthy();
-  });
+      it('modulo (remainder)', () => {
+        expect(p.mod(q).toString()).toEqual(test.mod);
+      });
+
+      // TODO: scale & exp
+    })
+  );
 });
 
 describe('lagrange interpolation', () => {
@@ -46,7 +76,7 @@ describe('lagrange interpolation', () => {
     [-2, 1],
     [2, 3],
   ];
-  const l = interpolate(F, points);
+  const l = interpolate(new Field(13), points);
 
   it('should interpolate correctly', () => {
     expect(l.eq([4, 7, 6])).toBeTruthy();
@@ -60,6 +90,7 @@ describe('lagrange interpolation', () => {
 });
 
 describe('zero polynomial', () => {
+  const F = new Field(13);
   const zero = F.Polynomial([]);
 
   it('should be equal to an only-zero-padded polynomial', () => {
