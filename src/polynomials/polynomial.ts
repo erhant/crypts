@@ -5,6 +5,7 @@ import {Field, FieldElement} from '../fields';
 
 /** A polynomial over a finite field, with coefficients as elements of that field. */
 export class Polynomial {
+  /** Field of the coefficients. */
   readonly field: Field;
   /** Coefficients in reverse order, i.e. `coeff[i]` stands for the coefficient of `x^i`  */
   readonly coeffs: FieldElement[];

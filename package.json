@@ -6,6 +6,7 @@
     "build/src"
   ],
   "license": "MIT",
+  "author": "erhant",
   "keywords": [],
   "scripts": {
     "test": "jest",

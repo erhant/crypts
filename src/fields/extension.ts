@@ -119,12 +119,24 @@ export class FieldExtensionElement {
 
   /** Exponentiation in the field. via square-and-multiply. */
   exp(x: Number): FieldExtensionElement {
-    if (BigInt(x) === 0n) {
+    let e = BigInt(x);
+    if (e === 0n) {
       return this.extension.one;
     }
 
     let ans = this.extension.Element(this.value);
-    for (let e = BigInt(x) >> 1n; e > 0n; e >>= 1n) {
+
+    if (e === 1n) {
+      return ans;
+    }
+    if (e === 2n) {
+      return ans.mul(ans);
+    }
+    if (BigInt(x) === 0n) {
+      return this.extension.one;
+    }
+
+    for (e >>= 1n; e > 0n; e >>= 1n) {
       ans = ans.mul(ans);
       if (e % 2n === 1n) {
         ans = ans.mul(this);
@@ -139,7 +151,9 @@ export class FieldExtensionElement {
     let [t, tt] = [this.extension.zero.value, this.extension.one.value];
 
     let quot, tmp;
-    while (!rr.eq([0])) {
+
+    // (while rr is not the zero polynomial)
+    while (rr.lead !== 0n) {
       quot = r.div(rr);
 
       tmp = tt;
@@ -152,10 +166,10 @@ export class FieldExtensionElement {
     }
 
     if (r.degree > 0) {
-      throw new Error('todo error');
+      throw new Error('This polynomial does not have an inverse.');
     }
 
-    return this.extension.Element(t.scale(r.coeffs[0]));
+    return this.extension.Element(t.scale(r.coeffs[0].inv()));
   }
 
   /** String representation of the field element, with optional symbol. */

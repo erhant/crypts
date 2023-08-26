@@ -37,35 +37,22 @@ describe('polynomials', () => {
     const q = F.Polynomial(test.q);
 
     return describe(`${F}: p = ${p}, q = ${q}`, () => {
-      it('leading coefficient', () => {
+      it('lead & degree', () => {
         expect(p.lead).toBe(BigInt(test.lead));
-      });
-
-      it('degree', () => {
         expect(p.degree).toBe(test.deg);
       });
 
-      it('addition', () => {
+      it('addition & multiplication', () => {
         expect(p.add(q).toString()).toEqual(test.add);
-      });
-
-      it('subtraction', () => {
         expect(p.sub(q).toString()).toEqual(test.sub);
-      });
-
-      it('multiplication', () => {
         expect(p.mul(q).toString()).toEqual(test.mul);
+        expect(p.neg().toString()).toEqual(test.neg);
       });
 
-      it('division (quotient)', () => {
+      it('division & remainder', () => {
         expect(p.div(q).toString()).toEqual(test.div);
-      });
-
-      it('modulo (remainder)', () => {
         expect(p.mod(q).toString()).toEqual(test.mod);
       });
-
-      // TODO: scale & exp
     });
   });
 });

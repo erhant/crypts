@@ -103,12 +103,21 @@ export class FieldElement {
 
   /** Exponentiation in the field via [square-and-multiply](https://en.wikipedia.org/wiki/Exponentiation_by_squaring). */
   exp(x: Number): FieldElement {
-    if (BigInt(x) === 0n) {
+    let e = BigInt(x);
+    if (e === 0n) {
       return this.field.one;
     }
 
     let ans = this.field.Element(this.value);
-    for (let e = BigInt(x) >> 1n; e > 0n; e >>= 1n) {
+
+    if (e === 1n) {
+      return ans;
+    }
+    if (e === 2n) {
+      return ans.mul(ans);
+    }
+
+    for (e >>= 1n; e > 0n; e >>= 1n) {
       ans = ans.mul(ans);
       if (e % 2n === 1n) {
         ans = ans.mul(this);

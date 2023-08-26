@@ -1,4 +1,4 @@
-import {AffinePointInput, FieldElementInput, Number} from '../types';
+import {AffinePointInput, FieldElementInput} from '../types';
 import {Field, FieldElement} from '../fields';
 
 /** An elliptic curve with Short Weierstrass form over affine points. */
@@ -36,12 +36,8 @@ export class AffineShortWeierstrassCurve {
 
   /** Is the curve non-singular? */
   isNonSingular(): boolean {
-    const a = this.field.Element(this.a);
-    const b = this.field.Element(this.b);
-
-    // 4a^3 + 27b^2 != 0
-    const l = a.exp(3).mul(4); // 4a^3
-    const r = b.exp(2).mul(27); // 27b^2
+    const l = this.a.exp(3).mul(4); // 4a^3
+    const r = this.b.exp(2).mul(27); // 27b^2
     return !l.add(r).eq(0);
   }
 

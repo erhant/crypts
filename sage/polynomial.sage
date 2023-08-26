@@ -3,7 +3,10 @@ from sage.all import GF
 if __name__ == "__main__": 
   tests = []
 
-  for (p, q, o) in [([1, 2, 3], [3, 2, 1], 5), ([1, 6, 7], [2, 3], 17)]:
+  for (p, q, o) in [
+    ([1, 2, 3], [3, 2, 1], 5),
+    ([1, 6, 7], [2, 3], 17)
+  ]:
     F = GF(o) 
     Fx = F['x']
     p, q = Fx(p), Fx(q)

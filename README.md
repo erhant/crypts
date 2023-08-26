@@ -2,20 +2,9 @@
 
 Basically cryptography & math stuff in TypeScript, totally for educational purposes. The code here is probably as unoptimized as it may get, but I try to take more care on DX for the API.
 
-```ts
-// create a field
-const order = 3;
-const F = new Field(order);
-for (const elem in F) {
-  // iterate over elements in F
-  console.log(elem.toString());
-}
+## Usage
 
-// create a polynomial over the field
-const p = F3.Polynomial([1, 0, 1]);
-
-// create an extension field
-```
+TODO
 
 ## Implementations
 
@@ -35,3 +24,13 @@ The following are implemented:
 ### https://github.com/erhant/tscrypto/labels/elliptic%20curves
 
 - [x] [Affine Short Weierstrass](./src/curves/affineShortWeierstrass.ts)
+
+## Testing
+
+We prepare our test cases using SageMath via the scripts under [sage](./sage/) folder. Each Sage script there prints an array of test cases that can be copy-pasted to their respective tests.
+
+To run all tests, do:
+
+```sh
+yarn test
+```
