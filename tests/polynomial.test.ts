@@ -31,12 +31,12 @@ describe('polynomials', () => {
     },
   ];
 
-  tests.map(test =>
-    describe(`GF(${test.o}) : p = [${test.p}], q = [${test.q}]`, () => {
-      const F = new Field(test.o);
-      const p = F.Polynomial(test.p);
-      const q = F.Polynomial(test.q);
+  tests.map(test => {
+    const F = new Field(test.o);
+    const p = F.Polynomial(test.p);
+    const q = F.Polynomial(test.q);
 
+    return describe(`${F}: p = ${p}, q = ${q}`, () => {
       it('leading coefficient', () => {
         expect(p.lead).toBe(BigInt(test.lead));
       });
@@ -66,8 +66,8 @@ describe('polynomials', () => {
       });
 
       // TODO: scale & exp
-    })
-  );
+    });
+  });
 });
 
 describe('lagrange interpolation', () => {

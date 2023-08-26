@@ -1,4 +1,4 @@
-import {Number} from '../types';
+import {FieldElementInput, Number} from '../types';
 import {Field, FieldElement} from '../fields';
 
 /** An elliptic curve with Short Weierstrass form over affine points. */
@@ -15,7 +15,7 @@ export class AffineShortWeierstrassCurve {
    * y^2 = x^3 + ax + b
    * ```
    */
-  constructor(field: Field, params: [a: Number, b: Number]) {
+  constructor(field: Field, params: readonly [a: Number, b: Number]) {
     /** Curve parameter `a`. */
     this.a = BigInt(params[0]);
     /** Curve parameter `b`. */
@@ -25,7 +25,7 @@ export class AffineShortWeierstrassCurve {
   }
 
   /** A point on the elliptic curve. */
-  Point(point: [Number | FieldElement, Number | FieldElement]): AffineShortWeierstrassCurvePoint {
+  Point(point: [FieldElementInput, FieldElementInput]): AffineShortWeierstrassCurvePoint {
     return new AffineShortWeierstrassCurvePoint(this, point);
   }
 
@@ -61,10 +61,10 @@ export class AffineShortWeierstrassCurve {
 export class AffineShortWeierstrassCurvePoint {
   readonly curve: AffineShortWeierstrassCurve;
   // coordinates
-  x: FieldElement;
-  y: FieldElement;
+  readonly x: FieldElement;
+  readonly y: FieldElement;
   // is point at infinity
-  inf: boolean;
+  readonly inf: boolean;
 
   constructor(curve: AffineShortWeierstrassCurve, point?: [Number | FieldElement, Number | FieldElement]) {
     this.curve = curve;
@@ -87,15 +87,6 @@ export class AffineShortWeierstrassCurvePoint {
     return this.curve.field;
   }
 
-  /** Inverse of a point. */
-  inv(): AffineShortWeierstrassCurvePoint {
-    if (this.inf) {
-      return this.curve.inf;
-    } else {
-      return this.curve.Point([this.x, this.y.neg()]);
-    }
-  }
-
   /** Adds the point to itself, also known as the Tangent rule. */
   private tangent(): AffineShortWeierstrassCurvePoint {
     if (this.inf) {
@@ -108,7 +99,7 @@ export class AffineShortWeierstrassCurvePoint {
       // t := (3x^2 + a) / 2y
       const t = this.x.exp(2).mul(3).add(this.curve.a).div(this.y.mul(2));
 
-      const xx = t.exp(2).sub(this.x.mul(2)); //       x' := t^2 - 2x
+      const xx = t.exp(2).sub(this.x.mul(2)); // x' := t^2 - 2x
       const yy = t.mul(this.x.sub(xx)).sub(this.y); // y' := t(x - x') - y
       return this.curve.Point([xx, yy]);
     }
@@ -127,7 +118,7 @@ export class AffineShortWeierstrassCurvePoint {
       // t := (y_2 - y_1) / (x_2 - x_1)
       const t = q.y.sub(this.y).div(q.x.sub(this.x));
 
-      const xx = t.exp(2).sub(this.x).sub(q.x); //     x' := t^2 - x_1 - x_2
+      const xx = t.exp(2).sub(this.x).sub(q.x); // x' := t^2 - x_1 - x_2
       const yy = t.mul(this.x.sub(xx)).sub(this.y); // y' := t(x_1 - x_3) - y_1
 
       return this.curve.Point([xx, yy]);
@@ -143,6 +134,20 @@ export class AffineShortWeierstrassCurvePoint {
     }
   }
 
+  /** Subtract a point from another on the curve. */
+  sub(q: AffineShortWeierstrassCurvePoint): AffineShortWeierstrassCurvePoint {
+    return this.add(q.neg());
+  }
+
+  /** Additive Inverse of a point. */
+  neg(): AffineShortWeierstrassCurvePoint {
+    if (this.inf) {
+      return this.curve.inf;
+    } else {
+      return this.curve.Point([this.x, this.y.neg()]);
+    }
+  }
+
   /** Equality check with a point. */
   eq(q: AffineShortWeierstrassCurvePoint): boolean {
     if (this.inf && q.inf) {
@@ -155,5 +160,10 @@ export class AffineShortWeierstrassCurvePoint {
       // coordinates must match
       return this.x.eq(q.x) && this.y.eq(q.y);
     }
+  }
+
+  /** String representation of the curve point. */
+  toString(): string {
+    return this.inf ? 'inf' : `(${this.x}, ${this.y})`;
   }
 }

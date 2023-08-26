@@ -9,8 +9,8 @@ if __name__ == "__main__":
     p, q = Fx(p), Fx(q)
 
     tests.append({
-      "p": p.coefficients(),
-      "q": q.coefficients(),
+      "p": p.coefficients(0),
+      "q": q.coefficients(0),
       "o": o,
       "lead": p.leading_coefficient(),
       "deg": p.degree(),

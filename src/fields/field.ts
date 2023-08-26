@@ -55,6 +55,11 @@ export class Field {
   random(): FieldElement {
     return this.Element(BigInt('0x' + randomBytes(this.order.toString(8).length).toString('hex')));
   }
+
+  /** String representation of the field. */
+  toString(): string {
+    return `GF(${this.order})`;
+  }
 }
 
 /** An element in the finite field. */

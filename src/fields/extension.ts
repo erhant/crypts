@@ -25,16 +25,6 @@ export class FieldExtension {
     );
   }
 
-  /** A polynomial over the field. */
-  Polynomial(coefficients: FieldElementInput[]): Polynomial {
-    // TODO: if degree is too high take mod
-    if (coefficients.length >= this.degree + 1) {
-      throw new Error('Degree too high'); // TODO: better error msg
-    }
-
-    return new Polynomial(this.field, coefficients);
-  }
-
   /** Get elements in the field. */
   *[Symbol.iterator]() {
     const orderNumber = parseInt(this.field.order.toString());
@@ -70,6 +60,11 @@ export class FieldExtension {
    */
   get characteristic(): bigint {
     return this.field.order;
+  }
+
+  /** String representation of the field. */
+  toString(): string {
+    return `GF(${this.order}) over ${this.poly}`;
   }
 }
 
@@ -122,7 +117,7 @@ export class FieldExtensionElement {
   /** Multiplicative inverse in the field, using [Extended Euclidean Algorithm](https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm#Simple_algebraic_field_extensions). */
   inv(): FieldExtensionElement {
     let [r, rr] = [this.field.poly, this.value];
-    let [t, tt] = [this.field.Polynomial([0]), this.field.Polynomial([1])];
+    let [t, tt] = [this.field.zero.value, this.field.one.value];
 
     let quot, tmp;
     while (!rr.eq([])) {
