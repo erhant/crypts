@@ -34,4 +34,4 @@ The following are implemented:
 
 ### https://github.com/erhant/tscrypto/labels/elliptic%20curves
 
-- [x] Affine Short Weierstrass
+- [x] [Affine Short Weierstrass](./src/curves/affineShortWeierstrass.ts)

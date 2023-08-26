@@ -9,3 +9,6 @@ export type FieldElementInput = Number | FieldElement;
 
 /** An input to work with a Field Extension Element. */
 export type FieldExtensionElementInput = FieldElementInput[] | Polynomial | FieldExtensionElement;
+
+/** An affine point `[x, y]`. */
+export type AffinePointInput = [FieldElementInput, FieldElementInput];

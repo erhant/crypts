@@ -38,6 +38,16 @@ describe('affine short weierstrass', () => {
       it('negation', () => {
         expect(p.neg().toString()).toEqual(test.neg);
       });
+
+      it('point at infinity', () => {
+        const inf = E.inf;
+
+        expect(p.add(inf).eq(p)).toBeTruthy();
+        expect(p.sub(inf).eq(p)).toBeTruthy();
+
+        expect(p.sub(p).eq(inf)).toBeTruthy();
+        expect(p.add(p.neg()).eq(inf)).toBeTruthy();
+      });
     });
   });
 });

@@ -1,11 +1,11 @@
-import {FieldElementInput, Number} from '../types';
+import {AffinePointInput, FieldElementInput, Number} from '../types';
 import {Field, FieldElement} from '../fields';
 
 /** An elliptic curve with Short Weierstrass form over affine points. */
 export class AffineShortWeierstrassCurve {
   readonly field: Field;
-  readonly a: bigint;
-  readonly b: bigint;
+  readonly a: FieldElement;
+  readonly b: FieldElement;
 
   /**
    * An elliptic curve over a base field such that pairs of elements `(x, y)` satisfy
@@ -15,17 +15,17 @@ export class AffineShortWeierstrassCurve {
    * y^2 = x^3 + ax + b
    * ```
    */
-  constructor(field: Field, params: readonly [a: Number, b: Number]) {
+  constructor(field: Field, params: readonly [a: FieldElementInput, b: FieldElementInput]) {
     /** Curve parameter `a`. */
-    this.a = BigInt(params[0]);
+    this.a = field.Element(params[0]);
     /** Curve parameter `b`. */
-    this.b = BigInt(params[1]);
+    this.b = field.Element(params[1]);
     /** Base field. */
     this.field = field;
   }
 
   /** A point on the elliptic curve. */
-  Point(point: [FieldElementInput, FieldElementInput]): AffineShortWeierstrassCurvePoint {
+  Point(point: AffinePointInput): AffineShortWeierstrassCurvePoint {
     return new AffineShortWeierstrassCurvePoint(this, point);
   }
 
@@ -44,14 +44,15 @@ export class AffineShortWeierstrassCurve {
     return !l.add(r).eq(0); // 4a^3 + 27b^2 != 0
   }
 
-  /** Returns `true` if given point `(x, y)` is on the curve, i.e. satisfies the curve equation. */
-  isOnCurve(point: [Number | FieldElement, Number | FieldElement]): boolean {
+  /** Returns `true` if given point `[x, y]` is on the curve, i.e. satisfies the curve equation. */
+  isOnCurve(point: AffinePointInput): boolean {
     const [x, y] = [this.field.Element(point[0]), this.field.Element(point[1])];
     const lhs = y.exp(2); // y^2
     const rhs = x.exp(3).add(x.mul(this.a)).add(this.b); // x^3 + ax + b
     return lhs.eq(rhs);
   }
 
+  /** String representation of the elliptic curve. */
   toString(): string {
     return `y^2 = x^3 + ${this.a}*x + ${this.b}`;
   }
@@ -66,7 +67,7 @@ export class AffineShortWeierstrassCurvePoint {
   // is point at infinity
   readonly inf: boolean;
 
-  constructor(curve: AffineShortWeierstrassCurve, point?: [Number | FieldElement, Number | FieldElement]) {
+  constructor(curve: AffineShortWeierstrassCurve, point?: AffinePointInput) {
     this.curve = curve;
     if (point) {
       if (!curve.isOnCurve(point)) {
@@ -112,7 +113,11 @@ export class AffineShortWeierstrassCurvePoint {
       return this.inf ? this.curve.inf : this.curve.Point([this.x, this.y]);
     } else {
       if (this.x.eq(q.x)) {
-        throw new Error('x-coordinates cant be equal.');
+        if (this.y.eq(q.y.neg())) {
+          return this.curve.inf;
+        } else {
+          throw new Error('x-coordinates cant be equal.');
+        }
       }
 
       // t := (y_2 - y_1) / (x_2 - x_1)
@@ -162,7 +167,7 @@ export class AffineShortWeierstrassCurvePoint {
     }
   }
 
-  /** String representation of the curve point. */
+  /** String representation of the affine curve point. */
   toString(): string {
     return this.inf ? 'inf' : `(${this.x}, ${this.y})`;
   }
