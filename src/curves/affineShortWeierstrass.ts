@@ -39,9 +39,10 @@ export class AffineShortWeierstrassCurve {
     const a = this.field.Element(this.a);
     const b = this.field.Element(this.b);
 
+    // 4a^3 + 27b^2 != 0
     const l = a.exp(3).mul(4); // 4a^3
     const r = b.exp(2).mul(27); // 27b^2
-    return !l.add(r).eq(0); // 4a^3 + 27b^2 != 0
+    return !l.add(r).eq(0);
   }
 
   /** Returns `true` if given point `[x, y]` is on the curve, i.e. satisfies the curve equation. */

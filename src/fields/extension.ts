@@ -1,5 +1,5 @@
 import {Field} from '.';
-import {FieldElementInput, FieldExtensionElementInput} from '../types';
+import {FieldElementInput, FieldExtensionElementInput, Number} from '../types';
 import {Polynomial} from '../polynomials';
 
 /** An extension of the finite field, defined by an irreducible polynomial from the field.
@@ -8,7 +8,10 @@ import {Polynomial} from '../polynomials';
  * similar to an integer ring modulo some prime number.
  */
 export class FieldExtension {
+  /** Number of elements in the extension field. */
   readonly order: bigint;
+
+  /** The irreducible polynomial that is used for extension. */
   readonly poly: Polynomial;
 
   /** Constructs an extension of the field with an irreducible polynomial. */
@@ -64,21 +67,21 @@ export class FieldExtension {
 
   /** String representation of the field. */
   toString(): string {
-    return `GF(${this.order}) over ${this.poly}`;
+    return `GF(${this.field.order}) over ${this.poly}`;
   }
 }
 
 export class FieldExtensionElement {
-  readonly field: FieldExtension;
+  readonly extension: FieldExtension;
   readonly value: Polynomial;
 
-  constructor(field: FieldExtension, coefficients: FieldElementInput[]) {
-    coefficients = coefficients.map(c => field.field.Element(c));
-    this.field = field;
+  constructor(extension: FieldExtension, coefficients: FieldElementInput[]) {
+    coefficients = coefficients.map(c => extension.field.Element(c));
+    this.extension = extension;
 
-    const poly = field.field.Polynomial(coefficients);
-    if (poly.degree >= this.field.poly.degree) {
-      this.value = poly.mod(this.field.poly);
+    const poly = extension.field.Polynomial(coefficients);
+    if (poly.degree >= this.extension.poly.degree) {
+      this.value = poly.mod(this.extension.poly);
     } else {
       this.value = poly;
     }
@@ -86,41 +89,57 @@ export class FieldExtensionElement {
 
   /** Equality check with a field elements or number. */
   eq(q: FieldExtensionElementInput): boolean {
-    return this.value.eq(this.field.Element(q).value);
+    return this.value.eq(this.extension.Element(q).value);
   }
 
   /** Addition in the field. */
   add(q: FieldExtensionElementInput): FieldExtensionElement {
-    return this.field.Element(this.value.add(this.field.Element(q).value));
+    return this.extension.Element(this.value.add(this.extension.Element(q).value));
   }
 
   /** Addition with additive inverse in the field. */
   sub(q: FieldExtensionElementInput): FieldExtensionElement {
-    return this.add(this.field.Element(q).neg());
+    return this.add(this.extension.Element(q).neg());
   }
 
   /** Multiplication in the field. */
   mul(q: FieldExtensionElementInput): FieldExtensionElement {
-    return this.field.Element(this.value.mul(this.field.Element(q).value));
+    return this.extension.Element(this.value.mul(this.extension.Element(q).value));
   }
 
   /** Multiplication with multiplicative inverse in the field. */
   div(q: FieldExtensionElementInput): FieldExtensionElement {
-    return this.mul(this.field.Element(q).inv());
+    return this.mul(this.extension.Element(q).inv());
   }
 
   /** Additive inverse in the field. */
   neg(): FieldExtensionElement {
-    return this.field.Element(this.value.coeffs.map(c => c.neg()));
+    return this.extension.Element(this.value.coeffs.map(c => c.neg()));
+  }
+
+  /** Exponentiation in the field. via square-and-multiply. */
+  exp(x: Number): FieldExtensionElement {
+    if (BigInt(x) === 0n) {
+      return this.extension.one;
+    }
+
+    let ans = this.extension.Element(this.value);
+    for (let e = BigInt(x) >> 1n; e > 0n; e >>= 1n) {
+      ans = ans.mul(ans);
+      if (e % 2n === 1n) {
+        ans = ans.mul(this);
+      }
+    }
+    return ans;
   }
 
   /** Multiplicative inverse in the field, using [Extended Euclidean Algorithm](https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm#Simple_algebraic_field_extensions). */
   inv(): FieldExtensionElement {
-    let [r, rr] = [this.field.poly, this.value];
-    let [t, tt] = [this.field.zero.value, this.field.one.value];
+    let [r, rr] = [this.extension.poly, this.value];
+    let [t, tt] = [this.extension.zero.value, this.extension.one.value];
 
     let quot, tmp;
-    while (!rr.eq([])) {
+    while (!rr.eq([0])) {
       quot = r.div(rr);
 
       tmp = tt;
@@ -136,7 +155,7 @@ export class FieldExtensionElement {
       throw new Error('todo error');
     }
 
-    return this.field.Element(t.scale(r.coeffs[0]));
+    return this.extension.Element(t.scale(r.coeffs[0]));
   }
 
   /** String representation of the field element, with optional symbol. */

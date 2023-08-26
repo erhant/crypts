@@ -6,6 +6,7 @@ import {Polynomial} from '../polynomials';
 
 /** A finite field. */
 export class Field {
+  /** Number of elements in the field. */
   readonly order: bigint;
 
   /** A finite field with the given (assumed to be prime) order. */
@@ -100,9 +101,20 @@ export class FieldElement {
     return this.mul(this.field.Element(n).inv());
   }
 
-  /** Exponentiation in the field. */
-  exp(n: FieldElementInput): FieldElement {
-    return this.field.Element(this.value ** this.field.Element(n).value);
+  /** Exponentiation in the field via [square-and-multiply](https://en.wikipedia.org/wiki/Exponentiation_by_squaring). */
+  exp(x: Number): FieldElement {
+    if (BigInt(x) === 0n) {
+      return this.field.one;
+    }
+
+    let ans = this.field.Element(this.value);
+    for (let e = BigInt(x) >> 1n; e > 0n; e >>= 1n) {
+      ans = ans.mul(ans);
+      if (e % 2n === 1n) {
+        ans = ans.mul(this);
+      }
+    }
+    return ans;
   }
 
   /** Additive inverse in the field. */
