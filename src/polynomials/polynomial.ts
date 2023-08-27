@@ -91,23 +91,23 @@ export class Polynomial {
   quorem(q: Polynomial): [quotient: Polynomial, remainder: Polynomial] {
     const deg_q = q.degree;
     let deg_p = this.degree;
-
     let diff = deg_p - deg_q;
-    if (diff < 0) {
-      throw new Error('Cant divide with a polynomial of higher degree.');
-    }
 
-    const quot = Array.from({length: diff + 1}, () => this.field.zero);
     const rem = this.coeffs.slice();
+    const quot = diff < 0 ? [] : Array.from({length: diff + 1}, () => this.field.zero);
 
-    for (let p = quot.length - 1; diff >= 0; diff--, deg_p--, p--) {
-      quot[p] = rem[deg_p].div(q.lead);
+    // if difference is negative, we return a zero quotient and remainder is the dividend polynomial itself
+    // otherwise, we can continue with the long-division logic
+    if (diff >= 0) {
+      for (let p = quot.length - 1; diff >= 0; diff--, deg_p--, p--) {
+        quot[p] = rem[deg_p].div(q.lead);
 
-      // subtract the newly obtained (quotient * q) from our polynomial
-      // effectively getting rid of current degree
-      q.coeffs.forEach((q_i, i) => {
-        rem[diff + i] = rem[diff + i].sub(q_i.mul(quot[p]));
-      });
+        // subtract the newly obtained (quotient * q) from our polynomial
+        // effectively getting rid of current degree
+        q.coeffs.forEach((q_i, i) => {
+          rem[diff + i] = rem[diff + i].sub(q_i.mul(quot[p]));
+        });
+      }
     }
 
     return [new Polynomial(this.field, quot), new Polynomial(this.field, rem)];

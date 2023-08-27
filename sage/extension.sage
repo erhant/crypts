@@ -3,21 +3,18 @@ from sage.all import GF
 if __name__ == "__main__":
   tests = []
 
-  for (p, q, m, o) in [
-    ([0, 2], [1, 2], [1, 0, 1], 3),
-    ([1, 0, 11], [1, 2, 3], [7, 0, 9, 1], 13)
-  ]:
-    F = GF(o) 
+  for order in [23, 2503]:
+    F = GF(order) 
     Fx = F['x']
-    m = Fx(m)
-    Fxm = GF(o^m.degree(), name="x", modulus=m)
-    p, q = Fxm(p), Fxm(q)
+    m = Fx.irreducible_element(4) # degree 4
+    Fxm = GF(order^m.degree(), name="x", modulus=m)
+    p, q = Fxm.random_element(), Fxm.random_element()
 
     tests.append({
-      "p": p.polynomial().coefficients(0),
-      "q": q.polynomial().coefficients(0),
-      "m": m.coefficients(0),
-      "o": o,
+      "p": list(map(lambda x : hex(x), p.polynomial().coefficients(0))),
+      "q": list(map(lambda x : hex(x), q.polynomial().coefficients(0))),
+      "m": list(map(lambda x : hex(x), m.coefficients(0))),
+      "o": order,
       # additive
       "add": str(p + q),
       "sub": str(p - q),

@@ -117,7 +117,7 @@ export class FieldExtensionElement {
     return this.extension.Element(this.value.coeffs.map(c => c.neg()));
   }
 
-  /** Exponentiation in the field. via square-and-multiply. */
+  /** Exponentiation in the field. via [square-and-multiply](https://en.wikipedia.org/wiki/Exponentiation_by_squaring). */
   exp(x: Number): FieldExtensionElement {
     let e = BigInt(x);
     if (e === 0n) {
@@ -169,6 +169,7 @@ export class FieldExtensionElement {
       throw new Error('This polynomial does not have an inverse.');
     }
 
+    // return (1/r) * t
     return this.extension.Element(t.scale(r.coeffs[0].inv()));
   }
 

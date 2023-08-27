@@ -3,6 +3,7 @@ from sage.all import GF, EllipticCurve
 if __name__ == "__main__":
   tests = []
 
+  # TODO generate points randomly (make sure they are not inf)
   for (ab, o, p, q) in [
     ([8, 8], 13, [10, 10], [1, 2])
   ]:
