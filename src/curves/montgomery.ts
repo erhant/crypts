@@ -1,70 +1,63 @@
 import {AffinePointInput, FieldElementInput} from '../types';
 import {Field, FieldElement} from '../fields';
 
-/** An elliptic curve with Short Weierstrass form over affine points. */
-export class AffineShortWeierstrassCurve {
+/** An elliptic curve with Montgomery form over affine points. */
+export class MontgomeryCurve {
   readonly field: Field;
-  readonly a: FieldElement;
-  readonly b: FieldElement;
+  readonly A: FieldElement;
+  readonly B: FieldElement;
 
   /**
    * An elliptic curve over a base field such that pairs of elements
-   * `(x, y)` satisfy the Affine Short Weierstrass curve equation:
+   * `(x, y)` satisfy the Montgomery curve equation:
    *
    * ```py
-   * y^2 = x^3 + a*x + b
+   * B*y^2 = x^3 + A*x^2 + x
    * ```
    */
-  constructor(field: Field, params: readonly [a: FieldElementInput, b: FieldElementInput]) {
+  constructor(field: Field, params: readonly [A: FieldElementInput, B: FieldElementInput]) {
     /** Curve parameter `a`. */
-    this.a = field.Element(params[0]);
+    this.A = field.Element(params[0]);
     /** Curve parameter `b`. */
-    this.b = field.Element(params[1]);
+    this.B = field.Element(params[1]);
     /** Base field. */
     this.field = field;
   }
 
   /** A point on the elliptic curve. */
-  Point(point: AffinePointInput): AffineShortWeierstrassCurvePoint {
-    return new AffineShortWeierstrassCurvePoint(this, point);
+  Point(point: AffinePointInput): MontgomeryCurvePoint {
+    return new MontgomeryCurvePoint(this, point);
   }
 
   /** Neutral element (point at infinity). */
-  get inf(): AffineShortWeierstrassCurvePoint {
-    return new AffineShortWeierstrassCurvePoint(this);
-  }
-
-  /** Is the curve non-singular? */
-  isNonSingular(): boolean {
-    const l = this.a.exp(3).mul(4); // 4a^3
-    const r = this.b.exp(2).mul(27); // 27b^2
-    return !l.add(r).eq(0);
+  get inf(): MontgomeryCurvePoint {
+    return new MontgomeryCurvePoint(this);
   }
 
   /** Returns `true` if given point `[x, y]` is on the curve, i.e. satisfies the curve equation. */
   isOnCurve(point: AffinePointInput): boolean {
     const [x, y] = [this.field.Element(point[0]), this.field.Element(point[1])];
-    const lhs = y.exp(2); // y^2
-    const rhs = x.exp(3).add(x.mul(this.a)).add(this.b); // x^3 + ax + b
+    const lhs = y.exp(2).mul(this.B); // B*y^2
+    const rhs = x.exp(3).add(x.exp(2).mul(this.A)).add(x); // x^3 + A*x^2 + x
     return lhs.eq(rhs);
   }
 
   /** String representation of the elliptic curve. */
   toString(): string {
-    return `y^2 = x^3 + ${this.a}*x + ${this.b}`;
+    return `${this.B}*y^2 = x^3 + ${this.A}*x^2 + x`;
   }
 }
 
 /** An affine point on an elliptic curve with Short Weierstrass form. */
-export class AffineShortWeierstrassCurvePoint {
-  readonly curve: AffineShortWeierstrassCurve;
+export class MontgomeryCurvePoint {
+  readonly curve: MontgomeryCurve;
   // coordinates
   readonly x: FieldElement;
   readonly y: FieldElement;
   // is point at infinity
   readonly inf: boolean;
 
-  constructor(curve: AffineShortWeierstrassCurve, point?: AffinePointInput) {
+  constructor(curve: MontgomeryCurve, point?: AffinePointInput) {
     this.curve = curve;
     if (point) {
       if (!curve.isOnCurve(point)) {
@@ -86,7 +79,7 @@ export class AffineShortWeierstrassCurvePoint {
   }
 
   /** Adds the point to itself, also known as the Tangent rule. */
-  private tangent(): AffineShortWeierstrassCurvePoint {
+  private tangent(): MontgomeryCurvePoint {
     if (this.inf) {
       return this.curve.inf;
     } else {
@@ -94,11 +87,15 @@ export class AffineShortWeierstrassCurvePoint {
         throw new Error('y-coordinate cant be zero.');
       }
 
-      // t := (3x^2 + a) / 2y
-      const t = this.x.exp(2).mul(3).add(this.curve.a).div(this.y.mul(2));
+      // t := (3x^2 + 2Ax + 1) / 2By
+      const t = this.x
+        .exp(2)
+        .mul(3)
+        .add(this.x.mul(this.curve.A.mul(2)))
+        .add(1);
 
-      // x' := t^2 - 2x
-      const xx = t.exp(2).sub(this.x.mul(2));
+      // x' := Bt^2 - 2x - A
+      const xx = this.curve.B.mul(t.exp(2)).sub(this.x.mul(2)).sub(this.curve.A);
 
       // y' := t(x - x') - y
       const yy = t.mul(this.x.sub(xx)).sub(this.y);
@@ -108,7 +105,7 @@ export class AffineShortWeierstrassCurvePoint {
   }
 
   /** Adds the point to another point, also known as the Chord rule. */
-  private chord(q: AffineShortWeierstrassCurvePoint): AffineShortWeierstrassCurvePoint {
+  private chord(q: MontgomeryCurvePoint): MontgomeryCurvePoint {
     if (q.inf) {
       // q is neutral element, return the point itself
       return this.inf ? this.curve.inf : this.curve.Point([this.x, this.y]);
@@ -121,18 +118,21 @@ export class AffineShortWeierstrassCurvePoint {
         }
       }
 
-      // t := (y_2 - y_1) / (x_2 - x_1)
+      // t := (y2 - y1)(x2 - x1)
       const t = q.y.sub(this.y).div(q.x.sub(this.x));
 
-      const xx = t.exp(2).sub(this.x).sub(q.x); // x' := t^2 - x_1 - x_2
-      const yy = t.mul(this.x.sub(xx)).sub(this.y); // y' := t(x_1 - x_3) - y_1
+      // x' := Bt^2 - (x1 + x2) - A
+      const xx = this.curve.B.mul(t.exp(2)).sub(this.x.add(q.x)).sub(this.curve.A);
+
+      // y' := t(x1 - x') - y1
+      const yy = t.mul(this.x.sub(xx)).sub(this.y);
 
       return this.curve.Point([xx, yy]);
     }
   }
 
   /** Add two points on the curve. */
-  add(q: AffineShortWeierstrassCurvePoint): AffineShortWeierstrassCurvePoint {
+  add(q: MontgomeryCurvePoint): MontgomeryCurvePoint {
     if (this.eq(q)) {
       return this.tangent();
     } else {
@@ -141,12 +141,12 @@ export class AffineShortWeierstrassCurvePoint {
   }
 
   /** Subtract a point from another on the curve. */
-  sub(q: AffineShortWeierstrassCurvePoint): AffineShortWeierstrassCurvePoint {
+  sub(q: MontgomeryCurvePoint): MontgomeryCurvePoint {
     return this.add(q.neg());
   }
 
   /** Additive Inverse of a point. */
-  neg(): AffineShortWeierstrassCurvePoint {
+  neg(): MontgomeryCurvePoint {
     if (this.inf) {
       return this.curve.inf;
     } else {
@@ -155,7 +155,7 @@ export class AffineShortWeierstrassCurvePoint {
   }
 
   /** Equality check with a point. */
-  eq(q: AffineShortWeierstrassCurvePoint): boolean {
+  eq(q: MontgomeryCurvePoint): boolean {
     if (this.inf && q.inf) {
       // both are inf
       return true;

@@ -23,7 +23,9 @@ The following are implemented:
 
 ### https://github.com/erhant/tscrypto/labels/elliptic%20curves
 
-- [x] [Affine Short Weierstrass](./src/curves/affineShortWeierstrass.ts)
+- [x] [Short Weierstrass (Affine)](./src/curves/affineShortWeierstrass.ts)
+- [ ] [Montgomery (Affine)](./src/curves/montgomery.ts)
+- [ ] [Twisted Edwards (Affine)](./src/curves/twised-edwards.ts)
 
 ## Testing
 

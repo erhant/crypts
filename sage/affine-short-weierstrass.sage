@@ -17,7 +17,7 @@ if __name__ == "__main__":
       "o": o,
       "ab": ab,
       "double": str((p + p).xy()),
-      "scale": str((p * (o - 1)).xy()),
+      "scale": str((p * 5).xy()),
       "add": str((p + q).xy()),
       "sub": str((p - q).xy()),
       "neg": str((-p).xy()),
