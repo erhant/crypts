@@ -1,5 +1,5 @@
 import {Field} from '../src/fields';
-import {AffineShortWeierstrassCurve} from '../src/curves';
+import {ShortWeierstrassCurve} from '../src/curves';
 
 describe('short weierstrass', () => {
   const tests = [
@@ -18,7 +18,7 @@ describe('short weierstrass', () => {
 
   tests.map(test => {
     const F = new Field(test.o);
-    const E = new AffineShortWeierstrassCurve(F, test.ab as [number, number]);
+    const E = new ShortWeierstrassCurve(F, test.ab as [number, number]);
     const p = E.Point(test.p as [string, string]);
     const q = E.Point(test.q as [string, string]);
 

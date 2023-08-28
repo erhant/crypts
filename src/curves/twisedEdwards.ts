@@ -1,4 +1,4 @@
-import {AffinePointInput, FieldElementInput, Number} from '../types';
+import {PointInput, FieldElementInput} from '../types';
 import {Field, FieldElement} from '../fields';
 import {MontgomeryCurve} from './montgomery';
 
@@ -26,7 +26,7 @@ export class TwistedEdwardsCurve {
   }
 
   /** A point on the elliptic curve. */
-  Point(point: AffinePointInput): TwistedEdwardsCurvePoint {
+  Point(point: PointInput): TwistedEdwardsCurvePoint {
     return new TwistedEdwardsCurvePoint(this, point);
   }
 
@@ -36,7 +36,7 @@ export class TwistedEdwardsCurve {
   }
 
   /** Returns `true` if given point `[x, y]` is on the curve, i.e. satisfies the curve equation. */
-  isOnCurve(point: AffinePointInput): boolean {
+  isOnCurve(point: PointInput): boolean {
     const [x, y] = [this.field.Element(point[0]), this.field.Element(point[1])];
     const [xx, yy] = [x.exp(2), y.exp(2)];
     const lhs = this.a.mul(xx).add(yy); // a*x^2 + y^2
@@ -65,7 +65,7 @@ export class TwistedEdwardsCurvePoint {
   readonly x: FieldElement;
   readonly y: FieldElement;
 
-  constructor(curve: TwistedEdwardsCurve, point: AffinePointInput) {
+  constructor(curve: TwistedEdwardsCurve, point: PointInput) {
     this.curve = curve;
     if (!curve.isOnCurve(point)) {
       throw new Error(`(${point[0]}, ${point[1]}) is not on this curve.`);

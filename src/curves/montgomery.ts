@@ -1,7 +1,7 @@
-import {AffinePointInput, FieldElementInput} from '../types';
+import {PointInput, FieldElementInput} from '../types';
 import {Field, FieldElement} from '../fields';
 import {TwistedEdwardsCurve} from './twisedEdwards';
-import {AffineShortWeierstrassCurve} from './shortWeierstrass';
+import {ShortWeierstrassCurve} from './shortWeierstrass';
 
 /** An elliptic curve with Montgomery form over affine points. */
 export class MontgomeryCurve {
@@ -27,7 +27,7 @@ export class MontgomeryCurve {
   }
 
   /** A point on the elliptic curve. */
-  Point(point: AffinePointInput): MontgomeryCurvePoint {
+  Point(point: PointInput): MontgomeryCurvePoint {
     return new MontgomeryCurvePoint(this, point);
   }
 
@@ -37,7 +37,7 @@ export class MontgomeryCurve {
   }
 
   /** Returns `true` if given point `[x, y]` is on the curve, i.e. satisfies the curve equation. */
-  isOnCurve(point: AffinePointInput): boolean {
+  isOnCurve(point: PointInput): boolean {
     const [x, y] = [this.field.Element(point[0]), this.field.Element(point[1])];
     const lhs = y.exp(2).mul(this.B); // B*y^2
     const rhs = x.exp(3).add(x.exp(2).mul(this.A)).add(x); // x^3 + A*x^2 + x
@@ -56,14 +56,14 @@ export class MontgomeryCurve {
     return new TwistedEdwardsCurve(this.field, [a, d]);
   }
 
-  toShortWeierstrass(): AffineShortWeierstrassCurve {
+  toShortWeierstrass(): ShortWeierstrassCurve {
     // (3-A^2)/(3*B^2)
     const a = this.A.exp(2).neg().add(3).div(this.B.exp(2).mul(3));
 
     // (2*A^3 - 9*A)/(27*B^3)
     const b = this.A.exp(2).mul(2).sub(this.A.mul(9)).div(this.B.exp(3).mul(27));
 
-    return new AffineShortWeierstrassCurve(this.field, [a, b]);
+    return new ShortWeierstrassCurve(this.field, [a, b]);
   }
 
   /** String representation of the elliptic curve. */
@@ -81,7 +81,7 @@ export class MontgomeryCurvePoint {
   // is point at infinity
   readonly inf: boolean;
 
-  constructor(curve: MontgomeryCurve, point?: AffinePointInput) {
+  constructor(curve: MontgomeryCurve, point?: PointInput) {
     this.curve = curve;
     if (point) {
       if (!curve.isOnCurve(point)) {

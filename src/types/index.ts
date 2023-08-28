@@ -11,4 +11,4 @@ export type FieldElementInput = Number | FieldElement;
 export type FieldExtensionElementInput = FieldElementInput[] | Polynomial | FieldExtensionElement;
 
 /** An affine point `[x, y]`. */
-export type AffinePointInput = [FieldElementInput, FieldElementInput];
+export type PointInput = [FieldElementInput, FieldElementInput];
