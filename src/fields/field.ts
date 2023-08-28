@@ -2,8 +2,6 @@ import {randomBytes} from 'crypto';
 import {FieldElementInput, Number} from '../types';
 import {Polynomial} from '../polynomials';
 
-// https://github.com/microsoft/TypeScript/issues/30355
-
 /** A finite field. */
 export class Field {
   /** Number of elements in the field. */

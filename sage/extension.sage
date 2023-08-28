@@ -1,4 +1,5 @@
 from sage.all import GF
+from sage._common import hexarr
 
 if __name__ == "__main__":
   tests = []
@@ -11,9 +12,9 @@ if __name__ == "__main__":
     p, q = Fxm.random_element(), Fxm.random_element()
 
     tests.append({
-      "p": list(map(lambda x : hex(x), p.polynomial().coefficients(0))),
-      "q": list(map(lambda x : hex(x), q.polynomial().coefficients(0))),
-      "m": list(map(lambda x : hex(x), m.coefficients(0))),
+      "p": hexarr(p.polynomial().coefficients(0)),
+      "q": hexarr(q.polynomial().coefficients(0)),
+      "m": hexarr(m.coefficients(0)),
       "o": order,
       # additive
       "add": str(p + q),

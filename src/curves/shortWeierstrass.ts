@@ -1,4 +1,4 @@
-import {AffinePointInput, FieldElementInput} from '../types';
+import {AffinePointInput, FieldElementInput, Number} from '../types';
 import {Field, FieldElement} from '../fields';
 
 /** An elliptic curve with Short Weierstrass form over affine points. */
@@ -152,6 +152,31 @@ export class AffineShortWeierstrassCurvePoint {
     } else {
       return this.curve.Point([this.x, this.y.neg()]);
     }
+  }
+
+  /** Scale a point via `double-and-add`. */
+  scale(s: Number): AffineShortWeierstrassCurvePoint {
+    if (this.inf) {
+      return this.curve.inf;
+    }
+
+    let e = BigInt(s);
+    let ans = this.curve.Point([this.x, this.y]);
+
+    if (e === 1n) {
+      return ans;
+    }
+    if (e === 2n) {
+      return ans.add(ans);
+    }
+
+    for (e >>= 1n; e > 0n; e >>= 1n) {
+      ans = ans.add(ans);
+      if (e % 2n === 1n) {
+        ans = ans.add(this);
+      }
+    }
+    return ans;
   }
 
   /** Equality check with a point. */

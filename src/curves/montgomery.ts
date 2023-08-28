@@ -1,5 +1,7 @@
 import {AffinePointInput, FieldElementInput} from '../types';
 import {Field, FieldElement} from '../fields';
+import {TwistedEdwardsCurve} from './twisedEdwards';
+import {AffineShortWeierstrassCurve} from './shortWeierstrass';
 
 /** An elliptic curve with Montgomery form over affine points. */
 export class MontgomeryCurve {
@@ -40,6 +42,28 @@ export class MontgomeryCurve {
     const lhs = y.exp(2).mul(this.B); // B*y^2
     const rhs = x.exp(3).add(x.exp(2).mul(this.A)).add(x); // x^3 + A*x^2 + x
     return lhs.eq(rhs);
+  }
+
+  toEdwards(): TwistedEdwardsCurve {
+    if (this.B.eq(0) || this.A.exp(2).eq(4)) {
+      throw new Error('Cant convert this curve to Twisted Edwards.');
+    }
+
+    const Binv = this.B.inv();
+    const a = this.A.add(2).mul(Binv);
+    const d = this.A.sub(2).mul(Binv);
+
+    return new TwistedEdwardsCurve(this.field, [a, d]);
+  }
+
+  toShortWeierstrass(): AffineShortWeierstrassCurve {
+    // (3-A^2)/(3*B^2)
+    const a = this.A.exp(2).neg().add(3).div(this.B.exp(2).mul(3));
+
+    // (2*A^3 - 9*A)/(27*B^3)
+    const b = this.A.exp(2).mul(2).sub(this.A.mul(9)).div(this.B.exp(3).mul(27));
+
+    return new AffineShortWeierstrassCurve(this.field, [a, b]);
   }
 
   /** String representation of the elliptic curve. */

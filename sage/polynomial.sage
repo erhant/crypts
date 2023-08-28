@@ -1,4 +1,5 @@
 from sage.all import GF, randrange
+from sage._common import hexarr
 
 if __name__ == "__main__": 
   tests = []
@@ -10,8 +11,8 @@ if __name__ == "__main__":
     p, q = Fx.random_element(p_deg), Fx.random_element(q_deg)
 
     tests.append({
-      "p": list(map(lambda x : hex(x), p.coefficients(0))),
-      "q": list(map(lambda x : hex(x), q.coefficients(0))),
+      "p": hexarr(p.coefficients(0)),
+      "q": hexarr(q.coefficients(0)),
       "o": hex(order),
       "lead": hex(p.leading_coefficient()),
       "deg": p.degree(),
