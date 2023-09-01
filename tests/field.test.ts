@@ -76,7 +76,7 @@ describe('finite field', () => {
         expect(n.exp(0).eq(F.one)).toBeTruthy();
       });
 
-      it.skip('legendre symbol (fails for large bigints)', () => {
+      it('legendre symbol (fails for large bigints)', () => {
         expect(legendreSymbol(n.value, BigInt(test.o))).toEqual(BigInt(test.legendre));
       });
     });

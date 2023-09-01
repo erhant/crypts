@@ -5,8 +5,11 @@ import {ShortWeierstrassCurve} from './shortWeierstrass';
 
 /** An elliptic curve with Montgomery form over affine points. */
 export class MontgomeryCurve {
+  /** Base field. */
   readonly field: Field;
+  /** Curve parameter `A`. */
   readonly A: FieldElement;
+  /** Curve parameter `B`. */
   readonly B: FieldElement;
 
   /**
@@ -18,11 +21,8 @@ export class MontgomeryCurve {
    * ```
    */
   constructor(field: Field, params: readonly [A: FieldElementInput, B: FieldElementInput]) {
-    /** Curve parameter `a`. */
     this.A = field.Element(params[0]);
-    /** Curve parameter `b`. */
     this.B = field.Element(params[1]);
-    /** Base field. */
     this.field = field;
   }
 

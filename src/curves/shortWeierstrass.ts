@@ -3,8 +3,11 @@ import {Field, FieldElement} from '../fields';
 
 /** An elliptic curve with Short Weierstrass form over affine points. */
 export class ShortWeierstrassCurve {
+  /** Base field. */
   readonly field: Field;
+  /** Curve parameter `a`. */
   readonly a: FieldElement;
+  /** Curve parameter `b`. */
   readonly b: FieldElement;
 
   /**
@@ -16,11 +19,8 @@ export class ShortWeierstrassCurve {
    * ```
    */
   constructor(field: Field, params: readonly [a: FieldElementInput, b: FieldElementInput]) {
-    /** Curve parameter `a`. */
     this.a = field.Element(params[0]);
-    /** Curve parameter `b`. */
     this.b = field.Element(params[1]);
-    /** Base field. */
     this.field = field;
   }
 

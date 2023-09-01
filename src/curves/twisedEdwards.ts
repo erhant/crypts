@@ -4,8 +4,11 @@ import {MontgomeryCurve} from './montgomery';
 
 /** An elliptic curve with Twisted Edwards form over affine points. */
 export class TwistedEdwardsCurve {
+  /** Base field. */
   readonly field: Field;
+  /** Curve parameter `a`. */
   readonly a: FieldElement;
+  /** Curve parameter `d`. */
   readonly d: FieldElement;
 
   /**
@@ -17,11 +20,8 @@ export class TwistedEdwardsCurve {
    * ```
    */
   constructor(field: Field, params: readonly [a: FieldElementInput, d: FieldElementInput]) {
-    /** Curve parameter `a`. */
     this.a = field.Element(params[0]);
-    /** Curve parameter `d`. */
     this.d = field.Element(params[1]);
-    /** Base field. */
     this.field = field;
   }
 
