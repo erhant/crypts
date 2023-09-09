@@ -1,4 +1,4 @@
-import {PointInput, FieldElementInput, Number} from '../types';
+import {PointInput, FieldElementInput, Integer} from '../types';
 import {Field, FieldElement} from '../fields';
 
 /** An elliptic curve with Short Weierstrass form over affine points. */
@@ -148,7 +148,7 @@ export class ShortWeierstrassCurvePoint {
   }
 
   /** Scale a point via `double-and-add`. */
-  scale(s: Number): ShortWeierstrassCurvePoint {
+  scale(s: Integer): ShortWeierstrassCurvePoint {
     if (this.inf) {
       return this.curve.inf;
     }

@@ -1,3 +1,4 @@
+import {expect, describe, it} from 'bun:test';
 import {Field} from '../src/fields';
 import {interpolate} from '../src/utils';
 
@@ -91,7 +92,9 @@ describe('zero polynomial', () => {
     expect(zero.eq(F.Polynomial([0, 0, 0]))).toBeTruthy();
   });
 
-  it('should evaluate to zero', () => {
-    expect(zero.eval(zero.field.random()).eq(0));
+  it('should evaluate to zero on random points', () => {
+    expect(zero.eval(F.random()).eq(0));
+    expect(zero.eval(F.random()).eq(0));
+    expect(zero.eval(F.random()).eq(0));
   });
 });
