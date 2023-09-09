@@ -1,6 +1,7 @@
+import {expect, describe, it} from 'bun:test';
 import {FieldExtension, Field} from '../src/fields';
 
-describe('field extension', () => {
+describe('field extensions', () => {
   const tests = [
     {
       p: ['0x2', '0x6', '0x12', '0x13'],

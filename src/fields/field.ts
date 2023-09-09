@@ -1,5 +1,5 @@
 import {randomBytes} from 'crypto';
-import {FieldElementInput, Number} from '../types';
+import {FieldElementInput, Integer} from '../types';
 import {Polynomial} from '../polynomials';
 
 /** A finite field. */
@@ -8,7 +8,7 @@ export class Field {
   readonly order: bigint;
 
   /** A finite field with the given (assumed to be prime) order. */
-  constructor(order: Number) {
+  constructor(order: Integer) {
     this.order = BigInt(order);
     if (this.order <= 1n) {
       throw new Error('Order must be larger than 1.');
@@ -66,7 +66,7 @@ export class FieldElement {
   readonly field: Field;
   readonly value: bigint;
 
-  constructor(field: Field, number: Number) {
+  constructor(field: Field, number: Integer) {
     this.field = field;
     this.value = BigInt(number) % field.order;
     if (this.value < 0n) {
@@ -100,7 +100,7 @@ export class FieldElement {
   }
 
   /** Exponentiation in the field via [square-and-multiply](https://en.wikipedia.org/wiki/Exponentiation_by_squaring). */
-  exp(x: Number): FieldElement {
+  exp(x: Integer): FieldElement {
     let e = BigInt(x);
     if (e === 0n) {
       return this.field.one;

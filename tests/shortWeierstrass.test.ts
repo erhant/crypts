@@ -1,3 +1,4 @@
+import {expect, describe, it} from 'bun:test';
 import {Field} from '../src/fields';
 import {ShortWeierstrassCurve} from '../src/curves';
 

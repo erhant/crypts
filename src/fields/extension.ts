@@ -1,5 +1,5 @@
 import {Field} from '.';
-import {FieldElementInput, FieldExtensionElementInput, Number} from '../types';
+import {FieldElementInput, FieldExtensionElementInput, Integer} from '../types';
 import {Polynomial} from '../polynomials';
 
 /** An extension of the finite field, defined by an irreducible polynomial from the field.
@@ -118,7 +118,7 @@ export class FieldExtensionElement {
   }
 
   /** Exponentiation in the field. via [square-and-multiply](https://en.wikipedia.org/wiki/Exponentiation_by_squaring). */
-  exp(x: Number): FieldExtensionElement {
+  exp(x: Integer): FieldExtensionElement {
     let e = BigInt(x);
     if (e === 0n) {
       return this.extension.one;

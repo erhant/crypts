@@ -1,4 +1,4 @@
-import {FieldElementInput, Number} from '../types';
+import {FieldElementInput, Integer} from '../types';
 import {Field, FieldElement} from '../fields';
 
 // https://zcash.github.io/halo2/background/polynomials.html
@@ -122,7 +122,7 @@ export class Polynomial {
   }
 
   /** Equality check with a polynomial or an array of coefficients. */
-  eq(q: Polynomial | Number[]): boolean {
+  eq(q: Polynomial | Integer[]): boolean {
     const coeffs = q instanceof Polynomial ? q.coeffs : q;
 
     if (this.coeffs.length !== coeffs.length) {
