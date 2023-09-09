@@ -1,5 +1,5 @@
 // import {TinyJubJub} from './curves/examples';
-import {Field, FieldExtension} from '../fields';
+import {Field, FieldExtension} from './src';
 
 const F3 = new Field(3);
 const F3x = F3.Polynomial([1, 0, 1]);

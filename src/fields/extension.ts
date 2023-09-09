@@ -10,7 +10,6 @@ import {Polynomial} from '../polynomials';
 export class FieldExtension {
   /** Number of elements in the extension field. */
   readonly order: bigint;
-
   /** The irreducible polynomial that is used for extension. */
   readonly poly: Polynomial;
 

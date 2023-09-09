@@ -3,12 +3,16 @@ import {Field, FieldElement} from '../fields';
 
 // https://zcash.github.io/halo2/background/polynomials.html
 
-/** A polynomial over a finite field, with coefficients as elements of that field. */
+/** A univariate polynomial over a finite field, with coefficients as elements of that field. */
 export class Polynomial {
   /** Field of the coefficients. */
   readonly field: Field;
   /** Coefficients in reverse order, i.e. `coeff[i]` stands for the coefficient of `x^i`  */
   readonly coeffs: FieldElement[];
+  /** Leading coefficient. */
+  readonly lead: bigint;
+  /** Degree of the polynomial, corresponding to the largest power of a term. */
+  readonly degree: number;
 
   /**
    * Create a polynomial with the provided coefficients within a finite field of given order.
@@ -24,16 +28,9 @@ export class Polynomial {
     while (this.coeffs.at(-1)?.eq(0)) {
       this.coeffs.pop();
     }
-  }
 
-  /** Leading coefficient. */
-  get lead(): bigint {
-    return (this.coeffs.at(this.degree) || this.field.zero).value;
-  }
-
-  /** Degree of the polynomial, corresponding to the largest power of a term. */
-  get degree(): number {
-    return Math.max(this.coeffs.length - 1, 0);
+    this.degree = Math.max(this.coeffs.length - 1, 0);
+    this.lead = (this.coeffs.at(this.degree) || this.field.zero).value;
   }
 
   /** Polynomial addition in field. */

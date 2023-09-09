@@ -2,6 +2,7 @@ from sage.all import GF, EllipticCurve
 from sage._common import hexarr
 from sage._curves import random_points
 
+
 if __name__ == "__main__":
     tests = []
 

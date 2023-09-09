@@ -31,8 +31,8 @@ The following are implemented:
 ### https://github.com/erhant/tscrypto/labels/elliptic%20curves
 
 - [x] [Short Weierstrass](./src/curves/shortWeierstrass.ts) defines an elliptic curve in Short Weierstrass form with affine points along with a point at infinity.
-- [!] [Montgomery](./src/curves/montgomery.ts) defines an elliptic curve in Montgomery form with affine points along with a point at infinity.
-- [!] [Twisted Edwards](./src/curves/twised-edwards.ts) defines an elliptic curve in Twisted Edwards form with affine points.
+- [x] [Montgomery](./src/curves/montgomery.ts) defines an elliptic curve in Montgomery form with affine points along with a point at infinity.
+- [x] [Twisted Edwards](./src/curves/twised-edwards.ts) defines an elliptic curve in Twisted Edwards form with affine points.
 
 ## Testing
 

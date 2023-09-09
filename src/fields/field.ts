@@ -6,6 +6,8 @@ import {Polynomial} from '../polynomials';
 export class Field {
   /** Number of elements in the field. */
   readonly order: bigint;
+  /** Characteristic of this field. */
+  readonly characteristic: bigint;
 
   /** A finite field with the given (assumed to be prime) order. */
   constructor(order: Integer) {
@@ -13,6 +15,8 @@ export class Field {
     if (this.order <= 1n) {
       throw new Error('Order must be larger than 1.');
     }
+
+    this.characteristic = this.order;
   }
 
   /** A field element in modulo `order`. */
@@ -40,14 +44,6 @@ export class Field {
   /** The additive identity. */
   get zero(): FieldElement {
     return this.Element(0);
-  }
-
-  /**
-   * Characteristic of this field, that is the smallest number of times one must add the multiplicative
-   * identity to itself to get the additive identity.
-   */
-  get characteristic(): bigint {
-    return this.order;
   }
 
   /** Returns a random field element. */
