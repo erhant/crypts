@@ -131,9 +131,6 @@ export class FieldExtensionElement {
     if (e === 2n) {
       return ans.mul(ans);
     }
-    if (BigInt(x) === 0n) {
-      return this.extension.one;
-    }
 
     for (e >>= 1n; e > 0n; e >>= 1n) {
       ans = ans.mul(ans);

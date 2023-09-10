@@ -29,7 +29,7 @@ export class Field {
     return new Polynomial(this, coefficients);
   }
 
-  /** Get elements in the field. */
+  /** Iterator over elements in the field. */
   *[Symbol.iterator]() {
     for (let n = 0n; n < this.order; n++) {
       yield this.Element(n);

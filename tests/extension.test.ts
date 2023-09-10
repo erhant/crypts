@@ -40,7 +40,7 @@ describe('field extensions', () => {
     const q = Fm.Element(test.q);
 
     return describe(`${Fm}: p = ${p}, q = ${q}`, () => {
-      it('additive operations', () => {
+      it('addition', () => {
         expect(p.add(q).toString()).toEqual(test.add);
 
         expect(p.neg().toString()).toEqual(test.neg);
@@ -50,7 +50,7 @@ describe('field extensions', () => {
         expect(p.sub(p).eq(Fm.zero)).toBeTruthy();
       });
 
-      it('multiplicative operations', () => {
+      it('multiplication', () => {
         expect(p.mul(q).toString()).toEqual(test.mul);
 
         expect(p.inv().toString()).toEqual(test.inv);
@@ -60,7 +60,7 @@ describe('field extensions', () => {
         expect(p.div(p).eq(Fm.one)).toBeTruthy();
       });
 
-      it('exponentation (square-and-multiply)', () => {
+      it('exponentation', () => {
         expect(p.exp(5).toString()).toEqual(test.exp);
       });
     });

@@ -7,6 +7,9 @@
  * - `-1`: number is quadratic non-residue
  */
 export function legendreSymbol(n: bigint, p: bigint): -1n | 0n | 1n {
+  if (p % 2n === 0n) {
+    throw new Error('Order must be an odd prime.');
+  }
   const last = p - 1n;
 
   // l := n ^ (p-1)/2

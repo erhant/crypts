@@ -51,7 +51,7 @@ describe('finite field', () => {
     const m = F.Element(test.m);
 
     return describe(`${F}: n = ${n}, m = ${m}`, () => {
-      it('additive operations', () => {
+      it('addition', () => {
         expect(n.add(m).eq(test.add)).toBeTruthy();
 
         expect(n.neg().eq(test.neg)).toBeTruthy();
@@ -61,7 +61,7 @@ describe('finite field', () => {
         expect(n.sub(F.zero).eq(n)).toBeTruthy();
       });
 
-      it('multiplicative operations', () => {
+      it('multiplication', () => {
         expect(n.mul(m).eq(test.mul)).toBeTruthy();
 
         expect(n.inv().eq(test.inv)).toBeTruthy();
@@ -71,7 +71,7 @@ describe('finite field', () => {
         expect(n.div(F.one).eq(n)).toBeTruthy();
       });
 
-      it('exponentation (square-and-multiply)', () => {
+      it('exponentation', () => {
         expect(n.exp(5).value).toBe(BigInt(test.exp));
         expect(n.exp(1).eq(n)).toBeTruthy();
         expect(n.exp(0).eq(F.one)).toBeTruthy();
