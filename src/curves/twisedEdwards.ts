@@ -1,9 +1,9 @@
-import {PointInput, FieldElementInput} from '../types';
+import {PointInput, FieldElementInput, Integer} from '../types';
 import {Field, FieldElement} from '../fields';
+import {CurveInterface, CurvePointInterface} from './interface';
 
 /** An elliptic curve with Twisted Edwards form over affine points. */
-export class TwistedEdwardsCurve {
-  /** Base field. */
+export class TwistedEdwardsCurve implements CurveInterface<PointInput> {
   readonly field: Field;
   /** Curve parameter `a`. */
   readonly a: FieldElement;
@@ -24,18 +24,15 @@ export class TwistedEdwardsCurve {
     this.field = field;
   }
 
-  /** A point on the elliptic curve. */
-  Point(point: PointInput): TwistedEdwardsCurvePoint {
+  Point(point: PointInput) {
     return new TwistedEdwardsCurvePoint(this, point);
   }
 
-  /** Neutral element (point at infinity). */
-  get inf(): TwistedEdwardsCurvePoint {
+  get inf() {
     return new TwistedEdwardsCurvePoint(this, [0, 1]);
   }
 
-  /** Returns `true` if given point `[x, y]` is on the curve, i.e. satisfies the curve equation. */
-  satisfies(point: PointInput): boolean {
+  satisfies(point: PointInput) {
     const [x, y] = [this.field.Element(point[0]), this.field.Element(point[1])];
     const [xx, yy] = [x.exp(2), y.exp(2)];
     const lhs = this.a.mul(xx).add(yy); // a*x^2 + y^2
@@ -43,35 +40,29 @@ export class TwistedEdwardsCurve {
     return lhs.eq(rhs);
   }
 
-  /** String representation of the elliptic curve. */
-  toString(): string {
+  toString() {
     return `${this.a}*x^2 + y^2 = 1 + ${this.d}*x^2*y^2`;
   }
 }
 
 /** An affine point on an elliptic curve with Short Weierstrass form. */
-export class TwistedEdwardsCurvePoint {
+export class TwistedEdwardsCurvePoint implements CurvePointInterface {
   readonly curve: TwistedEdwardsCurve;
-  // coordinates, no need for inf
   readonly x: FieldElement;
   readonly y: FieldElement;
+  readonly inf: boolean;
 
   constructor(curve: TwistedEdwardsCurve, point: PointInput) {
     this.curve = curve;
     if (!curve.satisfies(point)) {
       throw new Error(`(${point[0]}, ${point[1]}) is not on this curve.`);
     }
-    this.x = this.field.Element(point[0]);
-    this.y = this.field.Element(point[1]);
+    this.x = curve.field.Element(point[0]);
+    this.y = curve.field.Element(point[1]);
+    this.inf = this.x.eq(0) && this.y.eq(1);
   }
 
-  /** Base field of the curve that this point belongs to. */
-  get field(): Field {
-    return this.curve.field;
-  }
-
-  /** Add two points on the curve. */
-  add(q: TwistedEdwardsCurvePoint): TwistedEdwardsCurvePoint {
+  add(q: TwistedEdwardsCurvePoint) {
     const x1x2 = this.x.mul(q.x);
     const x1y2 = this.x.mul(q.y);
 
@@ -86,23 +77,31 @@ export class TwistedEdwardsCurvePoint {
     return this.curve.Point([xx, yy]);
   }
 
-  /** Subtract a point from another on the curve. */
-  sub(q: TwistedEdwardsCurvePoint): TwistedEdwardsCurvePoint {
+  sub(q: TwistedEdwardsCurvePoint) {
     return this.add(q.neg());
   }
 
-  /** Additive Inverse of a point. */
-  neg(): TwistedEdwardsCurvePoint {
+  neg() {
     return this.curve.Point([this.x.neg(), this.y]);
   }
 
-  /** Equality check with a point. */
-  eq(q: TwistedEdwardsCurvePoint): boolean {
+  scale(s: Integer) {
+    let ans = this.curve.inf;
+    let base = this.curve.Point([this.x, this.y]);
+    for (let e = BigInt(s); e > 0n; e >>= 1n) {
+      if (e % 2n === 1n) {
+        ans = ans.add(base);
+      }
+      base = base.add(base);
+    }
+    return ans;
+  }
+
+  eq(q: TwistedEdwardsCurvePoint) {
     return this.x.eq(q.x) && this.y.eq(q.y);
   }
 
-  /** String representation of the affine curve point. */
-  toString(): string {
+  toString() {
     return `(${this.x}, ${this.y})`;
   }
 }

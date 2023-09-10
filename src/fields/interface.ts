@@ -26,6 +26,9 @@ export interface FieldInterface<I> {
 }
 
 export interface FieldElementInterface<I> {
+  /** The field that this element belongs to. */
+  readonly field: FieldInterface<I>;
+
   /** Equality check with a field elements or number. */
   eq(n: I): boolean;
 

@@ -1,9 +1,9 @@
-import {PointInput, FieldElementInput} from '../types';
+import {PointInput, FieldElementInput, Integer} from '../types';
 import {Field, FieldElement} from '../fields';
+import type {CurveInterface, CurvePointInterface} from './interface';
 
 /** An elliptic curve with Montgomery form over affine points. */
-export class MontgomeryCurve {
-  /** Base field. */
+export class MontgomeryCurve implements CurveInterface<PointInput> {
   readonly field: Field;
   /** Curve parameter `A`. */
   readonly A: FieldElement;
@@ -24,37 +24,31 @@ export class MontgomeryCurve {
     this.field = field;
   }
 
-  /** A point on the elliptic curve. */
-  Point(point: PointInput): MontgomeryCurvePoint {
+  Point(point: PointInput) {
     return new MontgomeryCurvePoint(this, point);
   }
 
-  /** Neutral element (point at infinity). */
-  get inf(): MontgomeryCurvePoint {
+  get inf() {
     return new MontgomeryCurvePoint(this);
   }
 
-  /** Returns `true` if given point `[x, y]` is on the curve, i.e. satisfies the curve equation. */
-  satisfies(point: PointInput): boolean {
+  satisfies(point: PointInput) {
     const [x, y] = [this.field.Element(point[0]), this.field.Element(point[1])];
     const lhs = y.exp(2).mul(this.B); // B*y^2
     const rhs = x.exp(3).add(x.exp(2).mul(this.A)).add(x); // x^3 + A*x^2 + x
     return lhs.eq(rhs);
   }
 
-  /** String representation of the elliptic curve. */
   toString(): string {
     return `${this.B}*y^2 = x^3 + ${this.A}*x^2 + x`;
   }
 }
 
 /** An affine point on an elliptic curve with Short Weierstrass form. */
-export class MontgomeryCurvePoint {
+export class MontgomeryCurvePoint implements CurvePointInterface {
   readonly curve: MontgomeryCurve;
-  // coordinates
   readonly x: FieldElement;
   readonly y: FieldElement;
-  // is point at infinity
   readonly inf: boolean;
 
   constructor(curve: MontgomeryCurve, point?: PointInput) {
@@ -63,23 +57,18 @@ export class MontgomeryCurvePoint {
       if (!curve.satisfies(point)) {
         throw new Error(`(${point[0]}, ${point[1]}) is not on this curve.`);
       }
-      this.x = this.field.Element(point[0]);
-      this.y = this.field.Element(point[1]);
+      this.x = curve.field.Element(point[0]);
+      this.y = curve.field.Element(point[1]);
       this.inf = false;
     } else {
-      this.x = this.field.zero; // arbitrary
-      this.y = this.field.zero; // arbitrary
+      this.x = curve.field.zero; // arbitrary
+      this.y = curve.field.zero; // arbitrary
       this.inf = true;
     }
   }
 
-  /** Base field of the curve that this point belongs to. */
-  get field(): Field {
-    return this.curve.field;
-  }
-
   /** Adds the point to itself, also known as the Tangent rule. */
-  private tangent(): MontgomeryCurvePoint {
+  private tangent() {
     if (this.inf) {
       return this.curve.inf;
     } else {
@@ -105,7 +94,7 @@ export class MontgomeryCurvePoint {
   }
 
   /** Adds the point to another point, also known as the Chord rule. */
-  private chord(q: MontgomeryCurvePoint): MontgomeryCurvePoint {
+  private chord(q: MontgomeryCurvePoint) {
     if (q.inf) {
       // q is neutral element, return the point itself
       return this.inf ? this.curve.inf : this.curve.Point([this.x, this.y]);
@@ -131,8 +120,7 @@ export class MontgomeryCurvePoint {
     }
   }
 
-  /** Add two points on the curve. */
-  add(q: MontgomeryCurvePoint): MontgomeryCurvePoint {
+  add(q: MontgomeryCurvePoint) {
     if (this.eq(q)) {
       return this.tangent();
     } else {
@@ -140,13 +128,11 @@ export class MontgomeryCurvePoint {
     }
   }
 
-  /** Subtract a point from another on the curve. */
-  sub(q: MontgomeryCurvePoint): MontgomeryCurvePoint {
+  sub(q: MontgomeryCurvePoint) {
     return this.add(q.neg());
   }
 
-  /** Additive Inverse of a point. */
-  neg(): MontgomeryCurvePoint {
+  neg() {
     if (this.inf) {
       return this.curve.inf;
     } else {
@@ -154,8 +140,19 @@ export class MontgomeryCurvePoint {
     }
   }
 
-  /** Equality check with a point. */
-  eq(q: MontgomeryCurvePoint): boolean {
+  scale(s: Integer) {
+    let ans = this.curve.inf;
+    let base = this.curve.Point([this.x, this.y]);
+    for (let e = BigInt(s); e > 0n; e >>= 1n) {
+      if (e % 2n === 1n) {
+        ans = ans.add(base);
+      }
+      base = base.add(base);
+    }
+    return ans;
+  }
+
+  eq(q: MontgomeryCurvePoint) {
     if (this.inf && q.inf) {
       // both are inf
       return true;
@@ -168,8 +165,7 @@ export class MontgomeryCurvePoint {
     }
   }
 
-  /** String representation of the affine curve point. */
-  toString(): string {
+  toString() {
     return this.inf ? 'inf' : `(${this.x}, ${this.y})`;
   }
 }

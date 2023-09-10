@@ -1,49 +1,49 @@
 import {expect, describe, it} from 'bun:test';
 import {Field, legendreSymbol} from '../src/fields';
 
-describe('finite field', () => {
-  const tests = [
-    {
-      n: '0x3',
-      m: '0xc',
-      o: '0x17',
-      add: '0xf',
-      sub: '0xe',
-      neg: '0x14',
-      mul: '0xd',
-      div: '0x6',
-      inv: '0x8',
-      exp: '0xd',
-      legendre: 1,
-    },
-    {
-      n: '0x6da',
-      m: '0x3cb',
-      o: '0x9c7',
-      add: '0xde',
-      sub: '0x30f',
-      neg: '0x2ed',
-      mul: '0x446',
-      div: '0x2d1',
-      inv: '0x108',
-      exp: '0x874',
-      legendre: -1,
-    },
-    {
-      n: '0xa34fc3ea62b6a881',
-      m: '0xcfd998c4b6b5f52e',
-      o: '0xffffffff00000001',
-      add: '0x73295cb0196c9dae',
-      sub: '0xd3762b24ac00b354',
-      neg: '0x5cb03c149d495780',
-      mul: '0x736c18866f3f1a76',
-      div: '0xe04c04834279e6b8',
-      inv: '0xeefd77b17a818a1e',
-      exp: '0xca6026c13235743e',
-      legendre: 1,
-    },
-  ];
+const tests = [
+  {
+    n: '0x3',
+    m: '0xc',
+    o: '0x17',
+    add: '0xf',
+    sub: '0xe',
+    neg: '0x14',
+    mul: '0xd',
+    div: '0x6',
+    inv: '0x8',
+    exp: '0xd',
+    legendre: 1,
+  },
+  {
+    n: '0x6da',
+    m: '0x3cb',
+    o: '0x9c7',
+    add: '0xde',
+    sub: '0x30f',
+    neg: '0x2ed',
+    mul: '0x446',
+    div: '0x2d1',
+    inv: '0x108',
+    exp: '0x874',
+    legendre: -1,
+  },
+  {
+    n: '0xa34fc3ea62b6a881',
+    m: '0xcfd998c4b6b5f52e',
+    o: '0xffffffff00000001',
+    add: '0x73295cb0196c9dae',
+    sub: '0xd3762b24ac00b354',
+    neg: '0x5cb03c149d495780',
+    mul: '0x736c18866f3f1a76',
+    div: '0xe04c04834279e6b8',
+    inv: '0xeefd77b17a818a1e',
+    exp: '0xca6026c13235743e',
+    legendre: 1,
+  },
+];
 
+describe('prime field', () => {
   tests.map(test => {
     const F = new Field(test.o);
     const n = F.Element(test.n);
