@@ -1,5 +1,6 @@
 import {expect, describe, it} from 'bun:test';
 import {FieldExtension, Field} from '../src/fields';
+import {Polynomial} from '../src';
 
 describe('field extensions', () => {
   const tests = [
@@ -33,7 +34,7 @@ describe('field extensions', () => {
 
   tests.map(test => {
     const F = new Field(test.o);
-    const m = F.Polynomial(test.m);
+    const m = new Polynomial(F, test.m);
 
     const Fm = new FieldExtension(m);
     const p = Fm.Element(test.p);

@@ -1,12 +1,15 @@
 import {randomBytes} from 'crypto';
 import {FieldElementInput, Integer} from '../types';
-import {Polynomial} from '../polynomials';
+import type {FieldElementInterface, FieldInterface} from './interface';
+
+/** A small utility function to extract the underlying value of a field element. */
+function into(n: FieldElementInput): bigint {
+  return n instanceof FieldElement ? n.value : BigInt(n);
+}
 
 /** A finite field. */
-export class Field {
-  /** Number of elements in the field. */
+export class Field implements FieldInterface<FieldElementInput> {
   readonly order: bigint;
-  /** Characteristic of this field. */
   readonly characteristic: bigint;
 
   /** A finite field with the given (assumed to be prime) order. */
@@ -19,114 +22,89 @@ export class Field {
     this.characteristic = this.order;
   }
 
-  /** A field element in modulo `order`. */
-  Element(n: FieldElementInput): FieldElement {
-    return new FieldElement(this, n instanceof FieldElement ? n.value : n);
+  Element(n: Integer | FieldElement) {
+    return new FieldElement(this, into(n));
   }
 
-  /** A polynomial with coefficients over the field. */
-  Polynomial(coefficients: FieldElementInput[]): Polynomial {
-    return new Polynomial(this, coefficients);
-  }
-
-  /** Iterator over elements in the field. */
   *[Symbol.iterator]() {
     for (let n = 0n; n < this.order; n++) {
       yield this.Element(n);
     }
   }
 
-  /** The multiplicative identity. */
-  get one(): FieldElement {
+  get one() {
     return this.Element(1);
   }
 
-  /** The additive identity. */
-  get zero(): FieldElement {
+  get zero() {
     return this.Element(0);
   }
 
-  /** Returns a random field element. */
-  random(): FieldElement {
-    return this.Element(BigInt('0x' + randomBytes(this.order.toString(8).length).toString('hex')));
+  random() {
+    const bytes = randomBytes(this.order.toString(8).length);
+    return this.Element(BigInt('0x' + bytes.toString('hex')));
   }
 
-  /** String representation of the field. */
   toString(): string {
     return `GF(${this.order})`;
   }
 }
 
 /** An element in the finite field. */
-export class FieldElement {
+export class FieldElement implements FieldElementInterface<FieldElementInput> {
   readonly field: Field;
   readonly value: bigint;
 
-  constructor(field: Field, number: Integer) {
+  constructor(field: Field, value: bigint) {
     this.field = field;
-    this.value = BigInt(number) % field.order;
+    this.value = value % field.order;
     if (this.value < 0n) {
       this.value += field.order;
     }
   }
 
-  /** Equality check with a field elements or number. */
-  eq(n: FieldElementInput): boolean {
-    return this.value === this.field.Element(n).value;
+  /** Create a new element in the same field. */
+  new(n: FieldElementInput) {
+    return this.field.Element(n);
   }
 
-  /** Addition in the field. */
-  add(n: FieldElementInput): FieldElement {
-    return this.field.Element(this.value + this.field.Element(n).value);
+  eq(n: FieldElementInput) {
+    return this.value === into(n);
   }
 
-  /** Addition with additive inverse in the field. */
-  sub(n: FieldElementInput): FieldElement {
-    return this.add(this.field.Element(n).neg());
+  add(n: FieldElementInput) {
+    return this.new(this.value + into(n));
   }
 
-  /** Multiplication in the field. */
-  mul(n: FieldElementInput): FieldElement {
-    return this.field.Element(this.value * this.field.Element(n).value);
+  sub(n: FieldElementInput) {
+    return this.add(this.new(n).neg());
   }
 
-  /** Multiplication with multiplicative inverse in the field. */
-  div(n: FieldElementInput): FieldElement {
-    return this.mul(this.field.Element(n).inv());
+  mul(n: FieldElementInput) {
+    return this.new(this.value * into(n));
   }
 
-  /** Exponentiation in the field via [square-and-multiply](https://en.wikipedia.org/wiki/Exponentiation_by_squaring). */
-  exp(x: Integer): FieldElement {
-    let e = BigInt(x);
-    if (e === 0n) {
-      return this.field.one;
-    }
+  div(n: FieldElementInput) {
+    return this.mul(this.new(n).inv());
+  }
 
-    let ans = this.field.Element(this.value);
-
-    if (e === 1n) {
-      return ans;
-    }
-    if (e === 2n) {
-      return ans.mul(ans);
-    }
-
-    for (e >>= 1n; e > 0n; e >>= 1n) {
-      ans = ans.mul(ans);
+  exp(x: Integer) {
+    let ans = this.field.one;
+    let base = this.new(this);
+    for (let e = BigInt(x); e > 0n; e >>= 1n) {
       if (e % 2n === 1n) {
-        ans = ans.mul(this);
+        ans = ans.mul(base);
       }
+      base = base.mul(base);
     }
     return ans;
   }
 
-  /** Additive inverse in the field. */
-  neg(): FieldElement {
-    return this.field.Element(BigInt(this.field.order) - this.value);
+  neg() {
+    return this.new(this.field.order - this.value);
   }
 
-  /** Multiplicative inverse in the field, using [Extended Euclidean Algorithm](https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm#Modular_integers). */
-  inv(): FieldElement {
+  inv() {
     let [r, rr] = [this.field.order, this.value];
     let [t, tt] = [0n, 1n];
 
@@ -153,8 +131,7 @@ export class FieldElement {
     return this.field.Element(t);
   }
 
-  /** String representation of the field element, with optional radix. */
-  toString(radix?: number): string {
+  toString(radix?: number) {
     return this.value.toString(radix);
   }
 }

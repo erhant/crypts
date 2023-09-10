@@ -35,7 +35,7 @@ export class ShortWeierstrassCurve {
   }
 
   /** Returns `true` if given point `[x, y]` is on the curve, i.e. satisfies the curve equation. */
-  isOnCurve(point: PointInput): boolean {
+  satisfies(point: PointInput): boolean {
     const [x, y] = [this.field.Element(point[0]), this.field.Element(point[1])];
     const lhs = y.exp(2); // y^2
     const rhs = x.exp(3).add(x.mul(this.a)).add(this.b); // x^3 + ax + b
@@ -60,7 +60,7 @@ export class ShortWeierstrassCurvePoint {
   constructor(curve: ShortWeierstrassCurve, point?: PointInput) {
     this.curve = curve;
     if (point) {
-      if (!curve.isOnCurve(point)) {
+      if (!curve.satisfies(point)) {
         throw new Error(`(${point[0]}, ${point[1]}) is not on this curve.`);
       }
       this.x = this.field.Element(point[0]);
@@ -126,7 +126,9 @@ export class ShortWeierstrassCurvePoint {
 
   /** Add two points on the curve. */
   add(q: ShortWeierstrassCurvePoint): ShortWeierstrassCurvePoint {
-    if (this.eq(q)) {
+    if (this.inf) {
+      return q;
+    } else if (this.eq(q)) {
       return this.tangent();
     } else {
       return this.chord(q);
@@ -149,25 +151,13 @@ export class ShortWeierstrassCurvePoint {
 
   /** Scale a point via `double-and-add`. */
   scale(s: Integer): ShortWeierstrassCurvePoint {
-    if (this.inf) {
-      return this.curve.inf;
-    }
-
-    let e = BigInt(s);
-    let ans = this.curve.Point([this.x, this.y]);
-
-    if (e === 1n) {
-      return ans;
-    }
-    if (e === 2n) {
-      return ans.add(ans);
-    }
-
-    for (e >>= 1n; e > 0n; e >>= 1n) {
-      ans = ans.add(ans);
+    let ans = this.curve.inf;
+    let base = this.curve.Point([this.x, this.y]);
+    for (let e = BigInt(s); e > 0n; e >>= 1n) {
       if (e % 2n === 1n) {
-        ans = ans.add(this);
+        ans = ans.add(base);
       }
+      base = base.add(base);
     }
     return ans;
   }

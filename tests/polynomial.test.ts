@@ -1,6 +1,7 @@
 import {expect, describe, it} from 'bun:test';
 import {Field} from '../src/fields';
-import {interpolate} from '../src/utils';
+import {interpolate} from '../src/polynomials';
+import {Polynomial} from '../src';
 
 describe('polynomials', () => {
   const tests = [
@@ -38,8 +39,8 @@ describe('polynomials', () => {
 
   tests.map(test => {
     const F = new Field(test.o);
-    const p = F.Polynomial(test.p);
-    const q = F.Polynomial(test.q);
+    const p = new Polynomial(F, test.p);
+    const q = new Polynomial(F, test.q);
 
     return describe(`${F}: p = ${p}, q = ${q}`, () => {
       it('lead & degree', () => {
@@ -86,10 +87,10 @@ describe('lagrange interpolation', () => {
 
 describe('zero polynomial', () => {
   const F = new Field(13);
-  const zero = F.Polynomial([]);
+  const zero = new Polynomial(F, []);
 
   it('should be equal to an only-zero-padded polynomial', () => {
-    expect(zero.eq(F.Polynomial([0, 0, 0]))).toBeTruthy();
+    expect(zero.eq(new Polynomial(F, [0, 0, 0]))).toBeTruthy();
   });
 
   it('should evaluate to zero on random points', () => {

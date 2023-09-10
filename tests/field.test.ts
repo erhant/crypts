@@ -1,6 +1,5 @@
 import {expect, describe, it} from 'bun:test';
-import {Field} from '../src/fields';
-import {legendreSymbol} from '../src/utils';
+import {Field, legendreSymbol} from '../src/fields';
 
 describe('finite field', () => {
   const tests = [
@@ -77,8 +76,8 @@ describe('finite field', () => {
         expect(n.exp(0).eq(F.one)).toBeTruthy();
       });
 
-      it.skip('legendre symbol (fails for large bigints)', () => {
-        expect(legendreSymbol(n.value, BigInt(test.o))).toEqual(BigInt(test.legendre));
+      it('legendre symbol', () => {
+        expect(legendreSymbol(n)).toEqual(test.legendre);
       });
     });
   });

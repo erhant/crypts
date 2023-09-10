@@ -20,7 +20,7 @@ export class Polynomial {
    *
    * Right-padded zeros are ignored.
    */
-  constructor(field: Field, coefficients: FieldElementInput[]) {
+  constructor(field: Field, coefficients: (Integer | FieldElement)[]) {
     this.field = field;
     this.coeffs = coefficients.map(c => field.Element(c));
 
@@ -119,7 +119,7 @@ export class Polynomial {
   }
 
   /** Equality check with a polynomial or an array of coefficients. */
-  eq(q: Polynomial | Integer[]): boolean {
+  eq(q: Polynomial | FieldElementInput[]): boolean {
     const coeffs = q instanceof Polynomial ? q.coeffs : q;
 
     if (this.coeffs.length !== coeffs.length) {

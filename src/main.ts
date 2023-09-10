@@ -1,12 +1,11 @@
 // import {TinyJubJub} from './curves/examples';
-import {Field, FieldExtension} from '.';
+import {Field} from '.';
 
-const F3 = new Field(3);
-const F3x = F3.Polynomial([1, 0, 1]);
-const F3_2 = new FieldExtension(F3x);
+if (import.meta.path === Bun.main) {
+  const F3 = new Field(23);
+  const n = F3.Element(3);
 
-const p = F3_2.Element([1, 2]);
-const q = F3_2.Element([0, 1]);
-
-console.log(p.inv() + '');
-console.log(q.inv() + '\n');
+  for (const m of F3) {
+    console.log(`${n}^${m}\t${n.exp(m.value)}\t${n.value ** m.value % 23n}`);
+  }
+}
