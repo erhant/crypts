@@ -1,43 +1,50 @@
-# TSCrypto
-
-Basically cryptography & math stuff in TypeScript, totally for educational purposes. The code here is probably as unoptimized as it may get, but I try to take more care on DX for the API. This project uses [Bun](https://bun.sh/).
+<p align="center">
+  <h1 align="center">
+    ⚰️ <code>crypts</code> ⚰️ 
+  </h1>
+  <p align="center">
+    <i>HollowDB is a decentralized privacy-preserving key-value database on Arweave network, powered by Warp Contracts.</i>
+  </p>
+</p>
 
 ## Usage
 
-Use the following commands:
-
-```sh
-bun start # run the code
-bun test # run tests
-bun format # format with prettier
-bun lint # lint with eslint
-```
+TODO
 
 ## Implementations
 
 The following are implemented:
 
-### https://github.com/erhant/tscrypto/labels/finite%20fields
+### https://github.com/erhant/crypts/labels/finite%20fields
 
 - [x] [Field](./src/fields/field.ts) defines a finite field of prime order.
 - [x] [Field Extension](./src/fields/extension.ts) defines an extension of an existing field using an irreducible polynomial.
-- [x] [Legendre Symbol](./src/utils/legendre.ts) is a utility function that can tell whether a number is quadratic residue or non-residue.
+- [x] [Legendre Symbol](./src/fields/legendre.ts) is a utility function that can tell whether a number is quadratic residue or non-residue.
 
-### https://github.com/erhant/tscrypto/labels/polynomials
+### https://github.com/erhant/crypts/labels/polynomials
 
 - [x] [Polynomials](./src/polynomials/polynomial.ts) defines a polynomial with coefficients in a finite field.
-- [x] [Lagrange Interpolation](./src/utils/lagrange.ts) is a method to construct a polynomial based on point evaluations
+- [x] [Lagrange Interpolation](./src/polynomials/lagrange.ts) is a method to construct a polynomial based on point evaluations
 
-### https://github.com/erhant/tscrypto/labels/elliptic%20curves
+### https://github.com/erhant/crypts/labels/elliptic%20curves
 
 - [x] [Short Weierstrass](./src/curves/shortWeierstrass.ts) defines an elliptic curve in Short Weierstrass form with affine points along with a point at infinity.
 - [x] [Montgomery](./src/curves/montgomery.ts) defines an elliptic curve in Montgomery form with affine points along with a point at infinity.
-- [x] [Twisted Edwards](./src/curves/twised-edwards.ts) defines an elliptic curve in Twisted Edwards form with affine points.
+- [x] [Twisted Edwards](./src/curves/twisedEdwards.ts) defines an elliptic curve in Twisted Edwards form with affine points.
 
 ## Testing
 
-We prepare our test cases using SageMath via the scripts under [sage](./sage/) folder. Each Sage script there prints an array of test cases that can be copy-pasted to their respective tests. To run all tests, do:
+We prepare our test cases using SageMath, and then try to match the results obtained there using our implementations. To run all tests, do:
 
 ```sh
 bun test
+```
+
+## Styling
+
+Check the formatting and lint everything with the following commands:
+
+```sh
+bun format
+bun lint
 ```

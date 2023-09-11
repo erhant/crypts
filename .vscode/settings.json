@@ -4,7 +4,8 @@
     "curves": "Animation",
     "fields": "Import",
     "polynomials": "Include",
-    "Sage": "Functions"
+    "Sage": "Python",
+    "Primes": "Delta"
   },
   // https://raw.githubusercontent.com/PKief/vscode-material-icon-theme/main/images/fileIcons.png
   "material-icon-theme.files.associations": {
