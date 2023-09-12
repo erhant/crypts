@@ -3,7 +3,7 @@
     ⚰️ <code>crypts</code> ⚰️ 
   </h1>
   <p align="center">
-    <i>HollowDB is a decentralized privacy-preserving key-value database on Arweave network, powered by Warp Contracts.</i>
+    <i>Finite fields, polynomials, elliptic curves and much more; for educational purposes!</i>
   </p>
 </p>
 

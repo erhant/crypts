@@ -3,7 +3,7 @@ import {Field, FieldElement} from '../fields';
 import type {CurveInterface, CurvePointInterface} from './interface';
 
 /** An elliptic curve with Short Weierstrass form over affine points. */
-export class ShortWeierstrassCurve implements CurveInterface<PointInput> {
+export class ShortWeierstrassCurve implements CurveInterface<PointInput, FieldElement> {
   readonly field: Field;
   /** Curve parameter `a`. */
   readonly a: FieldElement;
@@ -45,7 +45,7 @@ export class ShortWeierstrassCurve implements CurveInterface<PointInput> {
 }
 
 /** An affine point on an elliptic curve with Short Weierstrass form. */
-export class ShortWeierstrassCurvePoint implements CurvePointInterface {
+export class ShortWeierstrassCurvePoint implements CurvePointInterface<PointInput, FieldElement> {
   readonly curve: ShortWeierstrassCurve;
   readonly x: FieldElement;
   readonly y: FieldElement;

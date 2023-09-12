@@ -3,7 +3,7 @@ import {Field, FieldElement} from '../fields';
 import {CurveInterface, CurvePointInterface} from './interface';
 
 /** An elliptic curve with Twisted Edwards form over affine points. */
-export class TwistedEdwardsCurve implements CurveInterface<PointInput> {
+export class TwistedEdwardsCurve implements CurveInterface<PointInput, FieldElement> {
   readonly field: Field;
   /** Curve parameter `a`. */
   readonly a: FieldElement;
@@ -46,7 +46,7 @@ export class TwistedEdwardsCurve implements CurveInterface<PointInput> {
 }
 
 /** An affine point on an elliptic curve with Short Weierstrass form. */
-export class TwistedEdwardsCurvePoint implements CurvePointInterface {
+export class TwistedEdwardsCurvePoint implements CurvePointInterface<PointInput, FieldElement> {
   readonly curve: TwistedEdwardsCurve;
   readonly x: FieldElement;
   readonly y: FieldElement;

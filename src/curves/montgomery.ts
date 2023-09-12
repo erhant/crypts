@@ -3,7 +3,7 @@ import {Field, FieldElement} from '../fields';
 import type {CurveInterface, CurvePointInterface} from './interface';
 
 /** An elliptic curve with Montgomery form over affine points. */
-export class MontgomeryCurve implements CurveInterface<PointInput> {
+export class MontgomeryCurve implements CurveInterface<PointInput, FieldElement> {
   readonly field: Field;
   /** Curve parameter `A`. */
   readonly A: FieldElement;
@@ -45,7 +45,7 @@ export class MontgomeryCurve implements CurveInterface<PointInput> {
 }
 
 /** An affine point on an elliptic curve with Short Weierstrass form. */
-export class MontgomeryCurvePoint implements CurvePointInterface {
+export class MontgomeryCurvePoint implements CurvePointInterface<PointInput, FieldElement> {
   readonly curve: MontgomeryCurve;
   readonly x: FieldElement;
   readonly y: FieldElement;

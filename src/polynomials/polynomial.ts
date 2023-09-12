@@ -173,18 +173,4 @@ export class Polynomial {
           .reverse()
           .join(' + ');
   }
-
-  /** Is this an irreducible polynomial?
-   *
-   * To see this, we evaluate the polynomial on all points to see if has a zero,
-   * so try not to use it with large fields.
-   */
-  isIrredicuble(): boolean {
-    for (const p of this.field) {
-      if (this.eval(p).eq(0)) {
-        return false;
-      }
-    }
-    return true;
-  }
 }
