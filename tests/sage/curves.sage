@@ -1,25 +1,44 @@
-from sage.all import GF, EllipticCurve
+from sage.all import GF, EllipticCurve, is_prime
 from sage._common import hexarr, random_points
 
 
-# Short Weiestrass curve to Montgomery curve
-def sw_to_mont(a, b, s, z0):
-    return 0  # TODO
+class Converter:
+    F: GF
+    # TODO: add curve params
 
+    def __init__(self, order: int):
+        assert is_prime(order)
+        self.F = GF(order)
 
-# Short Weiestrass point to Montgomery point
-def sw_to_mont_point(pt, s, z0):
-    return (s * (pt[0] - z0), s * pt[1])
+    def sw_to_mont(self, a, b, s, z0):
+        """
+        Short Weiestrass curve to Montgomery curve
 
+        MoonMath Manual, Page 90
+        """
 
-# Montgomery curve to Twisted Edwards curve
-def mont_to_ted(pt):
-    return 0  # TODO
+        return 0  # TODO
 
+    # Short Weiestrass point to Montgomery point
+    def sw_to_mont_point(self, pt, s, z0):
+        """
+        Short Weiestrass curve to Montgomery curve
 
-# Montgomery point to Twisted Edwards point
-def mont_to_ted_point(pt):
-    return (pt[0] / pt[1], (pt[0] - 1) / (pt[0] + 1))
+        MoonMath Manual, Page 92
+        """
+
+        # z0 must be root of z^3 + az + b
+        assert self.F["z"]([b, a, 0, 1])(z0) == 0
+
+        return (s * (pt[0] - z0), s * pt[1])
+
+    # Montgomery curve to Twisted Edwards curve
+    def mont_to_ted(pt):
+        return 0  # TODO
+
+    # Montgomery point to Twisted Edwards point
+    def mont_to_ted_point(pt):
+        return (pt[0] / pt[1], (pt[0] - 1) / (pt[0] + 1))
 
 
 if __name__ == "__main__":
@@ -40,7 +59,7 @@ if __name__ == "__main__":
                 "sw": {
                     "p": hexarr(p.xy()),
                     "q": hexarr(q.xy()),
-                    "params": sw_params,
+                    "params": params,
                     "double": str((p + p).xy()),
                     "scale": str((p * 5).xy()),
                     "add": str((p + q).xy()),

@@ -1,11 +1,13 @@
 <p align="center">
   <h1 align="center">
-    ⚰️ <code>crypts</code> ⚰️ 
+    <code>crypts</code>
   </h1>
   <p align="center">
     <i>Finite fields, polynomials, elliptic curves and much more; for educational purposes!</i>
   </p>
 </p>
+
+<img src="https://img.shields.io/badge/%E2%99%A5-14151B?logo=bun&logoColor=white" alt="bun love"/>
 
 ## Usage
 
