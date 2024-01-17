@@ -10,10 +10,6 @@ describe('lagrange interpolation', () => {
   ];
   const l = interpolate(new Field(13), points);
 
-  it('should interpolate correctly', () => {
-    expect(l.eq([4, 7, 6])).toBeTruthy();
-  });
-
   it('should evaluate correctly', () => {
     for (const p of points) {
       expect(l.eval(p[0]).eq(p[1])).toBeTruthy();

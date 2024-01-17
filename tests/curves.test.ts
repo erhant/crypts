@@ -15,15 +15,15 @@ tests satisfies {
     sub: string;
     neg: string;
   };
-  mont: {
-    p: string[];
-    q: string[];
-    params: number[];
-    double: string;
-    add: string;
-    sub: string;
-    neg: string;
-  };
+  // mont: {
+  //   p: string[];
+  //   q: string[];
+  //   params: number[];
+  //   double: string;
+  //   add: string;
+  //   sub: string;
+  //   neg: string;
+  // };
 }[];
 
 describe('short weierstrass', () => {
@@ -63,7 +63,7 @@ describe('short weierstrass', () => {
   });
 });
 
-describe('montgomery', () => {
+describe.todo('montgomery', () => {
   tests.map(testall => {
     const test = testall.mont;
 

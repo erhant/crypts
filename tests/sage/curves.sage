@@ -1,23 +1,25 @@
-from sage.all import GF, EllipticCurve, is_prime
+from sage.all import GF, EllipticCurve, is_prime, Field, FieldElement
 from sage._common import hexarr, random_points
 
 
 class SW_MONT_Converter:
-    F: GF # type: ignore
-    a: int
-    b: int
+    F: Field
+    a: FieldElement
+    b: FieldElement
 
-
-    def __init__(self, order, a, b):
-        assert is_prime(order)
+    def __init__(self, order: int, a: int, b: int):
+        assert is_prime(order), "expected prime"
         self.F = GF(order)
+        self.a = self.F(a)
+        self.b = self.F(b)
 
-    def sw_to_mont(self s, z0):
+    def sw_to_mont(self, s, z0):
         """
         Short Weiestrass curve to Montgomery curve
 
         MoonMath Manual, Page 90
         """
+        E = EllipticCurve(self.F, [self.a, self.b])
 
         return 0  # TODO
 
@@ -30,7 +32,7 @@ class SW_MONT_Converter:
         """
 
         # z0 must be root of z^3 + az + b
-        assert self.F["z"]([b, a, 0, 1])(z0) == 0
+        assert self.F["z"]([self.b, self.a, 0, 1])(z0) == 0
 
         return (s * (pt[0] - z0), s * pt[1])
 
@@ -60,16 +62,16 @@ if __name__ == "__main__":
                     "sub": str((p - q).xy()),
                     "neg": str((-p).xy()),
                 },
-                "mont": {
-                    "p": hexarr(pM),
-                    "q": hexarr(qM),
-                    "params": mont_params,
-                    "double": str(M.add(pM, pM)),
-                    # "scale": str((p * 5).xy()),
-                    "add": str(M.add(pM, qM)),
-                    "sub": str(M.add(pM, M.inverse(qM))),
-                    "neg": str(M.inverse(pM)),
-                },
+                # "mont": {
+                #     "p": hexarr(pM),
+                #     "q": hexarr(qM),
+                #     "params": mont_params,
+                #     "double": str(M.add(pM, pM)),
+                #     # "scale": str((p * 5).xy()),
+                #     "add": str(M.add(pM, qM)),
+                #     "sub": str(M.add(pM, M.inverse(qM))),
+                #     "neg": str(M.inverse(pM)),
+                # },
             }
         )
 
