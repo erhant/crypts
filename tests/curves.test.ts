@@ -1,31 +1,30 @@
 import {expect, describe, it} from 'bun:test';
 import {Field} from '../src/fields';
 import {MontgomeryCurve, ShortWeierstrassCurve} from '../src/curves';
+import tests from './data/curves.json';
 
-const tests = [
-  {
-    o: '0xd',
-    sw: {
-      p: ['0x9', '0x4'],
-      q: ['0xc', '0x8'],
-      params: [8, 8],
-      double: '(5, 11)',
-      scale: '(6, 5)',
-      add: '(1, 11)',
-      sub: '(8, 5)',
-      neg: '(9, 9)',
-    },
-    mont: {
-      p: ['0x9', '0x2'],
-      q: ['0x4', '0x4'],
-      params: [6, 7],
-      double: '(7, 12)',
-      add: '(5, 12)',
-      sub: '(2, 9)',
-      neg: '(9, 11)',
-    },
-  },
-];
+tests satisfies {
+  o: string;
+  sw: {
+    p: string[];
+    q: string[];
+    params: number[];
+    double: string;
+    scale: string;
+    add: string;
+    sub: string;
+    neg: string;
+  };
+  mont: {
+    p: string[];
+    q: string[];
+    params: number[];
+    double: string;
+    add: string;
+    sub: string;
+    neg: string;
+  };
+}[];
 
 describe('short weierstrass', () => {
   tests.map(testall => {

@@ -1,7 +1,6 @@
 import {expect, describe, it} from 'bun:test';
-import {Field} from '../src/fields';
-import {interpolate} from '../src/polynomials';
-import {Polynomial} from '../src';
+import {Field} from '~/fields';
+import {Polynomial, interpolate} from '~/polynomials';
 
 describe('polynomials', () => {
   const tests = [

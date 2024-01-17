@@ -2,7 +2,15 @@ import {PointInput, FieldElementInput, Integer} from '../types';
 import {Field, FieldElement} from '../fields';
 import type {CurveInterface, CurvePointInterface} from './interface';
 
-/** An elliptic curve with Short Weierstrass form over affine points. */
+/** An elliptic curve with Short Weierstrass form over affine points.
+ *
+ * The curve is composed of points `(x, y)` on the elliptic curve over a base field such that
+ * `(x, y)` satisfy the  Short Weierstrass curve equation:
+ *
+ * ```py
+ * y^2 = x^3 + a*x + b
+ * ```
+ */
 export class ShortWeierstrassCurve implements CurveInterface<PointInput, FieldElement> {
   readonly field: Field;
   /** Curve parameter `a`. */
@@ -10,14 +18,6 @@ export class ShortWeierstrassCurve implements CurveInterface<PointInput, FieldEl
   /** Curve parameter `b`. */
   readonly b: FieldElement;
 
-  /**
-   * An elliptic curve over a base field such that pairs of elements
-   * `(x, y)` satisfy the  Short Weierstrass curve equation:
-   *
-   * ```py
-   * y^2 = x^3 + a*x + b
-   * ```
-   */
   constructor(field: Field, params: readonly [a: FieldElementInput, b: FieldElementInput]) {
     this.a = field.Element(params[0]);
     this.b = field.Element(params[1]);

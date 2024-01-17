@@ -2,15 +2,17 @@ from sage.all import GF, EllipticCurve, is_prime
 from sage._common import hexarr, random_points
 
 
-class Converter:
-    F: GF
-    # TODO: add curve params
+class SW_MONT_Converter:
+    F: GF # type: ignore
+    a: int
+    b: int
 
-    def __init__(self, order: int):
+
+    def __init__(self, order, a, b):
         assert is_prime(order)
         self.F = GF(order)
 
-    def sw_to_mont(self, a, b, s, z0):
+    def sw_to_mont(self s, z0):
         """
         Short Weiestrass curve to Montgomery curve
 
@@ -31,14 +33,6 @@ class Converter:
         assert self.F["z"]([b, a, 0, 1])(z0) == 0
 
         return (s * (pt[0] - z0), s * pt[1])
-
-    # Montgomery curve to Twisted Edwards curve
-    def mont_to_ted(pt):
-        return 0  # TODO
-
-    # Montgomery point to Twisted Edwards point
-    def mont_to_ted_point(pt):
-        return (pt[0] / pt[1], (pt[0] - 1) / (pt[0] + 1))
 
 
 if __name__ == "__main__":

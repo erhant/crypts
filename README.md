@@ -7,8 +7,6 @@
   </p>
 </p>
 
-<img src="https://img.shields.io/badge/%E2%99%A5-14151B?logo=bun&logoColor=white" alt="bun love"/>
-
 ## Usage
 
 TODO
