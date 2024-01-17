@@ -5,7 +5,10 @@
     "fields": "Import",
     "polynomials": "Include",
     "Sage": "Python",
-    "Numbers": "Delta"
+    "Numbers": "Delta",
+    "montgomery": "Redux-Selector",
+    "shortWeierstrass": "Redux-Reducer",
+    "twistedEdwards": "Redux-Store"
   },
   // https://raw.githubusercontent.com/PKief/vscode-material-icon-theme/main/images/fileIcons.png
   "material-icon-theme.files.associations": {

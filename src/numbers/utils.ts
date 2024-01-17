@@ -5,8 +5,6 @@
  * one is the result of this (denote as `s`), and the other would be `p-s` where
  * `p` is the order of the field.
  *
- * TODO: move this elsewhere?
- *
  * @param num a number
  * @returns square root of the number
  */

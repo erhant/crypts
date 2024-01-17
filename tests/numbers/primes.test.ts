@@ -1,5 +1,5 @@
 import {describe, test} from 'bun:test';
-import {randomPrime} from '~/numbers';
+import {randomPrime} from '../../src/numbers';
 
 describe.skipIf(!Bun.env.IS_BENCH)('prime', () => {
   test('generating many small primes', () => {

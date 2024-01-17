@@ -1,6 +1,6 @@
-import {FieldElement} from '.';
+import {FieldElement} from '../fields';
 
-/** Legendre Symbol
+/** **Legendre Symbol**
  *
  * Assumes the finite field is of odd prime order.
  *

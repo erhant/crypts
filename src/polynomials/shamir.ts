@@ -21,7 +21,7 @@ export function split(secret: FieldElement, k: number, n: number) {
   const P = new Polynomial(F, coeffs);
 
   // evaluations over the polynomial
-  const evals = Array.from({length: n}, () => F.random()).map(x => [x, P.eval(x)] as const);
+  const evals = Array.from({length: n}, () => F.random()).map(x => [x, P.eval(x)] as [FieldElement, FieldElement]);
 
   return evals;
 }

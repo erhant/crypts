@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'bun:test';
-import {bigSqrt} from '~/numbers/utils';
+import {bigSqrt} from '../../src/numbers';
 
 describe('bigint square root', () => {
   it('should compute square root of bigints', () => {

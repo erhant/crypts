@@ -1,3 +1,3 @@
 export * from './primality';
-export * from './smallPrimes';
 export * from './utils';
+export * from './legendre';

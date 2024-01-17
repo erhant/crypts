@@ -1,13 +1,14 @@
 {
-  "name": "cryptos",
+  "name": "crypts",
   "author": "erhant",
   "private": true,
   "license": "MIT",
   "scripts": {
     "start": "bun run ./src/main.ts",
-    "format": "prettier --check '**/*.ts'",
-    "lint": "eslint '**/*.ts'",
-    "bench": "IS_BENCH=1 bun test"
+    "format": "prettier --check ./src/**/*.ts ./tests/**/*.ts",
+    "lint": "eslint '**/*.ts' && echo 'All good.'",
+    "bench": "IS_BENCH=1 bun test",
+    "t": "bun test"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.6.0",

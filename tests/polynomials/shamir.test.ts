@@ -1,6 +1,6 @@
 import {expect, describe, it, beforeAll} from 'bun:test';
-import {Polynomial, interpolate} from '~/polynomials';
-import {Field, FieldElement} from '~/fields';
+import {Polynomial, interpolate} from '../../src/polynomials';
+import {Field, FieldElement} from '../../src/fields';
 
 const tests: [N: number, K: number][] = [
   [3, 2],

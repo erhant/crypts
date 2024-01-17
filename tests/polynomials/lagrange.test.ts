@@ -1,6 +1,6 @@
 import {expect, describe, it} from 'bun:test';
-import {interpolate} from '~/polynomials';
-import {Field} from '~/fields';
+import {interpolate} from '../../src/polynomials';
+import {Field} from '../../src/fields';
 
 describe('lagrange interpolation', () => {
   const points: [number, number][] = [
