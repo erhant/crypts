@@ -19,9 +19,7 @@
     "paths": {
       "~/*": ["./src/*"]
     },
-    "types": [
-      "bun-types" // add Bun global
-    ]
+    "types": ["bun-types"]
   },
   "include": ["./src/**/*.ts", "./tests/**/*.ts", "./tests/**/*.json"]
 }

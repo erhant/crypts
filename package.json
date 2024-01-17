@@ -6,7 +6,8 @@
   "scripts": {
     "start": "bun run ./src/main.ts",
     "format": "prettier --check '**/*.ts'",
-    "lint": "eslint '**/*.ts'"
+    "lint": "eslint '**/*.ts'",
+    "bench": "IS_BENCH=1 bun test"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.6.0",
@@ -32,6 +33,9 @@
     "plugins": [
       "@typescript-eslint"
     ],
+    "rules": {
+      "@typescript-eslint/no-unused-vars": "warn"
+    },
     "root": true,
     "ignorePatterns": [
       "sage",

@@ -1,6 +1,6 @@
 import {expect, describe, it} from 'bun:test';
-import {Field, legendreSymbol} from '../src/fields';
-import tests from './data/field.json';
+import {Field, legendreSymbol} from '../../src/fields';
+import tests from '../data/field.json';
 
 tests satisfies {
   n: string;

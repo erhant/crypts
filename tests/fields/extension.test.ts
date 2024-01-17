@@ -1,7 +1,7 @@
 import {expect, describe, it} from 'bun:test';
-import {FieldExtension, Field} from '../src/fields';
-import {Polynomial} from '../src';
-import tests from './data/extension.json';
+import {FieldExtension, Field} from '../../src/fields';
+import {Polynomial} from '../../src';
+import tests from '../data/extension.json';
 
 tests satisfies {
   p: string[];

@@ -7,14 +7,6 @@
   </p>
 </p>
 
-## Usage
-
-TODO
-
-## Implementations
-
-The following are implemented:
-
 ### https://github.com/erhant/crypts/labels/finite%20fields
 
 - [x] [Field](./src/fields/field.ts) defines a finite field of prime order.
@@ -31,6 +23,10 @@ The following are implemented:
 - [x] [Short Weierstrass](./src/curves/shortWeierstrass.ts) defines an elliptic curve in Short Weierstrass form with affine points along with a point at infinity.
 - [x] [Montgomery](./src/curves/montgomery.ts) defines an elliptic curve in Montgomery form with affine points along with a point at infinity.
 - [x] [Twisted Edwards](./src/curves/twisedEdwards.ts) defines an elliptic curve in Twisted Edwards form with affine points.
+
+## Usage
+
+TODO
 
 ## Testing
 
