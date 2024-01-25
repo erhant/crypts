@@ -1,6 +1,6 @@
 import {FieldExtensionElementInput} from '../../types';
 import {Polynomial} from '../../polynomials';
-import {FieldInterface} from '../interface';
+import {IField} from '../interfaces/field';
 import {FieldExtensionElement} from './element';
 import {Field} from '../prime/field';
 
@@ -9,7 +9,7 @@ import {Field} from '../prime/field';
  * The elements of this extension field is the set of all polynomials modulo the irreducible polynomial,
  * similar to an integer ring modulo some prime number.
  */
-export class FieldExtension implements FieldInterface<FieldExtensionElementInput> {
+export class FieldExtension implements IField<FieldExtensionElementInput> {
   readonly order: bigint;
   readonly characteristic: bigint;
   /** Extension degree. */

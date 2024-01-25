@@ -1,9 +1,9 @@
 import {FieldElementInput, FieldExtensionElementInput, Integer} from '../../types';
 import {Polynomial} from '../../polynomials';
-import {FieldElementInterface} from '../interface';
+import {IFieldElement} from '../interfaces';
 import {FieldExtension} from './field';
 
-export class FieldExtensionElement implements FieldElementInterface<FieldExtensionElementInput> {
+export class FieldExtensionElement implements IFieldElement<FieldExtensionElementInput> {
   readonly field: FieldExtension;
   readonly value: Polynomial;
 

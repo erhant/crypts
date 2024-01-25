@@ -1,6 +1,6 @@
 import {randomBytes} from 'crypto';
 import {FieldElementInput, Integer} from '../../types';
-import type {FieldInterface} from '../interface';
+import type {IField} from '../interfaces/field';
 import {FieldElement} from './element';
 
 /** A small utility function to extract the underlying value of a field element. */
@@ -9,7 +9,7 @@ function into(n: FieldElementInput): bigint {
 }
 
 /** A finite field. */
-export class Field implements FieldInterface<FieldElementInput> {
+export class Field implements IField<FieldElementInput> {
   readonly order: bigint;
   readonly characteristic: bigint;
 
