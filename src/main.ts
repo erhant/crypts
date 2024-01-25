@@ -2,7 +2,7 @@
 import {Field} from '.';
 import {isPrimeNaive, randomPrime} from './numbers';
 
-if (import.meta.path === Bun.main) {
+if (import.meta.main) {
   const F3 = new Field(23);
   const n = F3.Element(3);
 

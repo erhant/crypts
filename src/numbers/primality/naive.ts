@@ -1,13 +1,15 @@
 import {randomBytes} from 'crypto';
-import first1000Primes from './smallPrimes';
-import {bigSqrt} from './utils';
+import {bigSqrt} from '../utils';
 
 /**
- * Generate a random prime with the given number of bytes.
+ * Generate a random prime with the given number of bytes, using the naive method.
+ * We simply create a random number, and check if its a prime using the naive method
+ * of checking divisions up to the square root of the number.
+ *
  * @param numBytes number of bytes for the prime
  * @returns a random prime
  */
-export function randomPrime(numBytes: number): bigint {
+export function randomPrimeNaive(numBytes: number): bigint {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     let rand = BigInt('0x' + randomBytes(numBytes).toString('hex'));
@@ -21,21 +23,10 @@ export function randomPrime(numBytes: number): bigint {
       rand++;
     }
 
-    // FIXME: use Miller-Rabin
     if (isPrimeNaive(rand)) {
       return rand;
     }
   }
-}
-
-/**
- * Check if the number is prime using the method described [here](https://www.geeksforgeeks.org/how-to-generate-large-prime-numbers-for-rsa-algorithm/).
- *
- * - First see if it is divisible by a list of smaller primes (i.e. the first 1000 primes)
- * - Then do several iterations of the Miller-Rabin primality test.
- */
-export function isPrime(num: bigint) {
-  return num; // FIXME: todo!
 }
 
 /**

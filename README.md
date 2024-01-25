@@ -3,26 +3,32 @@
     <code>crypts</code>
   </h1>
   <p align="center">
-    <i>Finite fields, polynomials, elliptic curves and much more; for educational purposes!</i>
+    <i>Finite fields, polynomials, elliptic curves and much more; for educational purposes.</i>
   </p>
 </p>
 
 ### https://github.com/erhant/crypts/labels/finite%20fields
 
-- [x] [Field](./src/fields/field.ts) defines a finite field of prime order.
-- [x] [Field Extension](./src/fields/extension.ts) defines an extension of an existing field using an irreducible polynomial.
-- [x] [Legendre Symbol](./src/fields/legendre.ts) is a utility function that can tell whether a number is quadratic residue or non-residue.
+- [x] [Prime Field](./src/fields/prime/field.ts) defines a finite field of prime order.
+- [x] [Field Extension](./src/fields/extension/field.ts) defines an extension of an existing field using an irreducible polynomial.
+- [ ] [Binary Field](./src/fields/binary/field.ts) defines a finite field of order 2.
 
 ### https://github.com/erhant/crypts/labels/polynomials
 
 - [x] [Polynomials](./src/polynomials/polynomial.ts) defines a polynomial with coefficients in a finite field.
 - [x] [Lagrange Interpolation](./src/polynomials/lagrange.ts) is a method to construct a polynomial based on point evaluations
+- [x] [Shamir's Secret Sharing](./src/polynomials/shamir.ts) splits a given secret into `n` shares such that with at least `k` of them the secret can be re-constructed.
 
 ### https://github.com/erhant/crypts/labels/elliptic%20curves
 
 - [x] [Short Weierstrass](./src/curves/shortWeierstrass.ts) defines an elliptic curve in Short Weierstrass form with affine points along with a point at infinity.
 - [x] [Montgomery](./src/curves/montgomery.ts) defines an elliptic curve in Montgomery form with affine points along with a point at infinity.
 - [x] [Twisted Edwards](./src/curves/twisedEdwards.ts) defines an elliptic curve in Twisted Edwards form with affine points.
+
+### https://github.com/erhant/crypts/labels/numbers
+
+- [ ] [Miller-Rabin] allows one to probabilistically test if a number is prime. Using it, we implement a random prime number generator.
+- [x] [Legendre Symbol](./src/fields/legendre.ts) is a utility function that can tell whether a number is quadratic residue/non-residue.
 
 ## Usage
 

@@ -1,3 +1,3 @@
-export {Field, FieldElement} from './field';
-export {FieldExtension, FieldExtensionElement} from './extension';
+export {Field, FieldElement} from './prime/';
+export {FieldExtension, FieldExtensionElement} from './extension/';
 export {legendreSymbol} from '../numbers/legendre';

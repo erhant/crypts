@@ -1,4 +1,7 @@
-/** List of first 1000 primes, as taken from [prime-numbers.info](https://prime-numbers.info/list/first-1000-primes). */
+/** List of first 1000 primes, as taken from [prime-numbers.info](https://prime-numbers.info/list/first-1000-primes).
+ *
+ * This can be used to check quickly if a number is divisible with any of these small primes.
+ */
 export default [
   2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109,
   113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239,
