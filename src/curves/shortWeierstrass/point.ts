@@ -114,7 +114,14 @@ export class ShortWeierstrassCurvePoint implements CurvePointInterface<PointInpu
     }
   }
 
-  toString(): string {
-    return this.inf ? 'inf' : `(${this.x}, ${this.y})`;
+  toString(pretty?: boolean): string {
+    if (pretty) {
+      const hexes = this.curve.field.order.toString(16).length;
+      return this.inf
+        ? '∞'
+        : `(0x${this.x.toString(16).padStart(hexes, '0')}, 0x${this.y.toString(16).padStart(hexes, '0')})`;
+    } else {
+      return this.inf ? 'inf' : `(${this.x}, ${this.y})`;
+    }
   }
 }
