@@ -1,6 +1,6 @@
 import {PointInput, Integer} from '../../types';
 import {FieldElement} from '../../fields';
-import {CurvePointInterface} from '../interface';
+import {CurvePointInterface} from '../interfaces';
 import {TwistedEdwardsCurve} from './curve';
 
 /** An affine point on an elliptic curve with Twisted Edwards form. */

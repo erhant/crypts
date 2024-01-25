@@ -1,4 +1,5 @@
-import {MontgomeryCurve, ShortWeierstrassCurve, TwistedEdwardsCurve} from '.';
+import type {MontgomeryCurve} from '.';
+import {ShortWeierstrassCurve, TwistedEdwardsCurve} from '..';
 
 export function montgomeryToShortWeierstrass(curve: MontgomeryCurve): ShortWeierstrassCurve {
   // (3-A^2)/(3*B^2)
@@ -20,11 +21,4 @@ export function montgomeryToTwistedEdwards(curve: MontgomeryCurve): TwistedEdwar
   const d = curve.A.sub(2).mul(Binv);
 
   return new TwistedEdwardsCurve(curve.field, [a, d]);
-}
-
-export function twistedEdwardsToMontgomery(curve: TwistedEdwardsCurve): MontgomeryCurve {
-  const adinv = curve.a.sub(curve.d).inv();
-  const B = adinv.mul(4); // 4/(a-d)
-  const A = adinv.mul(curve.a.add(curve.d).mul(2)); // 2(a+d)/(a-d)
-  return new MontgomeryCurve(curve.field, [A, B]);
 }

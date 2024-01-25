@@ -1,6 +1,6 @@
 import {PointInput, Integer} from '../../types';
 import {FieldElement} from '../../fields';
-import type {CurvePointInterface} from '../interface';
+import type {CurvePointInterface} from '../interfaces';
 import {MontgomeryCurve} from './curve';
 
 /** An affine point on an elliptic curve with Montgomery form. */
@@ -80,11 +80,8 @@ export class MontgomeryCurvePoint implements CurvePointInterface<PointInput, Fie
   }
 
   add(q: MontgomeryCurvePoint) {
-    if (this.eq(q)) {
-      return this.tangent();
-    } else {
-      return this.chord(q);
-    }
+    if (this.inf) return q;
+    return this.eq(q) ? this.tangent() : this.chord(q);
   }
 
   sub(q: MontgomeryCurvePoint) {

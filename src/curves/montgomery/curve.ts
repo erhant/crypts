@@ -1,6 +1,6 @@
 import {PointInput, FieldElementInput} from '../../types';
 import {Field, FieldElement} from '../../fields';
-import type {CurveInterface} from '../interface';
+import type {CurveInterface} from '../interfaces';
 import {MontgomeryCurvePoint} from './point';
 
 /** An elliptic curve with Montgomery form over affine points.

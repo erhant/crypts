@@ -1,6 +1,6 @@
 import {PointInput, Integer} from '../../types';
 import {FieldElement} from '../../fields';
-import type {CurvePointInterface} from '../interface';
+import type {CurvePointInterface} from '../interfaces';
 import {ShortWeierstrassCurve} from './curve';
 
 /** An affine point on an elliptic curve with Short Weierstrass form. */
@@ -73,13 +73,8 @@ export class ShortWeierstrassCurvePoint implements CurvePointInterface<PointInpu
   }
 
   add(q: ShortWeierstrassCurvePoint) {
-    if (this.inf) {
-      return q;
-    } else if (this.eq(q)) {
-      return this.tangent();
-    } else {
-      return this.chord(q);
-    }
+    if (this.inf) return q;
+    return this.eq(q) ? this.tangent() : this.chord(q);
   }
 
   sub(q: ShortWeierstrassCurvePoint) {
