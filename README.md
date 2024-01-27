@@ -27,8 +27,8 @@
 
 ### https://github.com/erhant/crypts/labels/numbers
 
-- [ ] [Miller-Rabin] allows one to probabilistically test if a number is prime. Using it, we implement a random prime number generator.
-- [x] [Legendre Symbol](./src/fields/legendre.ts) is a utility function that can tell whether a number is quadratic residue/non-residue.
+- [ ] [Tonelli-Shanks](./src/fields/sqrt.ts) can find the square root of a number in a finite field.
+- [x] [Legendre Symbol](./src/fields/legendre.ts) can tell whether a number is quadratic residue/non-residue.
 
 ## Usage
 

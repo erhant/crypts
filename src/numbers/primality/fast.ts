@@ -1,8 +1,20 @@
+/**
+ * Check if the number is prime using the method described
+ * [here](https://www.geeksforgeeks.org/how-to-generate-large-prime-numbers-for-rsa-algorithm/)
+ * which is as follows:
+ *
+ * - First see if it is divisible by a list of smaller primes (i.e. the first 1000 primes)
+ * - Then do several iterations of the Miller-Rabin primality test.
+ */
+export function isPrime(num: bigint) {
+  return num; // FIXME: todo!
+}
+
 /** List of first 1000 primes, as taken from [prime-numbers.info](https://prime-numbers.info/list/first-1000-primes).
  *
  * This can be used to check quickly if a number is divisible with any of these small primes.
  */
-export default [
+const first1000primes = [
   2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109,
   113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239,
   241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379,

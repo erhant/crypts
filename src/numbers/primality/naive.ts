@@ -1,5 +1,5 @@
-import {randomBytes} from 'crypto';
-import {bigSqrt} from '../utils';
+import {randomNumber} from '..';
+import {bigSqrt} from '../sqrt';
 
 /**
  * Generate a random prime with the given number of bytes, using the naive method.
@@ -12,7 +12,7 @@ import {bigSqrt} from '../utils';
 export function randomPrimeNaive(numBytes: number): bigint {
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    let rand = BigInt('0x' + randomBytes(numBytes).toString('hex'));
+    let rand = randomNumber(numBytes);
 
     // if rand is even, make it odd
     // do this by incrementing, to not underflow the byte limit

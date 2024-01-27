@@ -3,7 +3,11 @@ import {CurvePointInterface} from './point';
 
 export interface CurveInterface<I, V> {
   /** Base field. */
-  readonly field: Field;
+  readonly base: Field;
+  /** Scalar field, if scalar order is given. */
+  readonly scalar?: Field;
+  /** Generator point, if given. */
+  readonly generator?: CurvePointInterface<I, V>;
 
   /** A point on the elliptic curve. */
   Point(p: I): CurvePointInterface<I, V>;

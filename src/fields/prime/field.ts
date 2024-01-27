@@ -1,4 +1,4 @@
-import {randomBytes} from 'crypto';
+import {randomNumber} from '../../numbers';
 import {FieldElementInput, Integer} from '../../types';
 import type {IField} from '../interfaces/field';
 import {FieldElement} from './element';
@@ -42,8 +42,7 @@ export class Field implements IField<FieldElementInput> {
   }
 
   random() {
-    const bytes = randomBytes(this.order.toString(8).length);
-    return this.Element(BigInt('0x' + bytes.toString('hex')));
+    return this.Element(randomNumber(this.order.toString(8).length));
   }
 
   toString(): string {

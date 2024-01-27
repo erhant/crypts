@@ -1,0 +1,17 @@
+name: tests
+
+on:
+  workflow_dispatch:
+    # add push: later
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: oven-sh/setup-bun@v1
+
+      - run: bun install
+      - run: bun t

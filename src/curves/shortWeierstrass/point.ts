@@ -16,12 +16,12 @@ export class ShortWeierstrassCurvePoint implements CurvePointInterface<PointInpu
       if (!curve.satisfies(point)) {
         throw new Error(`(${point[0]}, ${point[1]}) is not on this curve.`);
       }
-      this.x = curve.field.Element(point[0]);
-      this.y = curve.field.Element(point[1]);
+      this.x = curve.base.Element(point[0]);
+      this.y = curve.base.Element(point[1]);
       this.inf = false;
     } else {
-      this.x = curve.field.zero; // arbitrary
-      this.y = curve.field.zero; // arbitrary
+      this.x = curve.base.zero; // arbitrary
+      this.y = curve.base.zero; // arbitrary
       this.inf = true;
     }
   }
@@ -116,7 +116,7 @@ export class ShortWeierstrassCurvePoint implements CurvePointInterface<PointInpu
 
   toString(pretty?: boolean): string {
     if (pretty) {
-      const hexes = this.curve.field.order.toString(16).length;
+      const hexes = this.curve.base.order.toString(16).length;
       return this.inf
         ? '∞'
         : `(0x${this.x.toString(16).padStart(hexes, '0')}, 0x${this.y.toString(16).padStart(hexes, '0')})`;

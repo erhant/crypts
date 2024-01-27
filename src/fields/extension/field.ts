@@ -53,7 +53,7 @@ export class FieldExtension implements IField<FieldExtensionElementInput> {
   }
 
   random() {
-    return this.Element([1]); // TODO
+    return this.Element([1]); // TODO: create a random polynomial
   }
 
   toString() {

@@ -1,3 +1,4 @@
-export * from './primality/naive';
-export * from './utils';
+export * from './primality';
+export * from './sqrt';
+export * from './random';
 export * from './legendre';

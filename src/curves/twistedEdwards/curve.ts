@@ -13,16 +13,29 @@ import {TwistedEdwardsCurvePoint} from './point';
  * ```
  */
 export class TwistedEdwardsCurve implements CurveInterface<PointInput, FieldElement> {
-  readonly field: Field;
+  readonly base: Field;
+  readonly scalar?: Field;
+  readonly generator?: TwistedEdwardsCurvePoint;
+
   /** Curve parameter `a`. */
   readonly a: FieldElement;
   /** Curve parameter `d`. */
   readonly d: FieldElement;
 
-  constructor(field: Field, params: readonly [a: FieldElementInput, d: FieldElementInput]) {
+  constructor(
+    field: Field,
+    params: [a: FieldElementInput, d: FieldElementInput],
+    args?: {
+      scalarOrder?: bigint;
+      generator?: PointInput;
+    }
+  ) {
     this.a = field.Element(params[0]);
     this.d = field.Element(params[1]);
-    this.field = field;
+    this.base = field;
+
+    if (args?.scalarOrder) this.scalar = new Field(args.scalarOrder);
+    if (args?.generator) this.generator = this.Point(args.generator);
   }
 
   Point(point: PointInput) {
@@ -34,10 +47,10 @@ export class TwistedEdwardsCurve implements CurveInterface<PointInput, FieldElem
   }
 
   satisfies(point: PointInput) {
-    const [x, y] = [this.field.Element(point[0]), this.field.Element(point[1])];
+    const [x, y] = [this.base.Element(point[0]), this.base.Element(point[1])];
     const [xx, yy] = [x.exp(2), y.exp(2)];
     const lhs = this.a.mul(xx).add(yy); // a*x^2 + y^2
-    const rhs = this.field.one.add(this.d.mul(xx).mul(yy)); // 1 + d*x^2*y^2
+    const rhs = this.base.one.add(this.d.mul(xx).mul(yy)); // 1 + d*x^2*y^2
     return lhs.eq(rhs);
   }
 

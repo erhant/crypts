@@ -8,7 +8,7 @@ export function montgomeryToShortWeierstrass(curve: MontgomeryCurve): ShortWeier
   // (2*A^3 - 9*A)/(27*B^3)
   const b = curve.A.exp(2).mul(2).sub(curve.A.mul(9)).div(curve.B.exp(3).mul(27));
 
-  return new ShortWeierstrassCurve(curve.field, [a, b]);
+  return new ShortWeierstrassCurve(curve.base, [a, b]);
 }
 
 export function montgomeryToTwistedEdwards(curve: MontgomeryCurve): TwistedEdwardsCurve {
@@ -20,5 +20,5 @@ export function montgomeryToTwistedEdwards(curve: MontgomeryCurve): TwistedEdwar
   const a = curve.A.add(2).mul(Binv);
   const d = curve.A.sub(2).mul(Binv);
 
-  return new TwistedEdwardsCurve(curve.field, [a, d]);
+  return new TwistedEdwardsCurve(curve.base, [a, d]);
 }

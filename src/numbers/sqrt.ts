@@ -1,9 +1,11 @@
+import {FieldElement} from '../fields';
+
 /**
  * Find the square root of a natural number with the naive method.
  *
  * In the context of a finite field, there would be two square roots,
  * one is the result of this (denote as `s`), and the other would be `p-s` where
- * `p` is the order of the field.
+ * `p` is the order of the field. This function will not
  *
  * @param num a number
  * @returns square root of the number
@@ -22,4 +24,11 @@ export function bigSqrt(value: bigint) {
   }
 
   return newtonIteration(value, 1n);
+}
+
+/**
+ * Square root of a finite field element, using Tonelli-Shanks.
+ */
+export function sqrt(n: FieldElement): FieldElement {
+  return n;
 }

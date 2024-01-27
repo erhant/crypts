@@ -13,16 +13,29 @@ import {ShortWeierstrassCurvePoint} from './point';
  * ```
  */
 export class ShortWeierstrassCurve implements CurveInterface<PointInput, FieldElement> {
-  readonly field: Field;
+  readonly base: Field;
+  readonly scalar?: Field;
+  readonly generator?: ShortWeierstrassCurvePoint;
+
   /** Curve parameter `a`. */
   readonly a: FieldElement;
   /** Curve parameter `b`. */
   readonly b: FieldElement;
 
-  constructor(field: Field, params: readonly [a: FieldElementInput, b: FieldElementInput]) {
+  constructor(
+    field: Field,
+    params: [a: FieldElementInput, b: FieldElementInput],
+    args?: {
+      scalarOrder?: bigint;
+      generator?: PointInput;
+    }
+  ) {
     this.a = field.Element(params[0]);
     this.b = field.Element(params[1]);
-    this.field = field;
+    this.base = field;
+
+    if (args?.scalarOrder) this.scalar = new Field(args.scalarOrder);
+    if (args?.generator) this.generator = this.Point(args.generator);
   }
 
   Point(point: PointInput) {
@@ -34,7 +47,7 @@ export class ShortWeierstrassCurve implements CurveInterface<PointInput, FieldEl
   }
 
   satisfies(point: PointInput) {
-    const [x, y] = [this.field.Element(point[0]), this.field.Element(point[1])];
+    const [x, y] = [this.base.Element(point[0]), this.base.Element(point[1])];
     const lhs = y.exp(2); // y^2
     const rhs = x.exp(3).add(x.mul(this.a)).add(this.b); // x^3 + ax + b
     return lhs.eq(rhs);

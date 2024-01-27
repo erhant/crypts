@@ -13,16 +13,29 @@ import {MontgomeryCurvePoint} from './point';
  * ```
  */
 export class MontgomeryCurve implements CurveInterface<PointInput, FieldElement> {
-  readonly field: Field;
+  readonly base: Field;
+  readonly scalar?: Field;
+  readonly generator?: MontgomeryCurvePoint;
+
   /** Curve parameter `A`. */
   readonly A: FieldElement;
   /** Curve parameter `B`. */
   readonly B: FieldElement;
 
-  constructor(field: Field, params: readonly [A: FieldElementInput, B: FieldElementInput]) {
+  constructor(
+    field: Field,
+    params: [A: FieldElementInput, B: FieldElementInput],
+    args?: {
+      scalarOrder?: bigint;
+      generator?: PointInput;
+    }
+  ) {
     this.A = field.Element(params[0]);
     this.B = field.Element(params[1]);
-    this.field = field;
+    this.base = field;
+
+    if (args?.scalarOrder) this.scalar = new Field(args.scalarOrder);
+    if (args?.generator) this.generator = this.Point(args.generator);
   }
 
   Point(point: PointInput) {
@@ -34,7 +47,7 @@ export class MontgomeryCurve implements CurveInterface<PointInput, FieldElement>
   }
 
   satisfies(point: PointInput) {
-    const [x, y] = [this.field.Element(point[0]), this.field.Element(point[1])];
+    const [x, y] = [this.base.Element(point[0]), this.base.Element(point[1])];
     const lhs = y.exp(2).mul(this.B); // B*y^2
     const rhs = x.exp(3).add(x.exp(2).mul(this.A)).add(x); // x^3 + A*x^2 + x
     return lhs.eq(rhs);

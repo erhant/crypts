@@ -15,8 +15,8 @@ export class TwistedEdwardsCurvePoint implements CurvePointInterface<PointInput,
     if (!curve.satisfies(point)) {
       throw new Error(`(${point[0]}, ${point[1]}) is not on this curve.`);
     }
-    this.x = curve.field.Element(point[0]);
-    this.y = curve.field.Element(point[1]);
+    this.x = curve.base.Element(point[0]);
+    this.y = curve.base.Element(point[1]);
     this.inf = this.x.eq(0) && this.y.eq(1);
   }
 
@@ -59,7 +59,12 @@ export class TwistedEdwardsCurvePoint implements CurvePointInterface<PointInput,
     return this.x.eq(q.x) && this.y.eq(q.y);
   }
 
-  toString() {
-    return `(${this.x}, ${this.y})`;
+  toString(pretty?: boolean): string {
+    if (pretty) {
+      const hexes = this.curve.base.order.toString(16).length;
+      return `(0x${this.x.toString(16).padStart(hexes, '0')}, 0x${this.y.toString(16).padStart(hexes, '0')})`;
+    } else {
+      return `(${this.x}, ${this.y})`;
+    }
   }
 }

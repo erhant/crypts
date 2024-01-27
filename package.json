@@ -1,18 +1,28 @@
 {
   "name": "crypts",
   "author": "erhant",
-  "private": true,
   "license": "MIT",
+  "files": [
+    "build/",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "start": "bun run ./src/main.ts",
+    "build": "bun build ./src/index.ts --outdir ./build && bun build:types",
+    "build:types": "bunx dts-bundle-generator -o ./build/index.d.ts ./src/index.ts",
+    "b": "bun run build",
     "format": "prettier --check ./src/**/*.ts ./tests/**/*.ts",
     "lint": "eslint '**/*.ts' && echo 'All good.'",
-    "t": "bun test"
+    "style": "bun run format && bun run lint",
+    "test": "bun test",
+    "t": "bun run test"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.6.0",
     "@typescript-eslint/parser": "^6.6.0",
     "bun-types": "latest",
+    "dts-bundle-generator": "^9.2.5",
     "eslint": "^8.49.0",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
