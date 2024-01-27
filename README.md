@@ -3,7 +3,7 @@
     <code>crypts</code>
   </h1>
   <p align="center">
-    <i>Finite fields, polynomials, elliptic curves and much more; for educational purposes.</i>
+    <i>A zero-dependency library for cryptography, for self-educational purposes mostly.</i>
   </p>
 </p>
 
@@ -27,6 +27,7 @@
 
 ### https://github.com/erhant/crypts/labels/numbers
 
+- [ ] [Miller-Rabin](./src/numbers/primality/fast.ts) checks for a prime number efficiently (albeit probabilistically).
 - [ ] [Tonelli-Shanks](./src/fields/sqrt.ts) can find the square root of a number in a finite field.
 - [x] [Legendre Symbol](./src/fields/legendre.ts) can tell whether a number is quadratic residue/non-residue.
 
@@ -39,8 +40,25 @@ TODO
 We prepare our test cases using SageMath, and then try to match the results obtained there using our implementations. To run all tests, do:
 
 ```sh
-bun test
+bun run test
+bun t # alias
 ```
+
+## Building
+
+We use Bun as a builder, and [dts-bundle-generator](https://github.com/timocov/dts-bundle-generator) for types.
+
+```sh
+bun run build
+bun b # alias
+```
+
+## Examples
+
+See several examples:
+
+- [secp256k1](./examples/secp256k1.ts)
+- [ed25519](./examples/ed25519.ts)
 
 ## Styling
 
@@ -49,4 +67,5 @@ Check the formatting and lint everything with the following commands:
 ```sh
 bun format
 bun lint
+bun style # does both
 ```
