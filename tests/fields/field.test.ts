@@ -1,4 +1,4 @@
-import {expect, describe, it} from 'bun:test';
+import {expect, describe, test} from 'bun:test';
 import {Field, legendreSymbol} from '../../src/fields';
 import tests from '../data/field.json';
 
@@ -17,18 +17,18 @@ tests satisfies {
 }[];
 
 describe('prime field', () => {
-  tests.map(test => {
-    const order = BigInt(test.o);
+  tests.map(t => {
+    const order = BigInt(t.o);
     const F = new Field(order);
-    const n = F.Element(test.n);
-    const m = F.Element(test.m);
+    const n = F.Element(t.n);
+    const m = F.Element(t.m);
 
     return describe(`${F}: n = ${n}, m = ${m}`, () => {
-      it('addition', () => {
-        expect(n.add(m).eq(test.add)).toBeTrue();
+      test('addition', () => {
+        expect(n.add(m).eq(t.add)).toBeTrue();
 
-        expect(n.neg().eq(test.neg)).toBeTrue();
-        expect(n.sub(m).eq(test.sub)).toBeTrue();
+        expect(n.neg().eq(t.neg)).toBeTrue();
+        expect(n.sub(m).eq(t.sub)).toBeTrue();
 
         expect(n.add(F.zero).eq(n)).toBeTrue();
         expect(n.sub(F.zero).eq(n)).toBeTrue();
@@ -38,24 +38,24 @@ describe('prime field', () => {
         expect(F.one.neg().eq(order - 1n)).toBeTrue();
       });
 
-      it('multiplication', () => {
-        expect(n.mul(m).eq(test.mul)).toBeTrue();
+      test('multiplication', () => {
+        expect(n.mul(m).eq(t.mul)).toBeTrue();
 
-        expect(n.inv().eq(test.inv)).toBeTrue();
-        expect(n.div(m).eq(test.div)).toBeTrue();
+        expect(n.inv().eq(t.inv)).toBeTrue();
+        expect(n.div(m).eq(t.div)).toBeTrue();
 
         expect(n.mul(F.one).eq(n)).toBeTrue();
         expect(n.div(F.one).eq(n)).toBeTrue();
       });
 
-      it('exponentation', () => {
-        expect(n.exp(5).value).toBe(BigInt(test.exp));
+      test('exponentation', () => {
+        expect(n.exp(5).value).toBe(BigInt(t.exp));
         expect(n.exp(1).eq(n)).toBeTrue();
         expect(n.exp(0).eq(F.one)).toBeTrue();
       });
 
-      it('legendre symbol', () => {
-        expect(legendreSymbol(n)).toEqual(test.legendre as -1 | 0 | 1);
+      test('legendre symbol', () => {
+        expect(legendreSymbol(n)).toEqual(t.legendre as -1 | 0 | 1);
       });
     });
   });

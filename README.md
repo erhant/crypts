@@ -11,7 +11,7 @@
 
 - [x] [Prime Field](./src/fields/prime/field.ts) defines a finite field of prime order.
 - [x] [Field Extension](./src/fields/extension/field.ts) defines an extension of an existing field using an irreducible polynomial.
-- [ ] [Binary Field](./src/fields/binary/field.ts) defines a finite field of order 2.
+- [ ] [Binary Field](./src/fields/binary/field.ts) defines a finite field of order 2 with Boolean values & Boolean algebra.
 
 ### https://github.com/erhant/crypts/labels/polynomials
 
@@ -27,7 +27,7 @@
 
 ### https://github.com/erhant/crypts/labels/numbers
 
-- [ ] [Miller-Rabin](./src/numbers/primality.ts) checks if a number is prime efficiently (but probabilistically).
+- [x] [Miller-Rabin](./src/numbers/primality.ts) checks if a number is prime efficiently (but probabilistically).
 - [ ] [Tonelli-Shanks](./src/fields/sqrt.ts) finds the square root of a number in a finite field.
 - [x] [Legendre Symbol](./src/fields/legendre.ts) tells whether a number is quadratic residue or quadratic non-residue.
 

@@ -1,9 +1,7 @@
 import {Field} from '..';
 import {bigSqrt} from './sqrt';
 /**
- * Check if the number is prime using the method described
- * [here](https://www.geeksforgeeks.org/how-to-generate-large-prime-numbers-for-rsa-algorithm/)
- * which is as follows:
+ * Check if the number is prime:
  *
  * - First see if it is divisible by a list of smaller primes (i.e. the first 1000 primes)
  * - Then do several iterations of the [Miller-Rabin](https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test) primality test.

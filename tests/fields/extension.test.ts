@@ -1,4 +1,4 @@
-import {expect, describe, it} from 'bun:test';
+import {expect, describe, test} from 'bun:test';
 import {FieldExtension, Field} from '../../src/fields';
 import {Polynomial} from '../../src';
 import tests from '../data/extension.json';
@@ -18,37 +18,37 @@ tests satisfies {
 }[];
 
 describe('field extension', () => {
-  tests.map(test => {
-    const F = new Field(test.o);
-    const m = new Polynomial(F, test.m);
+  tests.map(t => {
+    const F = new Field(t.o);
+    const m = new Polynomial(F, t.m);
 
     const Fm = new FieldExtension(m);
-    const p = Fm.Element(test.p);
-    const q = Fm.Element(test.q);
+    const p = Fm.Element(t.p);
+    const q = Fm.Element(t.q);
 
     return describe(`${Fm}: p = ${p}, q = ${q}`, () => {
-      it('addition', () => {
-        expect(p.add(q).toString()).toEqual(test.add);
+      test('addition', () => {
+        expect(p.add(q).toString()).toEqual(t.add);
 
-        expect(p.neg().toString()).toEqual(test.neg);
-        expect(p.sub(q).toString()).toEqual(test.sub);
+        expect(p.neg().toString()).toEqual(t.neg);
+        expect(p.sub(q).toString()).toEqual(t.sub);
 
         expect(p.add(Fm.zero).eq(p)).toBeTruthy();
         expect(p.sub(p).eq(Fm.zero)).toBeTruthy();
       });
 
-      it('multiplication', () => {
-        expect(p.mul(q).toString()).toEqual(test.mul);
+      test('multiplication', () => {
+        expect(p.mul(q).toString()).toEqual(t.mul);
 
-        expect(p.inv().toString()).toEqual(test.inv);
-        expect(p.div(q).toString()).toEqual(test.div);
+        expect(p.inv().toString()).toEqual(t.inv);
+        expect(p.div(q).toString()).toEqual(t.div);
 
         expect(p.mul(Fm.one).eq(p)).toBeTruthy();
         expect(p.div(p).eq(Fm.one)).toBeTruthy();
       });
 
-      it('exponentation', () => {
-        expect(p.exp(5).toString()).toEqual(test.exp);
+      test('exponentation', () => {
+        expect(p.exp(5).toString()).toEqual(t.exp);
       });
     });
   });
