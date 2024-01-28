@@ -27,9 +27,9 @@
 
 ### https://github.com/erhant/crypts/labels/numbers
 
-- [ ] [Miller-Rabin](./src/numbers/primality/fast.ts) checks for a prime number efficiently (albeit probabilistically).
-- [ ] [Tonelli-Shanks](./src/fields/sqrt.ts) can find the square root of a number in a finite field.
-- [x] [Legendre Symbol](./src/fields/legendre.ts) can tell whether a number is quadratic residue/non-residue.
+- [ ] [Miller-Rabin](./src/numbers/primality.ts) checks if a number is prime efficiently (but probabilistically).
+- [ ] [Tonelli-Shanks](./src/fields/sqrt.ts) finds the square root of a number in a finite field.
+- [x] [Legendre Symbol](./src/fields/legendre.ts) tells whether a number is quadratic residue or quadratic non-residue.
 
 ## Usage
 
@@ -42,6 +42,29 @@ We prepare our test cases using SageMath, and then try to match the results obta
 ```sh
 bun run test
 bun t # alias
+```
+
+To prepare the test data using Sage, you may use the [Docker image](https://hub.docker.com/r/sagemath/sagemath/) of it if you don't have it installed. To pull the image, do the following:
+
+```sh
+docker pull --platform linux/amd64 sagemath/sagemath
+```
+
+We specify the platform in case our machine does not support it, which is the case of Macbooks. Then, we can run the image as a CLI directly within sage or via a notebook:
+
+```sh
+# run Sage from the command line
+docker run -v $PWD/tests/sage:/home/sage/crypts -v $PWD/tests/data:/home/sage/data -it sagemath/sagemath:latest
+
+# or, open a Jupyter notebook
+docker run -v $PWD/tests/sage:/home/sage/crypts -v $PWD/tests/data:/home/sage/data -p8888:8888 sagemath/sagemath:latest sage-jupyter
+```
+
+As noticed here, we attach the volumes related to our Sage programs and their export destination. We also have aliases for these two commands:
+
+```sh
+bun docker:cli
+bun docker:notebook
 ```
 
 ## Building

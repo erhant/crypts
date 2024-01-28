@@ -1,17 +1,33 @@
-import {describe, test} from 'bun:test';
-import {randomPrimeNaive} from '../../src/numbers';
+import {describe, test, expect} from 'bun:test';
+import {isPrime, isPrimeNaive, randomPrime} from '../../src';
 
-describe.skipIf(!Bun.env.IS_BENCH)('primes', () => {
-  describe('naive', () => {
-    test('generating many small primes', () => {
-      const [N, B] = [100, 4];
-      for (let i = 0; i < N; i++) {
-        randomPrimeNaive(B);
-      }
-    });
+describe('primes', () => {
+  test('primality check (naive)', () => {
+    expect(isPrimeNaive(121n)).toBeFalse();
+    expect(isPrimeNaive(1n)).toBeFalse();
+    expect(isPrimeNaive(90000n)).toBeFalse();
 
-    test('generating one large prime naively', () => {
-      randomPrimeNaive(32);
-    });
+    expect(isPrimeNaive(1123n)).toBeTrue();
+    expect(isPrimeNaive(11n)).toBeTrue();
+    expect(isPrimeNaive(7919n)).toBeTrue();
   });
+
+  test('primality check (miller-rabin)', () => {
+    expect(isPrime(121n)).toBeFalse();
+    expect(isPrime(1n)).toBeFalse();
+    expect(isPrime(90000n)).toBeFalse();
+
+    expect(isPrime(1123n)).toBeTrue();
+    expect(isPrime(11n)).toBeTrue();
+    expect(isPrime(7919n)).toBeTrue();
+
+    expect(isPrime(2147483647n)).toBeTrue();
+  });
+
+  // just to benchmark the time of generation
+  [4, 12, 20, 28, 32, 64].map(size =>
+    test(`random primes (${size} bytes)`, () => {
+      randomPrime(size);
+    })
+  );
 });

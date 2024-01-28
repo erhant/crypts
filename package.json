@@ -16,12 +16,14 @@
     "lint": "eslint '**/*.ts' && echo 'All good.'",
     "style": "bun run format && bun run lint",
     "test": "bun test",
-    "t": "bun run test"
+    "t": "bun run test",
+    "docker:cli": "docker run -v $PWD/tests/sage:/home/sage/crypts -v $PWD/tests/data:/home/sage/data -it sagemath/sagemath:latest",
+    "docker:notebook": "docker run -v $PWD/tests/sage:/home/sage/crypts -v $PWD/tests/data:/home/sage/data -p8888:8888 sagemath/sagemath:latest sage-jupyter"
   },
   "devDependencies": {
+    "@types/bun": "^1.0.4",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
     "@typescript-eslint/parser": "^6.6.0",
-    "bun-types": "latest",
     "dts-bundle-generator": "^9.2.5",
     "eslint": "^8.49.0",
     "prettier": "^3.0.3",

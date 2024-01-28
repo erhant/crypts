@@ -1,3 +1,5 @@
+import {isPrime} from '.';
+
 /**
  * Generate a random number using `crypto.getRandomValues`.
  *
@@ -11,4 +13,20 @@ export function randomNumber(numBytes: number): bigint {
   crypto.getRandomValues(bytes);
 
   return BigInt('0x' + Buffer.from(bytes).toString('hex'));
+}
+
+/**
+ * Generate a random prime with the given number of bytes.
+ *
+ * @param numBytes number of bytes for the prime
+ * @returns a random prime
+ */
+export function randomPrime(numBytes: number): bigint {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const rand = randomNumber(numBytes);
+    if (isPrime(rand)) {
+      return rand;
+    }
+  }
 }

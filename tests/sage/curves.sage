@@ -1,5 +1,5 @@
 from sage.all import GF, EllipticCurve, is_prime, Field, FieldElement
-from sage._common import hexarr, random_points
+from _common import hexarr, random_points
 
 
 class SW_MONT_Converter:

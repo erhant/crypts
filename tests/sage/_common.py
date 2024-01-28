@@ -8,7 +8,7 @@ def hexarr(arr):
     return list(map(lambda x: hex(x), arr))
 
 
-def random_points(E: EllipticCurve):
+def random_points(E):
     """
     Generates two points `p, q` on the curve, such that both are not the point at infinity and
     `p != -q`.
