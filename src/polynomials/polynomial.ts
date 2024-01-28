@@ -1,8 +1,6 @@
 import {FieldElementInput, Integer} from '../types';
 import {Field, FieldElement} from '../fields';
 
-// https://zcash.github.io/halo2/background/polynomials.html
-
 /** A univariate polynomial over a finite field, with coefficients as elements of that field. */
 export class Polynomial {
   /** Field of the coefficients. */
@@ -30,14 +28,14 @@ export class Polynomial {
     }
 
     this.degree = Math.max(this.coeffs.length - 1, 0);
-    this.lead = (this.coeffs.at(this.degree) || this.field.zero).value;
+    this.lead = (this.coeffs.at(this.degree) ?? this.field.zero).value;
   }
 
   /** Polynomial addition in field. */
   add(q: Polynomial): Polynomial {
     const ans = Array.from({length: 1 + Math.max(this.degree, q.degree)}, (_, i) => {
-      const l = this.coeffs.at(i) || this.field.zero;
-      const r = q.coeffs.at(i) || this.field.zero;
+      const l = this.coeffs.at(i) ?? this.field.zero;
+      const r = q.coeffs.at(i) ?? this.field.zero;
       return l.add(r);
     });
 
@@ -47,14 +45,15 @@ export class Polynomial {
   /** Polynomial subtraction in field. */
   sub(q: Polynomial): Polynomial {
     const ans = Array.from({length: 1 + Math.max(this.degree, q.degree)}, (_, i) => {
-      const l = this.coeffs.at(i) || this.field.zero;
-      const r = q.coeffs.at(i) || this.field.zero;
+      const l = this.coeffs.at(i) ?? this.field.zero;
+      const r = q.coeffs.at(i) ?? this.field.zero;
       return l.sub(r);
     });
 
     return new Polynomial(this.field, ans);
   }
 
+  /** Additive inverse of this polynomial. */
   neg(): Polynomial {
     return new Polynomial(
       this.field,
@@ -142,35 +141,18 @@ export class Polynomial {
 
   /** Returns a string representation of the polynomial with optional symbol in place of `x`. */
   toString(symbol = 'x'): string {
-    return this.coeffs.length === 0
-      ? '0'
-      : this.coeffs
-          .map((a_i, i) => {
-            if (a_i.eq(0)) {
-              return '';
-            }
-
-            if (i === 0) {
-              // constant term
-              return `${a_i}`;
-            } else if (i === 1) {
-              // coefficient of x
-              if (a_i.eq(1)) {
-                return `${symbol}`;
-              } else {
-                return `${a_i}*${symbol}`;
-              }
-            } else {
-              // coefficient of x^i for i > 1
-              if (a_i.eq(1)) {
-                return `${symbol}^${i}`;
-              } else {
-                return `${a_i}*${symbol}^${i}`;
-              }
-            }
-          })
-          .filter(s => s !== '')
-          .reverse()
-          .join(' + ');
+    const coeffs = this.coeffs
+      .map((a_i, i) => {
+        // coefficient is zero
+        if (a_i.eq(0)) return null;
+        // constant term (x^0)
+        if (i === 0) return `${a_i}`;
+        // coefficient of x^1
+        if (i === 1) return a_i.eq(1) ? `${symbol}` : `${a_i}*${symbol}`;
+        // coefficient of x^i for i > 1
+        return a_i.eq(1) ? `${symbol}^${i}` : `${a_i}*${symbol}^${i}`;
+      })
+      .filter((s): s is string => s !== null);
+    return coeffs.length === 0 ? '0' : coeffs.reverse().join(' + ');
   }
 }

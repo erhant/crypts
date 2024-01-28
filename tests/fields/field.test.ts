@@ -18,39 +18,44 @@ tests satisfies {
 
 describe('prime field', () => {
   tests.map(test => {
-    const F = new Field(test.o);
+    const order = BigInt(test.o);
+    const F = new Field(order);
     const n = F.Element(test.n);
     const m = F.Element(test.m);
 
     return describe(`${F}: n = ${n}, m = ${m}`, () => {
       it('addition', () => {
-        expect(n.add(m).eq(test.add)).toBeTruthy();
+        expect(n.add(m).eq(test.add)).toBeTrue();
 
-        expect(n.neg().eq(test.neg)).toBeTruthy();
-        expect(n.sub(m).eq(test.sub)).toBeTruthy();
+        expect(n.neg().eq(test.neg)).toBeTrue();
+        expect(n.sub(m).eq(test.sub)).toBeTrue();
 
-        expect(n.add(F.zero).eq(n)).toBeTruthy();
-        expect(n.sub(F.zero).eq(n)).toBeTruthy();
+        expect(n.add(F.zero).eq(n)).toBeTrue();
+        expect(n.sub(F.zero).eq(n)).toBeTrue();
+
+        expect(F.zero.eq(0)).toBeTrue();
+        expect(F.one.eq(1)).toBeTrue();
+        expect(F.one.neg().eq(order - 1n)).toBeTrue();
       });
 
       it('multiplication', () => {
-        expect(n.mul(m).eq(test.mul)).toBeTruthy();
+        expect(n.mul(m).eq(test.mul)).toBeTrue();
 
-        expect(n.inv().eq(test.inv)).toBeTruthy();
-        expect(n.div(m).eq(test.div)).toBeTruthy();
+        expect(n.inv().eq(test.inv)).toBeTrue();
+        expect(n.div(m).eq(test.div)).toBeTrue();
 
-        expect(n.mul(F.one).eq(n)).toBeTruthy();
-        expect(n.div(F.one).eq(n)).toBeTruthy();
+        expect(n.mul(F.one).eq(n)).toBeTrue();
+        expect(n.div(F.one).eq(n)).toBeTrue();
       });
 
       it('exponentation', () => {
         expect(n.exp(5).value).toBe(BigInt(test.exp));
-        expect(n.exp(1).eq(n)).toBeTruthy();
-        expect(n.exp(0).eq(F.one)).toBeTruthy();
+        expect(n.exp(1).eq(n)).toBeTrue();
+        expect(n.exp(0).eq(F.one)).toBeTrue();
       });
 
       it('legendre symbol', () => {
-        expect(legendreSymbol(n)).toEqual(test.legendre);
+        expect(legendreSymbol(n)).toEqual(test.legendre as -1 | 0 | 1);
       });
     });
   });

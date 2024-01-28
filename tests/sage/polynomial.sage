@@ -1,5 +1,5 @@
 from sage.all import GF, randrange
-from sage._common import hexarr
+from _common import hexarr
 
 if __name__ == "__main__":
     tests = []

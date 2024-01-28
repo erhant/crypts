@@ -1,13 +1,82 @@
+import {Field} from '..';
+import {bigSqrt} from './sqrt';
 /**
  * Check if the number is prime using the method described
  * [here](https://www.geeksforgeeks.org/how-to-generate-large-prime-numbers-for-rsa-algorithm/)
  * which is as follows:
  *
  * - First see if it is divisible by a list of smaller primes (i.e. the first 1000 primes)
- * - Then do several iterations of the Miller-Rabin primality test.
+ * - Then do several iterations of the [Miller-Rabin](https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test) primality test.
+ *
+ * @param num number to be tested
+ * @param tries optional number of tries for Miller-Rabin, defaults to 20
  */
-export function isPrime(num: bigint) {
-  return num; // FIXME: todo!
+export function isPrime(num: bigint, tries: number = 20) {
+  // edge-case
+  if (num < 2n) return false;
+
+  // check if it is a small prime, or if its divisible by one of them
+  for (const p of first1000primes) {
+    if (num === p) return true;
+    if (num % p === 0n) return false;
+  }
+
+  // check primality with Miller-Rabin
+  // we will work over mod `n` so we create a Field for it
+  const Fn = new Field(num);
+
+  // find s > 0 and d odd > 0 such that n − 1 = 2^s * d
+  const n1 = num - 1n; // literally n - 1
+  let [s, d] = [0n, n1];
+  while ((d & 1n) === 0n) {
+    s++;
+    d >>= 1n;
+  }
+
+  tries = Math.max(tries, 1); // try at least once
+  for (let i = 0; i < tries; i++) {
+    // a (base) is a random value such that 1 < base < n - 1
+    let a = Fn.random();
+    while (a.eq(1) || a.eq(n1)) {
+      a = Fn.random();
+    }
+
+    let x = a.exp(d); // x = a^d
+    let y = Fn.zero; // y = 0
+    for (let r = 0; r < s; r++) {
+      y = x.mul(x); // a^{2^{r}*d}
+
+      // we check if there is a non-trivial square root
+      // the trivial one is when x == 1 or x == -1, if it
+      // is a non-trivial one then x is something else but y == 1
+      if (y.eq(1) && !x.eq(1) && !x.eq(n1)) {
+        return false;
+      }
+
+      x = y;
+    }
+
+    if (!y.eq(1)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Naively check if the given number is prime, i.e. try to divide it for all numbers.
+ * @param num number to check
+ * @returns true if `num` is prime
+ */
+export function isPrimeNaive(num: bigint): boolean {
+  if (num === 2n) return true;
+  if ((num & 1n) === 0n) return false;
+  for (let i = 3n; i <= bigSqrt(num); i += 2n) {
+    if (num % i === 0n) return false;
+  }
+
+  return num > 1;
 }
 
 /** List of first 1000 primes, as taken from [prime-numbers.info](https://prime-numbers.info/list/first-1000-primes).
@@ -66,4 +135,4 @@ const first1000primes = [
   7487, 7489, 7499, 7507, 7517, 7523, 7529, 7537, 7541, 7547, 7549, 7559, 7561, 7573, 7577, 7583, 7589, 7591, 7603,
   7607, 7621, 7639, 7643, 7649, 7669, 7673, 7681, 7687, 7691, 7699, 7703, 7717, 7723, 7727, 7741, 7753, 7757, 7759,
   7789, 7793, 7817, 7823, 7829, 7841, 7853, 7867, 7873, 7877, 7879, 7883, 7901, 7907, 7919,
-];
+].map(n => BigInt(n));
