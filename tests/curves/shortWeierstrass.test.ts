@@ -1,6 +1,6 @@
 import {expect, describe, it} from 'bun:test';
 import {Field} from '../../src/fields';
-import {MontgomeryCurve, ShortWeierstrassCurve} from '../../src/curves';
+import {ShortWeierstrassCurve} from '../../src/curves';
 import tests from '../data/curves.json';
 
 tests satisfies {

@@ -6,7 +6,7 @@ import {FieldElement, legendreSymbol} from '../fields';
  * @param num a number
  * @returns square root of the number
  */
-export function bigSqrt(num: bigint) {
+export function bigSqrt(num: bigint): bigint {
   if (num < 0n) throw new Error('negative number given to sqrt');
   if (num < 2n) return num;
 
@@ -25,14 +25,15 @@ export function bigSqrt(num: bigint) {
 /**
  * Square root of a finite field element, using [Tonelli-Shanks](https://en.wikipedia.org/wiki/Tonelli%E2%80%93Shanks_algorithm).
  *
- * @param num a number
- * @returns 0 if the given number is not a quadratic residue in its field,
- * otheriwse returns `r` such that `r^2 = n` in the field
+ * @param num a field element
+ * @returns
+ * - `null` if the given number is not a quadratic residue in its field,
+ * - `[r, -r]` such that `r^2 = (-r)^2 = n` in the field and `r < -r` in the field.
  */
-export function ffsqrt(num: FieldElement): FieldElement {
+export function ffSqrt(num: FieldElement): [FieldElement, FieldElement] | null {
   // ensure that it is a quadratic residue
   if (legendreSymbol(num) !== 1) {
-    return num.field.zero;
+    return null;
   }
 
   // find S > 0 and Q odd > 0 such that p − 1 = 2^S * Q
@@ -50,11 +51,11 @@ export function ffsqrt(num: FieldElement): FieldElement {
   }
 
   // begin looping
-  let M = S;
+  let M = S; // this will decrease as iterations increase
   let c = z.exp(Q);
   let t = num.exp(Q);
   let R = num.exp((Q + 1n) >> 1n);
-  while (!t.eq(1)) {
+  while (M !== 0n && !t.eq(1)) {
     // find least `i` such that `t^{2^i} = 1`
     let tt = t;
     let i = 0n;
@@ -64,7 +65,7 @@ export function ffsqrt(num: FieldElement): FieldElement {
 
       // could not find such `i`, this is not a quadratic-residue
       if (i === M) {
-        return num.field.zero;
+        return null;
       }
     }
 
@@ -79,8 +80,9 @@ export function ffsqrt(num: FieldElement): FieldElement {
 
   // ensure square root
   if (R.mul(R).eq(num)) {
-    return R;
+    const otherR = R.neg();
+    return R.value < otherR.value ? [R, otherR] : [otherR, R];
   } else {
-    return num.field.zero;
+    return null;
   }
 }
