@@ -7,25 +7,33 @@
   </p>
 </p>
 
-### https://github.com/erhant/crypts/labels/finite%20fields
+<div align="center">
+<h3>https://github.com/erhant/crypts/labels/finite%20fields</h3>
+</div>
 
 - [x] [Prime Field](./src/fields/prime/field.ts) defines a finite field of prime order.
 - [x] [Field Extension](./src/fields/extension/field.ts) defines an extension of an existing field using an irreducible polynomial.
 - [ ] [Binary Field](./src/fields/binary/field.ts) defines a finite field of order 2 with Boolean values & Boolean algebra.
 
-### https://github.com/erhant/crypts/labels/polynomials
+<div align="center">
+<h3>https://github.com/erhant/crypts/labels/polynomials</h3>
+</div>
 
 - [x] [Polynomials](./src/polynomials/polynomial.ts) defines a polynomial with coefficients in a finite field.
 - [x] [Lagrange Interpolation](./src/polynomials/lagrange.ts) is a method to construct a polynomial based on point evaluations
 - [x] [Shamir's Secret Sharing](./src/polynomials/shamir.ts) splits a given secret into `n` shares such that with at least `k` of them the secret can be re-constructed.
 
-### https://github.com/erhant/crypts/labels/elliptic%20curves
+<div align="center">
+<h3>https://github.com/erhant/crypts/labels/elliptic%20curves</h3>
+</div>
 
 - [x] [Short Weierstrass](./src/curves/shortWeierstrass.ts) defines an elliptic curve in Short Weierstrass form with affine points along with a point at infinity.
 - [x] [Montgomery](./src/curves/montgomery.ts) defines an elliptic curve in Montgomery form with affine points along with a point at infinity.
 - [x] [Twisted Edwards](./src/curves/twisedEdwards.ts) defines an elliptic curve in Twisted Edwards form with affine points.
 
-### https://github.com/erhant/crypts/labels/numbers
+<div align="center">
+<h3>https://github.com/erhant/crypts/labels/numbers</h3>
+</div>
 
 - [x] [Miller-Rabin](./src/numbers/primality.ts) checks if a number is prime efficiently (but probabilistically).
 - [ ] [Tonelli-Shanks](./src/fields/sqrt.ts) finds the square root of a number in a finite field.

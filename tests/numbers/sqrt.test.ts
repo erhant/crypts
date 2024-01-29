@@ -12,7 +12,7 @@ describe('square roots', () => {
   });
 
   test('tonelli-shanks', () => {
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 50; i++) {
       const r = new Field(randomPrime(4)).random();
       expect(legendreSymbol(r.mul(r))).toBe(1);
       expect(ffsqrt(r.mul(r)).eq(r)).toBeTrue();
