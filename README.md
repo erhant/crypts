@@ -3,7 +3,7 @@
     <code>crypts</code>
   </h1>
   <p align="center">
-    <i>A zero-dependency library for cryptography, for self-educational purposes mostly.</i>
+    <i>A Bun-powered & zero-dependency library for cryptography, for self-educational purposes mostly.</i>
   </p>
 </p>
 
@@ -36,7 +36,7 @@
 </div>
 
 - [x] [Miller-Rabin](./src/numbers/primality.ts) checks if a number is prime efficiently (but probabilistically).
-- [ ] [Tonelli-Shanks](./src/fields/sqrt.ts) finds the square root of a number in a finite field.
+- [x] [Tonelli-Shanks](./src/fields/sqrt.ts) finds the square root of a number in a finite field.
 - [x] [Legendre Symbol](./src/fields/legendre.ts) tells whether a number is quadratic residue or quadratic non-residue.
 
 ## Usage

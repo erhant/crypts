@@ -1,5 +1,5 @@
 import {describe, expect, test} from 'bun:test';
-import {bigSqrt, ffsqrt, legendreSymbol, randomPrime} from '../../src/numbers';
+import {bigSqrt, ffSqrt, randomPrime} from '../../src/numbers';
 import {Field} from '../../src';
 
 describe('square roots', () => {
@@ -13,9 +13,16 @@ describe('square roots', () => {
 
   test('tonelli-shanks', () => {
     for (let i = 0; i < 50; i++) {
-      const r = new Field(randomPrime(4)).random();
-      expect(legendreSymbol(r.mul(r))).toBe(1);
-      expect(ffsqrt(r.mul(r)).eq(r)).toBeTrue();
+      const root = new Field(randomPrime(4)).random();
+      const otherRoot = root.neg();
+      const [posRoot, negRoot] = ffSqrt(root.mul(root))!;
+      if (root.value < otherRoot.value) {
+        expect(posRoot.eq(root)).toBeTrue();
+        expect(negRoot.eq(otherRoot)).toBeTrue();
+      } else {
+        expect(posRoot.eq(otherRoot)).toBeTrue();
+        expect(negRoot.eq(root)).toBeTrue();
+      }
     }
   });
 });
