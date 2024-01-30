@@ -3,11 +3,6 @@ import {FieldElementInput, Integer} from '../../types';
 import type {IField} from '../interfaces/field';
 import {FieldElement} from './element';
 
-/** A small utility function to extract the underlying value of a field element. */
-function into(n: FieldElementInput): bigint {
-  return n instanceof FieldElement ? n.value : BigInt(n);
-}
-
 /** A finite field. */
 export class Field implements IField<FieldElementInput> {
   readonly order: bigint;
@@ -24,7 +19,7 @@ export class Field implements IField<FieldElementInput> {
   }
 
   Element(n: Integer | FieldElement) {
-    return new FieldElement(this, into(n));
+    return new FieldElement(this, this.into(n));
   }
 
   *[Symbol.iterator]() {
@@ -47,5 +42,10 @@ export class Field implements IField<FieldElementInput> {
 
   toString(): string {
     return `GF(${this.order})`;
+  }
+
+  /** A small utility function to extract the underlying value of a field element. */
+  into(n: FieldElementInput): bigint {
+    return n instanceof FieldElement ? n.value : BigInt(n);
   }
 }

@@ -2,11 +2,6 @@ import {FieldElementInput, Integer} from '../../types';
 import type {IFieldElement} from '../interfaces/';
 import {Field} from './field';
 
-/** A small utility function to extract the underlying value of a field element. */
-function into(n: FieldElementInput): bigint {
-  return n instanceof FieldElement ? n.value : BigInt(n);
-}
-
 /** An element in the finite field. */
 export class FieldElement implements IFieldElement<FieldElementInput> {
   readonly field: Field;
@@ -26,11 +21,11 @@ export class FieldElement implements IFieldElement<FieldElementInput> {
   }
 
   eq(n: FieldElementInput) {
-    return this.value === into(n);
+    return this.value === this.field.into(n);
   }
 
   add(n: FieldElementInput) {
-    return this.new(this.value + into(n));
+    return this.new(this.value + this.field.into(n));
   }
 
   sub(n: FieldElementInput) {
@@ -38,7 +33,7 @@ export class FieldElement implements IFieldElement<FieldElementInput> {
   }
 
   mul(n: FieldElementInput) {
-    return this.new(this.value * into(n));
+    return this.new(this.value * this.field.into(n));
   }
 
   div(n: FieldElementInput) {
@@ -79,7 +74,7 @@ export class FieldElement implements IFieldElement<FieldElementInput> {
     }
 
     if (r > 1n) {
-      throw new Error(`${this.value} does not have inverse mod ${this.field.order}.`);
+      throw new Error(`${this.value} does not have an inverse. (mod ${this.field.order})`);
     }
     if (t < 0n) {
       t += this.field.order;
