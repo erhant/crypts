@@ -31,6 +31,7 @@
 - [x] [Short Weierstrass](./src/curves/shortWeierstrass.ts) defines an elliptic curve in Short Weierstrass form with affine points.
 - [x] [Montgomery](./src/curves/montgomery.ts) defines an elliptic curve in Montgomery form with affine points.
 - [x] [Twisted Edwards](./src/curves/twisedEdwards.ts) defines an elliptic curve in Twisted Edwards form with affine points.
+- [x] You can convert from one curve to another.
 
 <div align="center">
 <h3>https://github.com/erhant/crypts/labels/numbers</h3>
