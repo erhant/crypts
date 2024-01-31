@@ -2,6 +2,7 @@ import {PointInput, FieldElementInput} from '../../types';
 import {Field, FieldElement} from '../../fields';
 import type {CurveInterface} from '../interfaces';
 import {ShortWeierstrassCurvePoint} from './point';
+import {ffSqrt} from '../..';
 
 /** An elliptic curve with Short Weierstrass form over affine points.
  *
@@ -40,6 +41,27 @@ export class ShortWeierstrassCurve implements CurveInterface<PointInput, FieldEl
 
   Point(point: PointInput) {
     return new ShortWeierstrassCurvePoint(this, point);
+  }
+
+  random() {
+    // pick random X until you find a quadratic residue for the
+    // right hand-side of the equation, meaning that a Y must exist.
+    // after that, use Tonelli-Shanks to find the two square roots,
+    // and finally do a coin-flip to return one of them.
+    let x = this.base.random();
+    let y: FieldElement | undefined = undefined;
+    while (y === undefined) {
+      const yy = x.exp(3).add(x.mul(this.a)).add(this.b); // x^3 + ax + b
+      const roots = ffSqrt(yy);
+      if (roots) {
+        y = Math.random() < 0.5 ? roots[0] : roots[1];
+      } else {
+        // try again with another X
+        x = this.base.random();
+      }
+    }
+
+    return new ShortWeierstrassCurvePoint(this, [x, y]);
   }
 
   get inf() {

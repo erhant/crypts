@@ -7,7 +7,7 @@ import {FieldElement, legendreSymbol} from '../fields';
  * @returns square root of the number
  */
 export function bigSqrt(num: bigint): bigint {
-  if (num < 0n) throw new Error('negative number given to sqrt');
+  if (num < 0n) throw new RangeError('negative number given to sqrt');
   if (num < 2n) return num;
 
   // source: https://stackoverflow.com/a/53684036
@@ -23,7 +23,8 @@ export function bigSqrt(num: bigint): bigint {
 }
 
 /**
- * Square root of a finite field element, using [Tonelli-Shanks](https://en.wikipedia.org/wiki/Tonelli%E2%80%93Shanks_algorithm).
+ * Square root of a finite field element,
+ * using [Tonelli-Shanks](https://en.wikipedia.org/wiki/Tonelli%E2%80%93Shanks_algorithm).
  *
  * @param num a field element
  * @returns

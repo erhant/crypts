@@ -5,6 +5,7 @@ import {BinaryFieldElement} from './element';
 /** A finite field. */
 export class BinaryField implements IField<BinaryFieldElementInput> {
   readonly order: bigint = 2n;
+  readonly orderBytes: number = 1;
   readonly characteristic: bigint = 2n;
 
   Element(n: BinaryFieldElementInput) {

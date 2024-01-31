@@ -6,6 +6,7 @@ import {FieldElement} from './element';
 /** A finite field. */
 export class Field implements IField<FieldElementInput> {
   readonly order: bigint;
+  readonly orderBytes: number;
   readonly characteristic: bigint;
 
   /** A finite field with the given (assumed to be prime) order. */
@@ -16,6 +17,7 @@ export class Field implements IField<FieldElementInput> {
     }
 
     this.characteristic = this.order;
+    this.orderBytes = this.order.toString(8).length;
   }
 
   Element(n: Integer | FieldElement) {

@@ -2,8 +2,6 @@ import {FieldElement} from '../fields';
 
 /** **Legendre Symbol**
  *
- * Assumes the finite field is of odd prime order.
- *
  * - `0`: number is zero
  * - `1`: number is quadratic residue
  * - `-1`: number is quadratic non-residue

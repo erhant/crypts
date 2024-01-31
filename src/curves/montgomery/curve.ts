@@ -2,6 +2,7 @@ import {PointInput, FieldElementInput} from '../../types';
 import {Field, FieldElement} from '../../fields';
 import type {CurveInterface} from '../interfaces';
 import {MontgomeryCurvePoint} from './point';
+import {ffSqrt} from '../..';
 
 /** An elliptic curve with Montgomery form over affine points.
  *
@@ -40,6 +41,31 @@ export class MontgomeryCurve implements CurveInterface<PointInput, FieldElement>
 
   Point(point: PointInput) {
     return new MontgomeryCurvePoint(this, point);
+  }
+
+  random() {
+    // rearrange the curve equation as:
+    //
+    //  y^2 = (x^3 + A(x^2) + x) / B
+    //
+    // pick random X until you find a quadratic residue for the
+    // right hand-side of the equation, meaning that a Y must exist.
+    // after that, use Tonelli-Shanks to find the two square roots,
+    // and finally do a coin-flip to return one of them.
+    let x = this.base.random();
+    let y: FieldElement | undefined = undefined;
+    while (y === undefined) {
+      const yy = x.exp(3).add(x.exp(2).mul(this.A)).add(x).div(this.B); // (x^3 + A(x^2) + x) / B
+      const roots = ffSqrt(yy);
+      if (roots) {
+        y = Math.random() < 0.5 ? roots[0] : roots[1];
+      } else {
+        // try again with another X
+        x = this.base.random();
+      }
+    }
+
+    return new MontgomeryCurvePoint(this, [x, y]);
   }
 
   get inf() {

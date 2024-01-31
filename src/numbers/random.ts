@@ -22,11 +22,9 @@ export function randomNumber(numBytes: number): bigint {
  * @returns a random prime
  */
 export function randomPrime(numBytes: number): bigint {
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    const rand = randomNumber(numBytes);
-    if (isPrime(rand)) {
-      return rand;
-    }
+  let rand = randomNumber(numBytes);
+  while (!isPrime(rand)) {
+    rand = randomNumber(numBytes);
   }
+  return rand;
 }
