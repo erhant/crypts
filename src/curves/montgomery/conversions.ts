@@ -6,7 +6,7 @@ export function montgomeryToShortWeierstrass(curve: MontgomeryCurve): ShortWeier
   const a = curve.A.exp(2).neg().add(3).div(curve.B.exp(2).mul(3));
 
   // (2*A^3 - 9*A)/(27*B^3)
-  const b = curve.A.exp(2).mul(2).sub(curve.A.mul(9)).div(curve.B.exp(3).mul(27));
+  const b = curve.A.exp(3).mul(2).sub(curve.A.mul(9)).div(curve.B.exp(3).mul(27));
 
   return new ShortWeierstrassCurve(curve.base, [a, b]);
 }

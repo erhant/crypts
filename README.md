@@ -22,7 +22,7 @@
 - [x] [Polynomials](./src/polynomials/polynomial.ts) defines a polynomial with coefficients in a finite field.
 - [x] [Lagrange Interpolation](./src/polynomials/lagrange.ts) constructs a polynomial based on point evaluations.
 - [x] [Shamir's Secret Sharing](./src/polynomials/shamir.ts) splits a given secret into $n$ shares such that with at least $k$ of them the secret can be reconstructed.
-- [ ] [Number-Theoretic Transform]() (aka. [Discrete Fourier Transform](https://en.wikipedia.org/wiki/Discrete_Fourier_transform_over_a_ring#Number-theoretic_transform)) is used to switch between coefficient & evaluation representations of a polynomial.
+- [ ] [Number-Theoretic Transform](./) (aka. [Discrete Fourier Transform](https://en.wikipedia.org/wiki/Discrete_Fourier_transform_over_a_ring#Number-theoretic_transform)) is used to switch between coefficient & evaluation representations of a polynomial.
 
 <div align="center">
 <h3>https://github.com/erhant/crypts/labels/elliptic%20curves</h3>
