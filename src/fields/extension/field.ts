@@ -11,6 +11,7 @@ import {Field} from '../prime/field';
  */
 export class FieldExtension implements IField<FieldExtensionElementInput> {
   readonly order: bigint;
+  readonly orderBytes: number;
   readonly characteristic: bigint;
   /** Extension degree. */
   readonly degree: number;
@@ -26,6 +27,7 @@ export class FieldExtension implements IField<FieldExtensionElementInput> {
     this.degree = polynomial.degree;
 
     this.order = polynomial.field.order ** BigInt(polynomial.degree);
+    this.orderBytes = this.order.toString(8).length;
     this.characteristic = polynomial.field.order;
   }
 
@@ -37,11 +39,11 @@ export class FieldExtension implements IField<FieldExtensionElementInput> {
   }
 
   *[Symbol.iterator]() {
+    // FIXME: parseInt???
     const orderNumber = parseInt(this.field.order.toString());
     for (let n = 0n; n < this.order; n++) {
       const coeffs = n.toString(orderNumber).padStart(this.degree).split('').reverse();
-      // FIXME: this should return FieldExtensionElement
-      yield new Polynomial(this.field, coeffs);
+      yield new FieldExtensionElement(this, coeffs);
     }
   }
 

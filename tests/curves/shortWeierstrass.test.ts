@@ -50,6 +50,13 @@ describe('short weierstrass', () => {
         expect(p.sub(p).eq(inf)).toBeTruthy();
         expect(p.add(p.neg()).eq(inf)).toBeTruthy();
       });
+
+      it('should generate random points', () => {
+        for (let i = 0; i < 10; i++) {
+          const p = E.random();
+          E.satisfies([p.x.value, p.y.value]);
+        }
+      });
     });
   });
 });

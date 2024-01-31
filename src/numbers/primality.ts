@@ -4,12 +4,14 @@ import {bigSqrt} from './sqrt';
  * Check if the number is prime:
  *
  * - First see if it is divisible by a list of smaller primes (i.e. the first 1000 primes)
- * - Then do several iterations of the [Miller-Rabin](https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test) primality test.
+ * - Then do several iterations of the
+ * [Miller-Rabin](https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test) primality test.
  *
  * @param num number to be tested
  * @param tries optional number of tries for Miller-Rabin, defaults to 20
+ * @returns true if `num` is prime
  */
-export function isPrime(num: bigint, tries: number = 20) {
+export function isPrime(num: bigint, tries: number = 20): boolean {
   // edge-case
   if (num < 2n) return false;
 
@@ -68,13 +70,18 @@ export function isPrime(num: bigint, tries: number = 20) {
  * @returns true if `num` is prime
  */
 export function isPrimeNaive(num: bigint): boolean {
+  // is less than 2?
+  if (num < 2) return false;
+  // is 2?
   if (num === 2n) return true;
+  // is even?
   if ((num & 1n) === 0n) return false;
+  // otherwise, check for divisibility
   for (let i = 3n; i <= bigSqrt(num); i += 2n) {
     if (num % i === 0n) return false;
   }
 
-  return num > 1;
+  return true;
 }
 
 /** List of first 1000 primes, as taken from [prime-numbers.info](https://prime-numbers.info/list/first-1000-primes).

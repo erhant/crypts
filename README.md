@@ -3,7 +3,7 @@
     <code>crypts</code>
   </h1>
   <p align="center">
-    <i>A Bun-powered & zero-dependency library for cryptography, for self-educational purposes mostly.</i>
+    <i>A Bun-powered zero-dependency library for cryptography, for self-educational purposes mostly.</i>
   </p>
 </p>
 
@@ -20,8 +20,9 @@
 </div>
 
 - [x] [Polynomials](./src/polynomials/polynomial.ts) defines a polynomial with coefficients in a finite field.
-- [x] [Lagrange Interpolation](./src/polynomials/lagrange.ts) is a method to construct a polynomial based on point evaluations.
+- [x] [Lagrange Interpolation](./src/polynomials/lagrange.ts) constructs a polynomial based on point evaluations.
 - [x] [Shamir's Secret Sharing](./src/polynomials/shamir.ts) splits a given secret into $n$ shares such that with at least $k$ of them the secret can be reconstructed.
+- [ ] [Number-Theoretic Transform](./) (aka. [Discrete Fourier Transform](https://en.wikipedia.org/wiki/Discrete_Fourier_transform_over_a_ring#Number-theoretic_transform)) is used to switch between coefficient & evaluation representations of a polynomial.
 
 <div align="center">
 <h3>https://github.com/erhant/crypts/labels/elliptic%20curves</h3>
@@ -30,6 +31,7 @@
 - [x] [Short Weierstrass](./src/curves/shortWeierstrass.ts) defines an elliptic curve in Short Weierstrass form with affine points.
 - [x] [Montgomery](./src/curves/montgomery.ts) defines an elliptic curve in Montgomery form with affine points.
 - [x] [Twisted Edwards](./src/curves/twisedEdwards.ts) defines an elliptic curve in Twisted Edwards form with affine points.
+- [x] You can convert from one curve to another.
 
 <div align="center">
 <h3>https://github.com/erhant/crypts/labels/numbers</h3>
@@ -57,13 +59,12 @@ bun t # alias
 > If you do not have Sage installed, but still would like to play around with the Sage code, fret not! We have prepared scripts for the Sagemath docker image:
 >
 > ```sh
-> # Pull the image
 > bun sage:pull     # pulls the image
 > bun sage:cli      # opens Sage cli
-> bun sage:notebook # open Jupyter Notebook
+> bun sage:notebook # opens Jupyter Notebook
 > ```
 >
-> The containers will have volumes attached to the `tests/data` and `tests/sage` folders, so the Sage code can directly write to the test data there.
+> The containers will have volumes attached to the `tests/data` and `tests/sage` folders, so that the Sage code can directly write to the test data there.
 
 ## Building
 
