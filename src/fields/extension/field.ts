@@ -40,6 +40,7 @@ export class FieldExtension implements IField<FieldExtensionElementInput> {
     const orderNumber = parseInt(this.field.order.toString());
     for (let n = 0n; n < this.order; n++) {
       const coeffs = n.toString(orderNumber).padStart(this.degree).split('').reverse();
+      // FIXME: this should return FieldExtensionElement
       yield new Polynomial(this.field, coeffs);
     }
   }
