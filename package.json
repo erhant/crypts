@@ -17,8 +17,9 @@
     "style": "bun run format && bun run lint",
     "test": "bun test",
     "t": "bun run test",
-    "docker:cli": "docker run -v $PWD/tests/sage:/home/sage/crypts -v $PWD/tests/data:/home/sage/data -it sagemath/sagemath:latest",
-    "docker:notebook": "docker run -v $PWD/tests/sage:/home/sage/crypts -v $PWD/tests/data:/home/sage/data -p8888:8888 sagemath/sagemath:latest sage-jupyter"
+    "sage:pull": "docker pull --platform linux/amd64 sagemath/sagemath",
+    "sage:cli": "docker run -v $PWD/tests/sage:/home/sage/crypts:ro -v $PWD/tests/data:/home/sage/data -it sagemath/sagemath:latest",
+    "sage:notebook": "docker run -v $PWD/tests/sage:/home/sage/crypts:ro -v $PWD/tests/data:/home/sage/data -p8888:8888 sagemath/sagemath:latest sage-jupyter"
   },
   "devDependencies": {
     "@types/bun": "^1.0.4",

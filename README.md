@@ -12,8 +12,8 @@
 </div>
 
 - [x] [Prime Field](./src/fields/prime/field.ts) defines a finite field of prime order.
-- [x] [Field Extension](./src/fields/extension/field.ts) defines an extension of an existing field using an irreducible polynomial.
 - [x] [Binary Field](./src/fields/binary/field.ts) defines a finite field of order 2 with Boolean values & Boolean algebra.
+- [x] [Field Extension](./src/fields/extension/field.ts) defines an extension of an existing field using an irreducible polynomial.
 
 <div align="center">
 <h3>https://github.com/erhant/crypts/labels/polynomials</h3>
@@ -52,28 +52,18 @@ bun run test
 bun t # alias
 ```
 
-To prepare the test data using Sage, you may use the [Docker image](https://hub.docker.com/r/sagemath/sagemath/) of it if you don't have it installed. To pull the image, do the following:
-
-```sh
-docker pull --platform linux/amd64 sagemath/sagemath
-```
-
-We specify the platform in case our machine does not support it, which is the case of Macbooks. Then, we can run the image as a CLI directly within sage or via a notebook:
-
-```sh
-# run Sage from the command line
-docker run -v $PWD/tests/sage:/home/sage/crypts -v $PWD/tests/data:/home/sage/data -it sagemath/sagemath:latest
-
-# or, open a Jupyter notebook
-docker run -v $PWD/tests/sage:/home/sage/crypts -v $PWD/tests/data:/home/sage/data -p8888:8888 sagemath/sagemath:latest sage-jupyter
-```
-
-As noticed here, we attach the volumes related to our Sage programs and their export destination. We also have aliases for these two commands:
-
-```sh
-bun docker:cli
-bun docker:notebook
-```
+> [!TIP]
+>
+> If you do not have Sage installed, but still would like to play around with the Sage code, fret not! We have prepared scripts for the Sagemath docker image:
+>
+> ```sh
+> # Pull the image
+> bun sage:pull     # pulls the image
+> bun sage:cli      # opens Sage cli
+> bun sage:notebook # open Jupyter Notebook
+> ```
+>
+> The containers will have volumes attached to the `tests/data` and `tests/sage` folders, so the Sage code can directly write to the test data there.
 
 ## Building
 
