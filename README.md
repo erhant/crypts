@@ -28,10 +28,10 @@
 <h3>https://github.com/erhant/crypts/labels/elliptic%20curves</h3>
 </div>
 
-- [x] [Short Weierstrass](./src/curves/shortWeierstrass.ts) defines an elliptic curve in Short Weierstrass form with affine points.
-- [x] [Montgomery](./src/curves/montgomery.ts) defines an elliptic curve in Montgomery form with affine points.
-- [x] [Twisted Edwards](./src/curves/twisedEdwards.ts) defines an elliptic curve in Twisted Edwards form with affine points.
-- [x] You can convert from one curve to another.
+- [x] [Short Weierstrass](./src/curves/shortWeierstrass.ts) defines an elliptic curve in Short Weierstrass form with affine points, along with curve conversions.
+- [x] [Montgomery](./src/curves/montgomery.ts) defines an elliptic curve in Montgomery form with affine points, along with curve conversions.
+- [x] [Twisted Edwards](./src/curves/twisedEdwards.ts) defines an elliptic curve in Twisted Edwards form with affine points, along with curve conversions.
+- [ ] [Find Scalar Order](/) ...
 
 <div align="center">
 <h3>https://github.com/erhant/crypts/labels/numbers</h3>
@@ -91,3 +91,11 @@ bun format
 bun lint
 bun style # does both
 ```
+
+## Resources
+
+This would not have been possible without the amazing resources out there:
+
+- [MoonMath Manual](https://leastauthority.com/community-matters/moonmath-manual/)
+- [ZCash](https://zcash.github.io/halo2/background)
+- [Risencrypto](https://risencrypto.github.io)

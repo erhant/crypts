@@ -9,8 +9,7 @@
   ],
   "scripts": {
     "start": "bun run ./src/main.ts",
-    "build": "bun build ./src/index.ts --outdir ./build && bun build:types",
-    "build:types": "bunx dts-bundle-generator -o ./build/index.d.ts ./src/index.ts",
+    "build": "bun run ./build.ts",
     "b": "bun run build",
     "format": "prettier --check ./src/**/*.ts ./tests/**/*.ts",
     "lint": "eslint '**/*.ts' && echo 'All good.'",
@@ -25,7 +24,7 @@
     "@types/bun": "^1.0.4",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
     "@typescript-eslint/parser": "^6.6.0",
-    "dts-bundle-generator": "^9.2.5",
+    "bun-plugin-dts": "^0.2.1",
     "eslint": "^8.49.0",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
