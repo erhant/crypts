@@ -1,9 +1,9 @@
-import {FieldElementInput, FieldExtensionElementInput, Integer} from '../../types';
+import {FieldElementInput, Integer} from '../../types';
 import {Polynomial} from '../../polynomials';
 import {IFieldElement} from '../interfaces';
 import {FieldExtension} from './field';
 
-export class FieldExtensionElement implements IFieldElement<FieldExtensionElementInput> {
+export class FieldExtensionElement implements IFieldElement<FieldExtension.Input, FieldExtension.Value> {
   readonly field: FieldExtension;
   readonly value: Polynomial;
 
@@ -20,27 +20,27 @@ export class FieldExtensionElement implements IFieldElement<FieldExtensionElemen
   }
 
   /** Create a new element in the same field. */
-  new(n: FieldExtensionElementInput) {
+  new(n: FieldExtension.Input) {
     return this.field.Element(n);
   }
 
-  eq(q: FieldExtensionElementInput) {
+  eq(q: FieldExtension.Input) {
     return this.value.eq(this.new(q).value);
   }
 
-  add(q: FieldExtensionElementInput) {
+  add(q: FieldExtension.Input) {
     return this.new(this.value.add(this.new(q).value));
   }
 
-  sub(q: FieldExtensionElementInput) {
+  sub(q: FieldExtension.Input) {
     return this.add(this.new(q).neg());
   }
 
-  mul(q: FieldExtensionElementInput) {
+  mul(q: FieldExtension.Input) {
     return this.new(this.value.mul(this.new(q).value));
   }
 
-  div(q: FieldExtensionElementInput) {
+  div(q: FieldExtension.Input) {
     return this.mul(this.new(q).inv());
   }
 

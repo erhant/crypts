@@ -1,13 +1,13 @@
-import {FieldElementInput, Integer} from '../../types';
+import {Integer} from '../../types';
 import type {IFieldElement} from '../interfaces/';
 import {Field} from './field';
 
 /** An element in the finite field. */
-export class FieldElement implements IFieldElement<FieldElementInput> {
+export class FieldElement implements IFieldElement<Field.Input, Field.Value> {
   readonly field: Field;
-  readonly value: bigint;
+  readonly value: Field.Value;
 
-  constructor(field: Field, value: bigint) {
+  constructor(field: Field, value: Field.Value) {
     this.field = field;
     this.value = value % field.order;
     if (this.value < 0n) {
@@ -16,27 +16,27 @@ export class FieldElement implements IFieldElement<FieldElementInput> {
   }
 
   /** Create a new element in the same field. */
-  new(n: FieldElementInput) {
+  new(n: Field.Input) {
     return this.field.Element(n);
   }
 
-  eq(n: FieldElementInput) {
+  eq(n: Field.Input) {
     return this.value === this.field.into(n);
   }
 
-  add(n: FieldElementInput) {
+  add(n: Field.Input) {
     return this.new(this.value + this.field.into(n));
   }
 
-  sub(n: FieldElementInput) {
+  sub(n: Field.Input) {
     return this.add(this.new(n).neg());
   }
 
-  mul(n: FieldElementInput) {
+  mul(n: Field.Input) {
     return this.new(this.value * this.field.into(n));
   }
 
-  div(n: FieldElementInput) {
+  div(n: Field.Input) {
     return this.mul(this.new(n).inv());
   }
 

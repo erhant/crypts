@@ -1,40 +1,39 @@
-import {BinaryFieldElementInput, Integer} from '../../types';
+import {Integer} from '../../types';
 import type {IFieldElement} from '../interfaces/';
 import {BinaryField} from './field';
 
 /** An element in the finite field. */
-export class BinaryFieldElement implements IFieldElement<BinaryFieldElementInput> {
+export class BinaryFieldElement implements IFieldElement<BinaryField.Input, BinaryField.Value> {
   readonly field: BinaryField;
-  readonly value: boolean;
+  readonly value: BinaryField.Value;
 
-  constructor(field: BinaryField, value: boolean) {
+  constructor(field: BinaryField, value: BinaryField.Value) {
     this.field = field;
     this.value = value;
   }
 
   /** Create a new element in the same field. */
-  new(n: BinaryFieldElementInput) {
-    // n ? t
+  new(n: BinaryField.Input) {
     return this.field.Element(n);
   }
 
-  eq(n: BinaryFieldElementInput) {
+  eq(n: BinaryField.Input) {
     return this.value === this.field.into(n);
   }
 
-  add(n: BinaryFieldElementInput) {
-    return this.new(this.value !== this.field.into(n));
+  add(n: BinaryField.Input) {
+    return this.new(this.value != this.field.into(n) ? 1 : 0);
   }
 
-  sub(n: BinaryFieldElementInput) {
-    return this.new(this.value !== this.field.into(n));
+  sub(n: BinaryField.Input) {
+    return this.new(this.value != this.field.into(n) ? 1 : 0);
   }
 
-  mul(n: BinaryFieldElementInput) {
-    return this.new(this.value && this.field.into(n));
+  mul(n: BinaryField.Input) {
+    return this.new((this.value * this.field.into(n)) as BinaryField.Value);
   }
 
-  div(n: BinaryFieldElementInput) {
+  div(n: BinaryField.Input) {
     return this.mul(this.new(n).inv());
   }
 
@@ -43,7 +42,7 @@ export class BinaryFieldElement implements IFieldElement<BinaryFieldElementInput
   }
 
   neg() {
-    return this.new(!this.value);
+    return this.new((1 - this.value) as BinaryField.Value);
   }
 
   inv() {

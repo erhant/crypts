@@ -1,4 +1,4 @@
-import {FieldElementInput, Integer} from '../types';
+import {Integer} from '../types';
 import {Field, FieldElement} from '../fields';
 
 /** A univariate polynomial over a finite field, with coefficients as elements of that field. */
@@ -110,7 +110,7 @@ export class Polynomial {
   }
 
   /** Multiply all coefficients with a scalar. */
-  scale(s: FieldElementInput): Polynomial {
+  scale(s: Field.Input): Polynomial {
     return new Polynomial(
       this.field,
       this.coeffs.map(c => c.mul(s))
@@ -118,7 +118,7 @@ export class Polynomial {
   }
 
   /** Equality check with a polynomial or an array of coefficients. */
-  eq(q: Polynomial | FieldElementInput[]): boolean {
+  eq(q: Polynomial | Field.Input[]): boolean {
     const coeffs = q instanceof Polynomial ? q.coeffs : q;
 
     if (this.coeffs.length !== coeffs.length) {
@@ -135,7 +135,7 @@ export class Polynomial {
   }
 
   /** Evaluate polynomial at the given point via [Horner's rule](https://zcash.github.io/halo2/background/polynomials.html#aside-horners-rule). */
-  eval(p: FieldElementInput): FieldElement {
+  eval(p: Field.Input): FieldElement {
     return this.coeffs.reduceRight((ans, cur) => cur.add(ans.mul(p)), this.field.zero);
   }
 

@@ -7,10 +7,10 @@ describe('binary field', () => {
   const one = F.one;
 
   test('addition', () => {
-    expect(zero.add(zero).eq(0)).toBeTrue();
-    expect(zero.add(one).eq(1)).toBeTrue();
-    expect(one.add(zero).eq(1)).toBeTrue();
-    expect(one.add(one).eq(0)).toBeTrue();
+    expect(zero.add(zero).value).toBe(0);
+    expect(zero.add(one).value).toBe(1);
+    expect(one.add(zero).value).toBe(1);
+    expect(one.add(one).value).toBe(0);
   });
 
   test('multiplication', () => {

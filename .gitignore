@@ -172,3 +172,5 @@ dist
 __pycache__
 
 build
+
+tsconfig.tsbuildinfo

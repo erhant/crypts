@@ -1,4 +1,4 @@
-import {PointInput, FieldElementInput} from '../../types';
+import {PointInput} from '../../types';
 import {Field, FieldElement} from '../../fields';
 import type {CurveInterface} from '../interfaces';
 import {ShortWeierstrassCurvePoint} from './point';
@@ -25,7 +25,7 @@ export class ShortWeierstrassCurve implements CurveInterface<PointInput, FieldEl
 
   constructor(
     field: Field,
-    params: [a: FieldElementInput, b: FieldElementInput],
+    params: [a: Field.Input, b: Field.Input],
     args?: {
       scalarOrder?: bigint;
       generator?: PointInput;

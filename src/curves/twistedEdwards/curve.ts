@@ -1,4 +1,4 @@
-import {PointInput, FieldElementInput} from '../../types';
+import {PointInput} from '../../types';
 import {Field, FieldElement} from '../../fields';
 import {CurveInterface} from '../interfaces';
 import {TwistedEdwardsCurvePoint} from './point';
@@ -25,7 +25,7 @@ export class TwistedEdwardsCurve implements CurveInterface<PointInput, FieldElem
 
   constructor(
     field: Field,
-    params: [a: FieldElementInput, d: FieldElementInput],
+    params: [a: Field.Input, d: Field.Input],
     args?: {
       scalarOrder?: bigint;
       generator?: PointInput;

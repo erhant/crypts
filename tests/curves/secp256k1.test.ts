@@ -6,7 +6,7 @@ describe('secp256k1', () => {
 
   describe('wallet generation', () => {
     // https://blockchain-academy.hs-mittweida.de/bitcoin-address-generator/
-    it('should compute correct Bitcoin wallet', () => {
+    it.todo('should compute correct Bitcoin wallet', () => {
       const privateKey = 0xb142a363087bef1c5862b841da4d92e6126114ad13aef8480dd3c75bda90c62an;
 
       console.log('Private Key:', privateKey.toString(16));

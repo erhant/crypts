@@ -1,9 +1,8 @@
-import {FieldElementInput} from '../types';
 import {Field} from '../fields';
 import {Polynomial} from '.';
 
 /** Lagrange interpolation in a given field. */
-export function interpolate(field: Field, points: [FieldElementInput, FieldElementInput][]): Polynomial {
+export function interpolate(field: Field, points: [Field.Input, Field.Input][]): Polynomial {
   const ps = points.map(p => [field.Element(p[0]), field.Element(p[1])]);
   const n = points.length;
 

@@ -19,18 +19,20 @@ graph TD
 
   subgraph elliptic-curves
     e[interface]
-    sw[Short-Weierstrass]
+    sw[Short Weierstrass]
     mont[Montgomery]
-    te[Twisted-Edwards]
+    te[Twisted Edwards]
 
     e --> sw
     e --> mont
     e --> te
     f --> e
+
+    sw <--"conversion"--> mont <--"conversion"--> te
   end
 
   p --> lagrange
-  p -->shamir
+  p --> shamir
 
 
 ```

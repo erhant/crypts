@@ -10,6 +10,7 @@
   "scripts": {
     "start": "bun run ./src/main.ts",
     "build": "bun run ./build.ts",
+    "check": "bunx tsc --noEmit",
     "b": "bun run build",
     "format": "prettier --check ./src/**/*.ts ./tests/**/*.ts",
     "lint": "eslint '**/*.ts' && echo 'All good.'",
@@ -46,7 +47,8 @@
       "@typescript-eslint"
     ],
     "rules": {
-      "@typescript-eslint/no-unused-vars": "warn"
+      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-namespace": "off"
     },
     "root": true,
     "ignorePatterns": [

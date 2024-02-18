@@ -1,4 +1,4 @@
-import {PointInput, FieldElementInput} from '../../types';
+import {PointInput} from '../../types';
 import {Field, FieldElement} from '../../fields';
 import type {CurveInterface} from '../interfaces';
 import {MontgomeryCurvePoint} from './point';
@@ -25,7 +25,7 @@ export class MontgomeryCurve implements CurveInterface<PointInput, FieldElement>
 
   constructor(
     field: Field,
-    params: [A: FieldElementInput, B: FieldElementInput],
+    params: [A: Field.Input, B: Field.Input],
     args?: {
       scalarOrder?: bigint;
       generator?: PointInput;

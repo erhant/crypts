@@ -15,7 +15,8 @@
     "jsx": "preserve",
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "allowJs": true
+    "allowJs": true,
+    "noImplicitOverride": true
   },
   "include": ["./src/**/*.ts", "./tests/**/*.ts", "./tests/**/*.json", "./examples/**/*.json"]
 }

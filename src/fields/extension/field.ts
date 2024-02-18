@@ -1,4 +1,3 @@
-import {FieldExtensionElementInput} from '../../types';
 import {Polynomial} from '../../polynomials';
 import {IField} from '../interfaces/field';
 import {FieldExtensionElement} from './element';
@@ -9,7 +8,7 @@ import {Field} from '../prime/field';
  * The elements of this extension field is the set of all polynomials modulo the irreducible polynomial,
  * similar to an integer ring modulo some prime number.
  */
-export class FieldExtension implements IField<FieldExtensionElementInput> {
+export class FieldExtension implements IField<FieldExtension.Input, FieldExtension.Value> {
   readonly order: bigint;
   readonly orderBytes: number;
   readonly characteristic: bigint;
@@ -31,7 +30,7 @@ export class FieldExtension implements IField<FieldExtensionElementInput> {
     this.characteristic = polynomial.field.order;
   }
 
-  Element(n: FieldExtensionElementInput) {
+  Element(n: FieldExtension.Input) {
     return new FieldExtensionElement(
       this,
       n instanceof FieldExtensionElement ? n.value.coeffs : n instanceof Polynomial ? n.coeffs : n
@@ -43,7 +42,7 @@ export class FieldExtension implements IField<FieldExtensionElementInput> {
     const orderNumber = parseInt(this.field.order.toString());
     for (let n = 0n; n < this.order; n++) {
       const coeffs = n.toString(orderNumber).padStart(this.degree).split('').reverse();
-      yield new FieldExtensionElement(this, coeffs);
+      yield new FieldExtensionElement(this, coeffs as `${bigint}`[]);
     }
   }
 
@@ -56,10 +55,20 @@ export class FieldExtension implements IField<FieldExtensionElementInput> {
   }
 
   random() {
-    return this.Element([1]); // TODO: create a random polynomial
+    // TODO: create a random polynomial, return mod Poly
+    return this.Element([1]);
   }
 
   toString() {
     return `GF(${this.field.order}) over ${this.poly}`;
   }
+}
+
+export namespace FieldExtension {
+  export type Value = Polynomial;
+  export type Element = FieldExtensionElement;
+  export type Input =
+    | Field.Input[] // coefficients
+    | FieldExtension.Value
+    | FieldExtension.Element;
 }
