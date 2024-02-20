@@ -6,8 +6,12 @@ export class BinaryField implements IField<BinaryField.Input, BinaryField.Value>
   readonly orderBytes: number = 1;
   readonly characteristic: bigint = 2n;
 
-  Element(n: BinaryField.Input) {
+  Element(n: BinaryField.Input): BinaryField.Element {
     return new BinaryFieldElement(this, this.into(n));
+  }
+
+  into(n: BinaryField.Input): BinaryField.Value {
+    return n instanceof BinaryFieldElement ? n.value : n;
   }
 
   *[Symbol.iterator]() {
@@ -29,11 +33,6 @@ export class BinaryField implements IField<BinaryField.Input, BinaryField.Value>
 
   toString() {
     return `GF(2)`;
-  }
-
-  /** A small utility function to extract the underlying value of a field element. */
-  into(n: BinaryField.Input) {
-    return n instanceof BinaryFieldElement ? n.value : n;
   }
 }
 

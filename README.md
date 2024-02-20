@@ -97,7 +97,7 @@ bun style # does both
 This would not have been possible without the amazing resources out there:
 
 - [MoonMath Manual](https://leastauthority.com/community-matters/moonmath-manual/)
-- [ZCash](https://zcash.github.io/halo2/background)
+- [ZCash - Halo2 Background](https://zcash.github.io/halo2/background)
 - [Risencrypto](https://risencrypto.github.io)
 - [2π](https://xn--2-umb.com/)
-- [Standford PBC](https://crypto.stanford.edu/pbc/notes/)
+- [Standford PBC Notes](https://crypto.stanford.edu/pbc/notes/)
