@@ -1,16 +1,17 @@
-import {PointInput, Integer} from '../../types';
-import {FieldElement} from '../../fields';
+import {Integer} from '../..';
 import {CurvePointInterface} from '../interfaces';
 import {TwistedEdwardsCurve} from './curve';
 
 /** An affine point on an elliptic curve with Twisted Edwards form. */
-export class TwistedEdwardsCurvePoint implements CurvePointInterface<PointInput, FieldElement> {
+export class TwistedEdwardsCurvePoint
+  implements CurvePointInterface<TwistedEdwardsCurve.Point, TwistedEdwardsCurve.Value>
+{
   readonly curve: TwistedEdwardsCurve;
-  readonly x: FieldElement;
-  readonly y: FieldElement;
+  readonly x: TwistedEdwardsCurve.Value;
+  readonly y: TwistedEdwardsCurve.Value;
   readonly inf: boolean;
 
-  constructor(curve: TwistedEdwardsCurve, point: PointInput) {
+  constructor(curve: TwistedEdwardsCurve, point: TwistedEdwardsCurve.Point) {
     this.curve = curve;
     if (!curve.satisfies(point)) {
       throw new Error(`(${point[0]}, ${point[1]}) is not on this curve.`);

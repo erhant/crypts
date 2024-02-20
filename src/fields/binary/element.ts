@@ -1,4 +1,4 @@
-import {Integer} from '../../types';
+import {Integer} from '../..';
 import type {IFieldElement} from '../interfaces/';
 import {BinaryField} from './field';
 

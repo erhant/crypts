@@ -1,16 +1,15 @@
-import {PointInput, Integer} from '../../types';
-import {FieldElement} from '../../fields';
+import {Integer} from '../..';
 import type {CurvePointInterface} from '../interfaces';
 import {MontgomeryCurve} from './curve';
 
 /** An affine point on an elliptic curve with Montgomery form. */
-export class MontgomeryCurvePoint implements CurvePointInterface<PointInput, FieldElement> {
+export class MontgomeryCurvePoint implements CurvePointInterface<MontgomeryCurve.Point, MontgomeryCurve.Value> {
   readonly curve: MontgomeryCurve;
-  readonly x: FieldElement;
-  readonly y: FieldElement;
+  readonly x: MontgomeryCurve.Value;
+  readonly y: MontgomeryCurve.Value;
   readonly inf: boolean;
 
-  constructor(curve: MontgomeryCurve, point?: PointInput) {
+  constructor(curve: MontgomeryCurve, point?: MontgomeryCurve.Point) {
     this.curve = curve;
     if (point) {
       if (!curve.satisfies(point)) {

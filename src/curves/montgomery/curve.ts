@@ -1,5 +1,4 @@
-import {PointInput} from '../../types';
-import {Field, FieldElement} from '../../fields';
+import {Field} from '../../fields';
 import type {CurveInterface} from '../interfaces';
 import {MontgomeryCurvePoint} from './point';
 import {ffSqrt} from '../..';
@@ -13,22 +12,22 @@ import {ffSqrt} from '../..';
  * B(y^2) = x^3 + A(x^2) + x
  * ```
  */
-export class MontgomeryCurve implements CurveInterface<PointInput, FieldElement> {
+export class MontgomeryCurve implements CurveInterface<MontgomeryCurve.Point, MontgomeryCurve.Value> {
   readonly base: Field;
   readonly scalar?: Field;
   readonly generator?: MontgomeryCurvePoint;
 
   /** Curve parameter `A`. */
-  readonly A: FieldElement;
+  readonly A: MontgomeryCurve.Value;
   /** Curve parameter `B`. */
-  readonly B: FieldElement;
+  readonly B: MontgomeryCurve.Value;
 
   constructor(
     field: Field,
-    params: [A: Field.Input, B: Field.Input],
+    params: MontgomeryCurve.Params,
     args?: {
       scalarOrder?: bigint;
-      generator?: PointInput;
+      generator?: MontgomeryCurve.Point;
     }
   ) {
     this.A = field.Element(params[0]);
@@ -39,7 +38,7 @@ export class MontgomeryCurve implements CurveInterface<PointInput, FieldElement>
     if (args?.generator) this.generator = this.Point(args.generator);
   }
 
-  Point(point: PointInput) {
+  Point(point: MontgomeryCurve.Point) {
     return new MontgomeryCurvePoint(this, point);
   }
 
@@ -53,7 +52,7 @@ export class MontgomeryCurve implements CurveInterface<PointInput, FieldElement>
     // after that, use Tonelli-Shanks to find the two square roots,
     // and finally do a coin-flip to return one of them.
     let x = this.base.random();
-    let y: FieldElement | undefined = undefined;
+    let y: MontgomeryCurve.Value | undefined = undefined;
     while (y === undefined) {
       const yy = x.exp(3).add(x.exp(2).mul(this.A)).add(x).div(this.B); // (x^3 + A(x^2) + x) / B
       const roots = ffSqrt(yy);
@@ -72,7 +71,7 @@ export class MontgomeryCurve implements CurveInterface<PointInput, FieldElement>
     return new MontgomeryCurvePoint(this);
   }
 
-  satisfies(point: PointInput) {
+  satisfies(point: MontgomeryCurve.Point) {
     const [x, y] = [this.base.Element(point[0]), this.base.Element(point[1])];
     const lhs = y.exp(2).mul(this.B); // B*y^2
     const rhs = x.exp(3).add(x.exp(2).mul(this.A)).add(x); // x^3 + A*x^2 + x
@@ -82,4 +81,10 @@ export class MontgomeryCurve implements CurveInterface<PointInput, FieldElement>
   toString(): string {
     return `${this.B}*y^2 = x^3 + ${this.A}*x^2 + x`;
   }
+}
+
+export namespace MontgomeryCurve {
+  export type Value = Field.Element;
+  export type Params = [A: Field.Input, B: Field.Input];
+  export type Point = [Field.Input, Field.Input];
 }

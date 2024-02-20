@@ -1,13 +1,14 @@
-import {FieldElementInput, Integer} from '../../types';
 import {Polynomial} from '../../polynomials';
 import {IFieldElement} from '../interfaces';
 import {FieldExtension} from './field';
+import {Field} from '../prime';
+import {Integer} from '../..';
 
 export class FieldExtensionElement implements IFieldElement<FieldExtension.Input, FieldExtension.Value> {
   readonly field: FieldExtension;
   readonly value: Polynomial;
 
-  constructor(extension: FieldExtension, coefficients: FieldElementInput[]) {
+  constructor(extension: FieldExtension, coefficients: Field.Input[]) {
     coefficients = coefficients.map(c => extension.field.Element(c));
     this.field = extension;
 

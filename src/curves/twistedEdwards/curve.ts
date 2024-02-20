@@ -1,5 +1,4 @@
-import {PointInput} from '../../types';
-import {Field, FieldElement} from '../../fields';
+import {Field} from '../../fields';
 import {CurveInterface} from '../interfaces';
 import {TwistedEdwardsCurvePoint} from './point';
 import {ffSqrt} from '../..';
@@ -13,22 +12,22 @@ import {ffSqrt} from '../..';
  * a(x^2) + y^2 = 1 + d(x^2)(y^2)
  * ```
  */
-export class TwistedEdwardsCurve implements CurveInterface<PointInput, FieldElement> {
+export class TwistedEdwardsCurve implements CurveInterface<TwistedEdwardsCurve.Point, TwistedEdwardsCurve.Value> {
   readonly base: Field;
   readonly scalar?: Field;
   readonly generator?: TwistedEdwardsCurvePoint;
 
   /** Curve parameter `a`. */
-  readonly a: FieldElement;
+  readonly a: TwistedEdwardsCurve.Value;
   /** Curve parameter `d`. */
-  readonly d: FieldElement;
+  readonly d: TwistedEdwardsCurve.Value;
 
   constructor(
     field: Field,
-    params: [a: Field.Input, d: Field.Input],
+    params: TwistedEdwardsCurve.Params,
     args?: {
       scalarOrder?: bigint;
-      generator?: PointInput;
+      generator?: TwistedEdwardsCurve.Point;
     }
   ) {
     this.a = field.Element(params[0]);
@@ -39,7 +38,7 @@ export class TwistedEdwardsCurve implements CurveInterface<PointInput, FieldElem
     if (args?.generator) this.generator = this.Point(args.generator);
   }
 
-  Point(point: PointInput) {
+  Point(point: TwistedEdwardsCurve.Point) {
     return new TwistedEdwardsCurvePoint(this, point);
   }
 
@@ -55,7 +54,7 @@ export class TwistedEdwardsCurve implements CurveInterface<PointInput, FieldElem
     // after that, use Tonelli-Shanks to find the two square roots,
     // and finally do a coin-flip to return one of them.
     let x = this.base.random();
-    let y: FieldElement | undefined = undefined;
+    let y: TwistedEdwardsCurve.Value | undefined = undefined;
     while (y === undefined) {
       const xx = x.mul(x);
       const yy = this.a.mul(xx).sub(1).div(this.d.mul(xx).sub(1)); // (a(x^2) - 1)/(d(x^2) - 1)
@@ -75,7 +74,7 @@ export class TwistedEdwardsCurve implements CurveInterface<PointInput, FieldElem
     return new TwistedEdwardsCurvePoint(this, [0, 1]);
   }
 
-  satisfies(point: PointInput) {
+  satisfies(point: TwistedEdwardsCurve.Point) {
     const [x, y] = [this.base.Element(point[0]), this.base.Element(point[1])];
     const [xx, yy] = [x.exp(2), y.exp(2)];
     const lhs = this.a.mul(xx).add(yy); // a*x^2 + y^2
@@ -86,4 +85,10 @@ export class TwistedEdwardsCurve implements CurveInterface<PointInput, FieldElem
   toString() {
     return `${this.a}*x^2 + y^2 = 1 + ${this.d}*x^2*y^2`;
   }
+}
+
+export namespace TwistedEdwardsCurve {
+  export type Value = Field.Element;
+  export type Params = [a: Field.Input, d: Field.Input];
+  export type Point = [Field.Input, Field.Input];
 }
