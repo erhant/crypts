@@ -30,11 +30,15 @@ export class FieldExtension implements IField<FieldExtension.Input, FieldExtensi
     this.characteristic = polynomial.field.order;
   }
 
-  Element(n: FieldExtension.Input) {
+  Element(n: FieldExtension.Input): FieldExtension.Element {
     return new FieldExtensionElement(
       this,
       n instanceof FieldExtensionElement ? n.value.coeffs : n instanceof Polynomial ? n.coeffs : n
     );
+  }
+
+  into(n: FieldExtension.Input): FieldExtension.Value {
+    return n instanceof FieldExtensionElement ? n.value : n instanceof Polynomial ? n : new Polynomial(this.field, n);
   }
 
   *[Symbol.iterator]() {

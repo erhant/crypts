@@ -20,7 +20,10 @@ export interface IField<I, V> {
   readonly characteristic: bigint;
 
   /** A field element. */
-  Element(n: I): IFieldElement<I, V>;
+  Element(n: I | IFieldElement<I, V>): IFieldElement<I, V>;
+
+  /** Underlying value of a field element. */
+  into(n: I): V;
 
   /** Iterator over elements in the field. */
   [Symbol.iterator](): Generator<IFieldElement<I, V>, void, unknown>;

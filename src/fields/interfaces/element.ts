@@ -14,19 +14,19 @@ export interface IFieldElement<I, V> {
   readonly value: V;
 
   /** Equality check with a field elements or number. */
-  eq(n: I): boolean;
+  eq(n: I | IFieldElement<I, V>): boolean;
 
   /** Addition in the field. */
-  add(n: I): IFieldElement<I, V>;
+  add(n: I | IFieldElement<I, V>): IFieldElement<I, V>;
 
   /** Addition with additive inverse in the field. */
-  sub(n: I): IFieldElement<I, V>;
+  sub(n: I | IFieldElement<I, V>): IFieldElement<I, V>;
 
   /** Multiplication in the field. */
-  mul(n: I): IFieldElement<I, V>;
+  mul(n: I | IFieldElement<I, V>): IFieldElement<I, V>;
 
   /** Multiplication with multiplicative inverse in the field. */
-  div(n: I): IFieldElement<I, V>;
+  div(n: I | IFieldElement<I, V>): IFieldElement<I, V>;
 
   /** Exponentiation in the field via
    * [square-and-multiply](https://en.wikipedia.org/wiki/Exponentiation_by_squaring). */

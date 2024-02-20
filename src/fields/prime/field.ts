@@ -20,8 +20,12 @@ export class Field implements IField<Field.Input, Field.Value> {
     this.orderBytes = this.order.toString(8).length;
   }
 
-  Element(n: Field.Input) {
+  Element(n: Field.Input): Field.Element {
     return new FieldElement(this, this.into(n));
+  }
+
+  into(n: Field.Input): Field.Value {
+    return n instanceof FieldElement ? n.value : BigInt(n);
   }
 
   *[Symbol.iterator]() {
@@ -44,11 +48,6 @@ export class Field implements IField<Field.Input, Field.Value> {
 
   toString(): string {
     return `GF(${this.order})`;
-  }
-
-  /** A small utility function to extract the underlying value of a field element. */
-  into(n: Field.Input): bigint {
-    return n instanceof FieldElement ? n.value : BigInt(n);
   }
 }
 
