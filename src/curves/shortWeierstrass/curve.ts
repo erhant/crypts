@@ -1,4 +1,3 @@
-import {PointInput} from '../../types';
 import {Field, FieldElement} from '../../fields';
 import type {CurveInterface} from '../interfaces';
 import {ShortWeierstrassCurvePoint} from './point';
@@ -13,7 +12,7 @@ import {ffSqrt} from '../..';
  * y^2 = x^3 + a(x) + b
  * ```
  */
-export class ShortWeierstrassCurve implements CurveInterface<PointInput, FieldElement> {
+export class ShortWeierstrassCurve implements CurveInterface<ShortWeierstrassCurve.Point, ShortWeierstrassCurve.Value> {
   readonly base: Field;
   readonly scalar?: Field;
   readonly generator?: ShortWeierstrassCurvePoint;
@@ -25,10 +24,10 @@ export class ShortWeierstrassCurve implements CurveInterface<PointInput, FieldEl
 
   constructor(
     field: Field,
-    params: [a: Field.Input, b: Field.Input],
+    params: ShortWeierstrassCurve.Params,
     args?: {
       scalarOrder?: bigint;
-      generator?: PointInput;
+      generator?: ShortWeierstrassCurve.Point;
     }
   ) {
     this.a = field.Element(params[0]);
@@ -39,7 +38,7 @@ export class ShortWeierstrassCurve implements CurveInterface<PointInput, FieldEl
     if (args?.generator) this.generator = this.Point(args.generator);
   }
 
-  Point(point: PointInput) {
+  Point(point: ShortWeierstrassCurve.Point) {
     return new ShortWeierstrassCurvePoint(this, point);
   }
 
@@ -49,7 +48,7 @@ export class ShortWeierstrassCurve implements CurveInterface<PointInput, FieldEl
     // after that, use Tonelli-Shanks to find the two square roots,
     // and finally do a coin-flip to return one of them.
     let x = this.base.random();
-    let y: FieldElement | undefined = undefined;
+    let y: ShortWeierstrassCurve.Value | undefined = undefined;
     while (y === undefined) {
       const yy = x.exp(3).add(x.mul(this.a)).add(this.b); // x^3 + ax + b
       const roots = ffSqrt(yy);
@@ -68,7 +67,7 @@ export class ShortWeierstrassCurve implements CurveInterface<PointInput, FieldEl
     return new ShortWeierstrassCurvePoint(this);
   }
 
-  satisfies(point: PointInput) {
+  satisfies(point: ShortWeierstrassCurve.Point) {
     const [x, y] = [this.base.Element(point[0]), this.base.Element(point[1])];
     const lhs = y.exp(2); // y^2
     const rhs = x.exp(3).add(x.mul(this.a)).add(this.b); // x^3 + ax + b
@@ -78,4 +77,10 @@ export class ShortWeierstrassCurve implements CurveInterface<PointInput, FieldEl
   toString() {
     return `y^2 = x^3 + ${this.a}*x + ${this.b}`;
   }
+}
+
+export namespace ShortWeierstrassCurve {
+  export type Value = Field.Element;
+  export type Params = [a: Field.Input, b: Field.Input];
+  export type Point = [Field.Input, Field.Input];
 }

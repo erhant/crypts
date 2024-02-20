@@ -1,5 +1,4 @@
-import {randomNumber} from '../../numbers';
-import {Integer} from '../../types';
+import {Integer, randomNumber} from '../../numbers';
 import type {IField} from '../interfaces/field';
 import {FieldElement} from './element';
 

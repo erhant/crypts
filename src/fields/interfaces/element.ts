@@ -1,5 +1,5 @@
+import {Integer} from '../..';
 import type {IField} from './field';
-import type {Integer} from '../../types';
 
 /**
  * A finite field element interface.

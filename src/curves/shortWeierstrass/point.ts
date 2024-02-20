@@ -1,16 +1,17 @@
-import {PointInput, Integer} from '../../types';
-import {FieldElement} from '../../fields';
+import {Integer} from '../..';
 import type {CurvePointInterface} from '../interfaces';
 import {ShortWeierstrassCurve} from './curve';
 
 /** An affine point on an elliptic curve with Short Weierstrass form. */
-export class ShortWeierstrassCurvePoint implements CurvePointInterface<PointInput, FieldElement> {
+export class ShortWeierstrassCurvePoint
+  implements CurvePointInterface<ShortWeierstrassCurve.Point, ShortWeierstrassCurve.Value>
+{
   readonly curve: ShortWeierstrassCurve;
-  readonly x: FieldElement;
-  readonly y: FieldElement;
+  readonly x: ShortWeierstrassCurve.Value;
+  readonly y: ShortWeierstrassCurve.Value;
   readonly inf: boolean;
 
-  constructor(curve: ShortWeierstrassCurve, point?: PointInput) {
+  constructor(curve: ShortWeierstrassCurve, point?: ShortWeierstrassCurve.Point) {
     this.curve = curve;
     if (point) {
       if (!curve.satisfies(point)) {

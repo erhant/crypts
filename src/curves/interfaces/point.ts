@@ -1,4 +1,4 @@
-import {Integer} from '../../types';
+import {Integer} from '../..';
 import {CurveInterface} from './curve';
 
 export interface CurvePointInterface<I, V> {
