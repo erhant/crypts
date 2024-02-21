@@ -22,7 +22,6 @@
 - [x] [Polynomials](./src/polynomials/polynomial.ts) defines a polynomial with coefficients in a finite field.
 - [x] [Lagrange Interpolation](./src/polynomials/lagrange.ts) constructs a polynomial based on point evaluations.
 - [x] [Shamir's Secret Sharing](./src/polynomials/shamir.ts) splits a given secret into $n$ shares such that with at least $k$ of them the secret can be reconstructed.
-- [ ] [Number-Theoretic Transform](#) is used to switch between coefficient & evaluation representations of a polynomial.
 
 <div align="center">
 <h3>https://github.com/erhant/crypts/labels/elliptic%20curves</h3>
@@ -31,8 +30,6 @@
 - [x] [Short Weierstrass](./src/curves/shortWeierstrass.ts) defines an elliptic curve in Short Weierstrass form with affine points, along with curve conversions.
 - [x] [Montgomery](./src/curves/montgomery.ts) defines an elliptic curve in Montgomery form with affine points, along with curve conversions.
 - [x] [Twisted Edwards](./src/curves/twisedEdwards.ts) defines an elliptic curve in Twisted Edwards form with affine points, along with curve conversions.
-- [ ] [Baby-step Giant-step](#) finds the order of an Elliptic Curve's scalar field.
-- [ ] [Miller Pairing](#) is a pairing over extended Short Weierstrass curve.
 
 <div align="center">
 <h3>https://github.com/erhant/crypts/labels/numbers</h3>
@@ -41,20 +38,6 @@
 - [x] [Miller-Rabin](./src/numbers/primality.ts) probabilistically & efficiently checks if a number is prime.
 - [x] [Tonelli-Shanks](./src/fields/sqrt.ts) finds the square root of a quadratic residue in a finite field.
 - [x] [Legendre Symbol](./src/fields/legendre.ts) tells whether a number is quadratic residue or quadratic non-residue.
-- [ ] [Factorization](#) factors a number into its prime factors.
-
-<div align="center">
-<h3>https://github.com/erhant/crypts/labels/hashing</h3>
-</div>
-
-- [ ] [Poseidon](#) hash function.
-- [ ] [MiMC](#) hash function.
-
-<div align="center">
-<h3>https://github.com/erhant/crypts/labels/zero-knowledge</h3>
-</div>
-
-- [ ] [Groth16 Verifier](#) to verify Groth16 proofs.
 
 ## Usage
 

@@ -1,9 +1,10 @@
-import {Field, FieldElement} from '../../fields';
+import {Field} from '../../fields';
 import type {CurveInterface} from '../interfaces';
 import {ShortWeierstrassCurvePoint} from './point';
 import {ffSqrt} from '../..';
 
-/** An elliptic curve with Short Weierstrass form over affine points.
+/**
+ * An elliptic curve with Short Weierstrass form over affine points.
  *
  * The curve is composed of points `(x, y)` on the elliptic curve over a base field such that
  * `(x, y)` satisfy the  Short Weierstrass curve equation:
@@ -18,9 +19,9 @@ export class ShortWeierstrassCurve implements CurveInterface<ShortWeierstrassCur
   readonly generator?: ShortWeierstrassCurvePoint;
 
   /** Curve parameter `a`. */
-  readonly a: FieldElement;
+  readonly a: ShortWeierstrassCurve.Value;
   /** Curve parameter `b`. */
-  readonly b: FieldElement;
+  readonly b: ShortWeierstrassCurve.Value;
 
   constructor(
     field: Field,

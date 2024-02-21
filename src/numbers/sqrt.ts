@@ -56,11 +56,11 @@ export function ffSqrt(num: FieldElement): [FieldElement, FieldElement] | null {
   let c = z.exp(Q);
   let t = num.exp(Q);
   let R = num.exp((Q + 1n) >> 1n);
-  while (M !== 0n && !t.eq(1)) {
+  while (M !== 0n && !t.isOne()) {
     // find least `i` such that `t^{2^i} = 1`
     let tt = t;
     let i = 0n;
-    while (!tt.eq(1)) {
+    while (!tt.isOne()) {
       tt = tt.mul(tt);
       ++i;
 

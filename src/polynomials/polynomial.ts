@@ -154,9 +154,9 @@ export class Polynomial {
         // constant term (x^0)
         if (i === 0) return `${a_i}`;
         // coefficient of x^1
-        if (i === 1) return a_i.eq(1) ? `${symbol}` : `${a_i}*${symbol}`;
+        if (i === 1) return a_i.isOne() ? `${symbol}` : `${a_i}*${symbol}`;
         // coefficient of x^i for i > 1
-        return a_i.eq(1) ? `${symbol}^${i}` : `${a_i}*${symbol}^${i}`;
+        return a_i.isOne() ? `${symbol}^${i}` : `${a_i}*${symbol}^${i}`;
       })
       .filter((s): s is string => s !== null);
     return coeffs.length === 0 ? '0' : coeffs.reverse().join(' + ');

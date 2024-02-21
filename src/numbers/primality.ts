@@ -37,7 +37,7 @@ export function isPrime(num: bigint, tries: number = 20): boolean {
   for (let i = 0; i < tries; i++) {
     // a (base) is a random value such that 1 < base < n - 1
     let a = Fn.random();
-    while (a.eq(1) || a.eq(n1)) {
+    while (a.isOne() || a.eq(n1)) {
       a = Fn.random();
     }
 
@@ -49,14 +49,14 @@ export function isPrime(num: bigint, tries: number = 20): boolean {
       // we check if there is a non-trivial square root
       // the trivial one is when x == 1 or x == -1, if it
       // is a non-trivial one then x is something else but y == 1
-      if (y.eq(1) && !x.eq(1) && !x.eq(n1)) {
+      if (y.isOne() && !x.isOne() && !x.eq(n1)) {
         return false;
       }
 
       x = y;
     }
 
-    if (!y.eq(1)) {
+    if (!y.isOne()) {
       return false;
     }
   }
