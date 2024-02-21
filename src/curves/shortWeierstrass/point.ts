@@ -32,7 +32,7 @@ export class ShortWeierstrassCurvePoint
     if (this.inf) {
       return this.curve.inf;
     } else {
-      if (this.y.eq(0)) {
+      if (this.y.isZero()) {
         throw new Error('y-coordinate cant be zero.');
       }
 

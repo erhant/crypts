@@ -12,7 +12,7 @@ export function montgomeryToShortWeierstrass(curve: MontgomeryCurve): ShortWeier
 }
 
 export function montgomeryToTwistedEdwards(curve: MontgomeryCurve): TwistedEdwardsCurve {
-  if (curve.B.eq(0) || curve.A.exp(2).eq(4)) {
+  if (curve.B.isZero() || curve.A.exp(2).eq(4)) {
     throw new Error('Cant convert this curve to Twisted Edwards.');
   }
 

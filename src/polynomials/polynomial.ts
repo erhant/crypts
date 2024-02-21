@@ -1,12 +1,11 @@
-import {Integer} from '../types';
-import {Field, FieldElement} from '../fields';
+import {Field} from '../fields';
 
 /** A univariate polynomial over a finite field, with coefficients as elements of that field. */
 export class Polynomial {
   /** Field of the coefficients. */
   readonly field: Field;
   /** Coefficients in reverse order, i.e. `coeff[i]` stands for the coefficient of `x^i`  */
-  readonly coeffs: FieldElement[];
+  readonly coeffs: Field.Element[];
   /** Leading coefficient. */
   readonly lead: bigint;
   /** Degree of the polynomial, corresponding to the largest power of a term. */
@@ -18,17 +17,24 @@ export class Polynomial {
    *
    * Right-padded zeros are ignored.
    */
-  constructor(field: Field, coefficients: (Integer | FieldElement)[]) {
+  constructor(field: Field, coefficients: Field.Input[]) {
     this.field = field;
     this.coeffs = coefficients.map(c => field.Element(c));
 
     // remove right-padded zeros
-    while (this.coeffs.at(-1)?.eq(0)) {
+    while (this.coeffs.at(-1)?.isZero()) {
       this.coeffs.pop();
     }
 
     this.degree = Math.max(this.coeffs.length - 1, 0);
     this.lead = (this.coeffs.at(this.degree) ?? this.field.zero).value;
+  }
+
+  static random(field: Field, degree: number): Polynomial {
+    return new Polynomial(
+      field,
+      Array.from({length: degree}, () => field.random())
+    );
   }
 
   /** Polynomial addition in field. */
@@ -135,7 +141,7 @@ export class Polynomial {
   }
 
   /** Evaluate polynomial at the given point via [Horner's rule](https://zcash.github.io/halo2/background/polynomials.html#aside-horners-rule). */
-  eval(p: Field.Input): FieldElement {
+  eval(p: Field.Input): Field.Element {
     return this.coeffs.reduceRight((ans, cur) => cur.add(ans.mul(p)), this.field.zero);
   }
 
@@ -144,7 +150,7 @@ export class Polynomial {
     const coeffs = this.coeffs
       .map((a_i, i) => {
         // coefficient is zero
-        if (a_i.eq(0)) return null;
+        if (a_i.isZero()) return null;
         // constant term (x^0)
         if (i === 0) return `${a_i}`;
         // coefficient of x^1

@@ -8,7 +8,7 @@ export function shortWeierstassToMontgomery(curve: ShortWeierstrassCurve, z0: bi
   if (curve.scalar.order % 4n !== 0n) throw 'Scalar field order must be divisible by 4.';
 
   const z0f = curve.base.Element(z0);
-  if (!z0f.exp(3).add(curve.a.mul(z0f)).add(curve.b).eq(0)) throw `z0 must be a root of z^3 + az + b.`;
+  if (!z0f.exp(3).add(curve.a.mul(z0f)).add(curve.b).isZero()) throw `z0 must be a root of z^3 + az + b.`;
 
   const ss = z0f.exp(2).mul(3).add(curve.a);
   const s = ffSqrt(ss);

@@ -29,6 +29,14 @@ export class FieldExtensionElement implements IFieldElement<FieldExtension.Input
     return this.value.eq(this.new(q).value);
   }
 
+  isZero(): boolean {
+    return this.value.eq([0]);
+  }
+
+  isOne(): boolean {
+    return this.value.eq([1]);
+  }
+
   add(q: FieldExtension.Input) {
     return this.new(this.value.add(this.new(q).value));
   }

@@ -1,11 +1,11 @@
-import type {FieldElement} from '../fields';
 import type {Polynomial} from '.';
+import {Field} from '..';
 
 /** Finds the roots of a polynomial, simply by iterating over all the field elements. */
-export function findRootsNaive(p: Polynomial): FieldElement[] {
+export function findRootsNaive(p: Polynomial): Field.Element[] {
   const roots = [];
   for (const x of p.field) {
-    if (p.eval(x).eq(0)) {
+    if (p.eval(x).isZero()) {
       roots.push(x);
     }
   }
@@ -19,7 +19,7 @@ export function findRootsNaive(p: Polynomial): FieldElement[] {
  */
 export function isIrreducibleNaive(p: Polynomial): boolean {
   for (const x of p.field) {
-    if (p.eval(x).eq(0)) {
+    if (p.eval(x).isZero()) {
       return false;
     }
   }

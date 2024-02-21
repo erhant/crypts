@@ -18,7 +18,7 @@ export class TwistedEdwardsCurvePoint
     }
     this.x = curve.base.Element(point[0]);
     this.y = curve.base.Element(point[1]);
-    this.inf = this.x.eq(0) && this.y.eq(1);
+    this.inf = this.x.isZero() && this.y.isOne();
   }
 
   add(q: TwistedEdwardsCurvePoint) {

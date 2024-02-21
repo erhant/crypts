@@ -59,8 +59,7 @@ export class FieldExtension implements IField<FieldExtension.Input, FieldExtensi
   }
 
   random() {
-    // TODO: create a random polynomial, return mod Poly
-    return this.Element([1]);
+    return this.Element(Polynomial.random(this.field, this.poly.degree));
   }
 
   toString() {

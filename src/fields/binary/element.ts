@@ -21,6 +21,14 @@ export class BinaryFieldElement implements IFieldElement<BinaryField.Input, Bina
     return this.value === this.field.into(n);
   }
 
+  isZero(): boolean {
+    return this.value === 0;
+  }
+
+  isOne(): boolean {
+    return this.value === 1;
+  }
+
   add(n: BinaryField.Input) {
     return this.new(this.value != this.field.into(n) ? 1 : 0);
   }

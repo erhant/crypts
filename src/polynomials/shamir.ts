@@ -1,5 +1,5 @@
-import {FieldElement} from '../fields';
 import {Polynomial, interpolate} from '.';
+import {Field} from '..';
 
 /**
  * Split generates a degree `k-1` polynomial with the constant coefficients equal
@@ -9,7 +9,7 @@ import {Polynomial, interpolate} from '.';
  * @param k number of shares required to generate the secret
  * @param n number of shares to be created
  */
-export function split(secret: FieldElement, k: number, n: number) {
+export function split(secret: Field.Element, k: number, n: number) {
   // the finite field of this secret
   const F = secret.field;
 
@@ -21,7 +21,7 @@ export function split(secret: FieldElement, k: number, n: number) {
   const P = new Polynomial(F, coeffs);
 
   // evaluations over the polynomial
-  const evals = Array.from({length: n}, () => F.random()).map(x => [x, P.eval(x)] as [FieldElement, FieldElement]);
+  const evals = Array.from({length: n}, () => F.random()).map(x => [x, P.eval(x)] as [Field.Element, Field.Element]);
 
   return evals;
 }
@@ -30,6 +30,6 @@ export function split(secret: FieldElement, k: number, n: number) {
  * To recover, we interpolate the polynomial with the given evaluations,
  * and then evaluate it at the point 0, thereby finding the constant coefficient.
  */
-export function recover(evals: [FieldElement, FieldElement][]) {
+export function recover(evals: [Field.Element, Field.Element][]) {
   return interpolate(evals[0][0].field, evals).eval(0);
 }

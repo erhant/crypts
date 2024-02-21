@@ -24,6 +24,14 @@ export class FieldElement implements IFieldElement<Field.Input, Field.Value> {
     return this.value === this.field.into(n);
   }
 
+  isZero(): boolean {
+    return this.value === 0n;
+  }
+
+  isOne(): boolean {
+    return this.value === 1n;
+  }
+
   add(n: Field.Input) {
     return this.new(this.value + this.field.into(n));
   }

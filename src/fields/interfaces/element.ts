@@ -16,6 +16,12 @@ export interface IFieldElement<I, V> {
   /** Equality check with a field elements or number. */
   eq(n: I | IFieldElement<I, V>): boolean;
 
+  /** Equality check for zero. */
+  isZero(): boolean;
+
+  /** Equality check for one. */
+  isOne(): boolean;
+
   /** Addition in the field. */
   add(n: I | IFieldElement<I, V>): IFieldElement<I, V>;
 

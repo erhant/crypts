@@ -10,8 +10,7 @@ def hexarr(arr):
 
 def random_points(E):
     """
-    Generates two points `p, q` on the curve, such that both are not the point at infinity and
-    `p != -q`.
+    Generates two points `p, q` on the curve, such that both are not the point at infinity and `p != -q`.
     """
     inf = E(0)
     p = E.random_element()
